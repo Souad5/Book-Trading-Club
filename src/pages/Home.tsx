@@ -149,7 +149,7 @@ export default function Home() {
   );
 
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-8">
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-8 ">
       {/* Hero */}
       <div className="relative overflow-hidden rounded-2xl border border-sand-200 bg-gradient-to-br from-leaf-50 via-white to-sand-50 p-10">
         <div className="relative z-10">
@@ -172,7 +172,7 @@ export default function Home() {
       </div>
 
       {/* Search Demo */}
-      <div className="rounded-2xl bg-white p-6 md:p-8 border border-sand-200 shadow-subtle">
+      <div className="rounded-2xl bg-white p-6 md:p-8 border border-sand-200 shadow-subtle ">
         <h2 className="text-xl font-semibold text-soil-900 mb-5">
           Search Books
         </h2>
@@ -284,7 +284,13 @@ export default function Home() {
             </div>
           )}
         </div>
+        <div>
+          <button className="bg-[#f5efe6] p-2 rounded-full px-4 font-semibold text-lg flex justifcey-center mt-6 mx-auto">
+  <Link to="/browse">View All Books</Link>
+</button>
+        </div>
       </div>
+    
     </section>
   );
 }

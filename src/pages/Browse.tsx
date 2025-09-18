@@ -209,7 +209,6 @@ const DEMO_BOOKS: Book[] = [
     genre: "Literary",
     image: "https://i.postimg.cc/BnVkvrM0/image.png",
   },
-  
 ];
 
 
