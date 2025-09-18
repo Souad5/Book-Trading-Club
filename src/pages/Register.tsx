@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaBook } from "react-icons/fa"; // FontAwesome book icon
+import { FaBook, FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface FormData {
   name: string;
@@ -53,96 +53,102 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
-      <div className="flex flex-col md:flex-row w-full max-w-4xl shadow-xl bg-base-100 rounded-lg overflow-hidden">
-        {/* Left side icon / info */}
-        <div className="hidden md:flex md:flex-col items-center justify-center bg-primary text-white w-1/3 p-8">
-          <FaBook size={80} className="mb-4" />
-          <h2 className="text-2xl font-bold text-center">Book Trading Club</h2>
-          <p className="text-center mt-2">
-            Join our community and start trading your favorite books!
+    <div className="min-h-screen flex items-center justify-center bg-[#f7f3ee] p-6">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl shadow-xl rounded-2xl overflow-hidden bg-white">
+        {/* Left Section */}
+        <div className="hidden md:flex flex-col items-center justify-center bg-gradient-to-b from-emerald-600 to-teal-600 text-white w-1/3 p-10">
+          <FaBook size={90} className="mb-6" />
+          <h2 className="text-3xl font-bold text-center">Book Trading Club</h2>
+          <p className="text-center mt-3 opacity-90">
+            Swap, sell, share, or find an investor for your next masterpiece. 
+            Turn your books into opportunities!
           </p>
         </div>
 
-        {/* Right side form */}
-        <div className="w-full md:w-2/3 p-8">
-          <h2 className="text-2xl font-bold text-center mb-6">Register</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Right Section (Form) */}
+        <div className="w-full md:w-2/3 p-10">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
+            Create Your Account
+          </h2>
+          <p className="text-center text-gray-500 mb-8">
+            Join our community and start your book trading journey today.
+          </p>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Name */}
             <div>
-              <label className="label">Name</label>
+              <label className="label font-semibold">Name</label>
               <input
                 type="text"
                 name="name"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full rounded-lg shadow-sm border-gray-300"
                 value={formData.name}
                 onChange={handleChange}
               />
               {errors.name && (
-                <p className="text-error text-sm">{errors.name}</p>
+                <p className="text-red-500 text-sm">{errors.name}</p>
               )}
             </div>
 
             {/* Email */}
             <div>
-              <label className="label">Email</label>
+              <label className="label font-semibold">Email</label>
               <input
                 type="email"
                 name="email"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full rounded-lg shadow-sm border-gray-300"
                 value={formData.email}
                 onChange={handleChange}
               />
               {errors.email && (
-                <p className="text-error text-sm">{errors.email}</p>
+                <p className="text-red-500 text-sm">{errors.email}</p>
               )}
             </div>
 
             {/* Password */}
             <div>
-              <label className="label">Password</label>
-              <div className="flex gap-2">
+              <label className="label font-semibold">Password</label>
+              <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full rounded-lg shadow-sm border-gray-300 pr-10"
                   value={formData.password}
                   onChange={handleChange}
                 />
-                <button
-                  type="button"
-                  className="btn btn-outline"
+                <span
+                  className="absolute right-3 top-3 cursor-pointer text-gray-600"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? "Hide" : "Show"}
-                </button>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
               </div>
               {errors.password && (
-                <p className="text-error text-sm">{errors.password}</p>
+                <p className="text-red-500 text-sm">{errors.password}</p>
               )}
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label className="label">Confirm Password</label>
+              <label className="label font-semibold">Confirm Password</label>
               <input
                 type={showPassword ? "text" : "password"}
                 name="confirmPassword"
-                className="input input-bordered w-full"
+                className="input input-bordered w-full rounded-lg shadow-sm border-gray-300"
                 value={formData.confirmPassword}
                 onChange={handleChange}
               />
               {errors.confirmPassword && (
-                <p className="text-error text-sm">{errors.confirmPassword}</p>
+                <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
               )}
             </div>
 
-            {/* Favorite Genre */}
+            {/* Genre */}
             <div>
-              <label className="label">Favorite Genre</label>
+              <label className="label font-semibold">Favorite Genre</label>
               <select
                 name="genre"
-                className="select select-bordered w-full"
+                className="select select-bordered w-full rounded-lg shadow-sm border-gray-300"
                 value={formData.genre}
                 onChange={handleChange}
               >
@@ -154,18 +160,20 @@ const Register: React.FC = () => {
                 <option value="biography">Biography</option>
               </select>
               {errors.genre && (
-                <p className="text-error text-sm">{errors.genre}</p>
+                <p className="text-red-500 text-sm">{errors.genre}</p>
               )}
             </div>
 
             {/* Submit */}
-            <button className="btn btn-primary w-full">Register</button>
+            <button className="btn w-full rounded-lg text-lg font-semibold tracking-wide bg-emerald-600 hover:bg-emerald-700 border-none text-white shadow-md">
+              Register
+            </button>
           </form>
 
-          {/* Preview after submission */}
+          {/* Success Message */}
           {submitted && (
-            <div className="mt-4 p-4 bg-success text-white rounded">
-              <h3 className="font-bold">🎉 Registration Successful</h3>
+            <div className="mt-6 p-5 bg-green-500 text-white rounded-lg shadow-md">
+              <h3 className="font-bold text-lg">🎉 Registration Successful</h3>
               <p>Name: {formData.name}</p>
               <p>Email: {formData.email}</p>
               <p>Favorite Genre: {formData.genre}</p>
