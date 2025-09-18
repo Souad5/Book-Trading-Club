@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+
 type Book = {
   id: string;
   title: string;
@@ -6,13 +7,15 @@ type Book = {
   isbn: string;
   tags: string[];
   location: string;
-  condition: string;
-  exchangeType: string;
+  condition: "new" | "good" | "fair";
+  exchangeType: "swap" | "donate" | "sell";
   language: string;
   genre: string;
   image: string;
 };
-const DEMO_BOOKS: Book[] = [
+
+export default function BookDetails() {
+  const DEMO_BOOKS: Book[] = [
   {
     id: "1",
     title: "The Alchemist",
@@ -211,62 +214,68 @@ const DEMO_BOOKS: Book[] = [
   },
 ];
 
+  const { id } = useParams<{ id: string }>();
+  const book = DEMO_BOOKS.find((b) => b.id === id);
 
-export default function Browse() {
+  if (!book) {
+    return <div className="p-6">❌ Book not found.</div>;
+  }
+
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      <div className="rounded-2xl border border-sand-200 bg-gradient-to-br from-sand-50 via-white to-leaf-50 p-8 mb-6">
-        <h1 className="text-3xl font-semibold text-soil-900 tracking-tight">
-          Browse Books
-        </h1>
-        <p className="mt-2 text-sand-700">
-          Discover books available for exchange.
-        </p>
-      </div>
+    <section className="p-6 max-w-5xl mx-auto">
+      <Link to="/" className="text-blue-600 text-sm">
+        &larr; Back to Home
+      </Link>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {DEMO_BOOKS.map((book) => (
-          <article
-            key={book.id}
-            className="rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow"
-          >
-            {/* Book image */}
-            <div className="h-40 w-full overflow-hidden rounded-md bg-sand-100/60">
-              <img
-                src={book.image}
-                alt={book.title}
-                className="h-full w-full object-cover"
-              />
-            </div>
+      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        {/* Book Image */}
+        <div className="w-full">
+          <img
+            src={book.image}
+            alt={book.title}
+            className="w-full h-auto rounded-xl shadow-lg object-cover"
+          />
+        </div>
 
-            {/* Title + Author */}
-            <h3 className="mt-3 font-semibold text-soil-900">{book.title}</h3>
-            <p className="text-sm text-sand-700">
-              {book.author} · {book.language}
+        {/* Book Info */}
+        <div className="space-y-4">
+          <h1 className="text-3xl font-bold text-soil-900">{book.title}</h1>
+          <p className="text-lg text-sand-700">by {book.author}</p>
+          <p className="text-sm text-sand-500">ISBN: {book.isbn}</p>
+
+          <div className="grid grid-cols-2 gap-3 text-sm mt-4">
+            <p>
+              <strong>Location:</strong> {book.location}
             </p>
+            <p>
+              <strong>Condition:</strong> {book.condition}
+            </p>
+            <p>
+              <strong>Exchange:</strong> {book.exchangeType}
+            </p>
+            <p>
+              <strong>Language:</strong> {book.language}
+            </p>
+            <p className="col-span-2">
+              <strong>Genre:</strong> {book.genre}
+            </p>
+          </div>
 
-            {/* Tags */}
-            <div className="mt-3 flex flex-wrap gap-2 text-xs">
-              <span className="rounded bg-sand-100 px-2 py-1">
-                {book.location}
+          <div className="mt-4 flex flex-wrap gap-2">
+            {book.tags.map((t) => (
+              <span
+                key={t}
+                className="text-sm rounded bg-sand-100 px-3 py-1 text-sand-700 border border-sand-300"
+              >
+                #{t}
               </span>
-              <span className="rounded bg-sand-100 px-2 py-1">
-                {book.condition}
-              </span>
-              <span className="rounded bg-sand-100 px-2 py-1">
-                {book.exchangeType}
-              </span>
-            </div>
+            ))}
+          </div>
 
-            {/* Details link */}
-            <Link
-              to={`/book/${book.id}`}
-              className="mt-4 inline-block text-sm text-blue-600 hover:underline"
-            >
-              View Details →
-            </Link>
-          </article>
-        ))}
+          <button className="mt-6 px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg shadow transition">
+            Request / Trade
+          </button>
+        </div>
       </div>
     </section>
   );
