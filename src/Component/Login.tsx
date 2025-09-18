@@ -9,15 +9,16 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="flex flex-col lg:flex-row bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl w-full">
-        {/* Left Form Section */}
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="flex flex-col lg:flex-row bg-white rounded-xl  overflow-hidden max-w-4xl w-full">
+               
+
         <div className="w-full lg:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+                <h1 className="text-2xl font-semibold mb-5" >Welcome Book Trading Club</h1>
+
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Login</h1>
-            <p className="text-gray-500 text-sm">
-              Login to access your travelwise account
-            </p>
+            <h1 className="text-xl font-bold mb-2">Login to Your Account!</h1>
+            
           </div>
 
           <form className="space-y-4">
