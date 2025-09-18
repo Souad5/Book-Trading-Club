@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import './App.css'
+
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Home from './pages/Home'
@@ -7,6 +7,7 @@ import Browse from './pages/Browse'
 import HowItWorks from './pages/HowItWorks'
 import Register from "./pages/Register";
 import BookDetails from './pages/BookDetails'
+import Login from './Component/Login'
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
           <Route path="/browse" element={<Browse />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login></Login>} />
+          <Route> </Route>
+          
         </Routes>
       </main>
       <Footer />
