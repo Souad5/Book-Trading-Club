@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaBook, FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface FormData {
@@ -20,6 +20,20 @@ const Register: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [submitted, setSubmitted] = useState(false);
+
+  // 🔹 Hide Sign Up button from Navbar when on Register page
+  useEffect(() => {
+    const signupBtn = document.querySelector("a[href='/register']");
+    if (signupBtn) {
+      (signupBtn as HTMLElement).style.display = "none";
+    }
+
+    return () => {
+      if (signupBtn) {
+        (signupBtn as HTMLElement).style.display = "inline-block";
+      }
+    };
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
