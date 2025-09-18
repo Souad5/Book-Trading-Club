@@ -44,7 +44,7 @@ export default function Navbar() {
             {!isAuthenticated ? (
               <div className="flex items-center gap-3">
                 <NavLink to="/login" className="btn-link">Login</NavLink>
-                <NavLink to="/signup" className="btn-primary">Sign Up</NavLink>
+                <NavLink to="/register" className="btn-primary">Sign Up</NavLink>
               </div>
             ) : (
               <div className="flex items-center gap-2">
@@ -128,7 +128,7 @@ export default function Navbar() {
                 <NavLinks isAuthenticated={false} orientation="vertical" />
                 <div className="flex items-center gap-3">
                   <NavLink to="/login" className="btn-link">Login</NavLink>
-                  <NavLink to="/signup" className="btn-primary">Sign Up</NavLink>
+                  <NavLink to="/register" className="btn-primary">Sign Up</NavLink>
                 </div>
               </div>
             )}
