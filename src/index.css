@@ -1,6 +1,5 @@
 @import "tailwindcss";
-@theme {
-  /* Earthy palette */
+@theme { 
   --color-leaf-50: #f3faf3;
   --color-leaf-100: #e5f5e6;
   --color-leaf-200: #c7e9c9;
