@@ -285,7 +285,7 @@ export default function Home() {
           )}
         </div>
         <div>
-          <button className="bg-[#f5efe6] p-2 rounded-full px-4 font-semibold text-lg flex justifcey-center mt-6 mx-auto">
+          <button className="bg-[#f5efe6] p-2 rounded-full px-4 font-semibold  flex justifcey-center mt-6 mx-auto hover:border hover:shadow-md transition">
   <Link to="/browse">View All Books</Link>
 </button>
         </div>
