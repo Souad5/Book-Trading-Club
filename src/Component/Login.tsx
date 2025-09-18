@@ -1,71 +1,87 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
+
+import { FaFacebookF, FaApple } from "react-icons/fa";
 import picture from '../assests/photo/login-image.png'
 
 const Login = () => {
     return (
-          <div className="min-h-screen flex items-center justify-center bg-black text-white">
-      {/* Left Image Section */}
-      <div className="hidden lg:flex lg:w-1/2 justify-center items-center relative">
-        <img
-          src={picture}
-          alt="Student Illustration"
-          className="w-3/4 object-contain"
-        />
-      </div>
-
-      {/* Right Form Section */}
-      <div className="w-full lg:w-1/2 px-8 md:px-16">
-        <h1 className="text-3xl font-bold text-yellow-600 mb-4">
-          Welcome to Neth BookPoint!
-        </h1>
-        <p className="text-gray-300 mb-8">
-          Discover a seamless way to sell your books and unlock exclusive
-          benefits. Enjoy a hassle-free experience, save valuable time, and
-          take advantage of our amazing offers.
-        </p>
-
-        <h2 className="text-xl font-semibold text-yellow-600 mb-4">
-          Login to Your Account!
-        </h2>
-
-        <form className="space-y-4">
-          <div>
-            <input
-              type="email"
-              placeholder="Enter Email"
-              className="w-full p-3 rounded bg-yellow-200 text-gray-800 placeholder-gray-500 focus:outline-none"
-            />
-          </div>
-          <div>
-            <input
-              type="password"
-              placeholder="Enter Password"
-              className="w-full p-3 rounded bg-yellow-200 text-gray-800 placeholder-gray-500 focus:outline-none"
-            />
-          </div>
-          <div className="text-right text-sm text-gray-400">
-            Forgot Password?
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex flex-col lg:flex-row bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl w-full">
+        
+        {/* Left Form Section */}
+        <div className="w-full lg:w-1/2 p-8 md:p-16 flex flex-col justify-center">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-2">Login</h1>
+            <p className="text-gray-500 text-sm">
+              Login to access your travelwise account
+            </p>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-yellow-600 text-black py-3 rounded font-bold hover:bg-yellow-500 transition"
-          >
-            LOGIN
-          </button>
-        </form>
+          <form className="space-y-4">
+            <div>
+              <label className="text-gray-600 text-sm">Email</label>
+              <input
+                type="email"
+                placeholder="john.doe@gmail.com"
+                className="w-full mt-1 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="text-gray-600 text-sm">Password</label>
+              <input
+                type="password"
+                placeholder="••••••••••••"
+                className="w-full mt-1 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
 
-        <div className="mt-4 text-center text-gray-400">
-          Don't you have an account?{" "}
-          <a href="#" className="text-yellow-600 font-semibold">
-            Create an account
-          </a>
+            <div className="flex justify-between items-center text-sm text-gray-500">
+              <label>
+                <input type="checkbox" className="mr-2" />
+                Remember me
+              </label>
+              <a href="#" className="text-red-500">Forgot Password?</a>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 rounded font-semibold hover:bg-blue-500 transition"
+            >
+              Login
+            </button>
+          </form>
+
+          <p className="text-center text-gray-500 text-sm mt-4">
+            Don’t have an account?{" "}
+            <a href="#" className="text-red-500 font-semibold">Sign up</a>
+          </p>
+
+          <div className="mt-6 text-center text-gray-400 text-sm relative">
+            <span className="bg-white px-2 relative z-10">Or login with</span>
+            <hr className="absolute top-1/2 left-0 w-full border-gray-300 -z-0" />
+          </div>
+
+          <div className="mt-4 flex justify-center gap-4">
+            <button className="border border-gray-300 rounded p-2 hover:bg-gray-100 transition">
+              <FaFacebookF />
+            </button>
+            <button className="border border-gray-300 rounded p-2 hover:bg-gray-100 transition">
+              <FcGoogle />
+            </button>
+            <button className="border border-gray-300 rounded p-2 hover:bg-gray-100 transition">
+              <FaApple />
+            </button>
+          </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2 cursor-pointer border border-gray-500 rounded p-2 hover:bg-gray-800 transition">
-          <FcGoogle size={24} />
-          <span>Login with Google</span>
+        {/* Right Image Section */}
+        <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-gray-100">
+          <img
+            src={picture}
+            alt="Login Illustration"
+            className="w-full object-contain"
+          />
         </div>
       </div>
     </div>
