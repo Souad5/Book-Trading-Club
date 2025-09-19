@@ -1,5 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import ShareModal from "../components/Modals/ShareModal"; 
+import { useState } from "react";
 
 type Book = {
   id: string;
@@ -17,10 +19,23 @@ type Book = {
 
 
 export default function BookDetails() {
-// wishlist button clicked
-const handleWishlistClick = () => {
-toast.success("Added to wishlist!");
-}
+  const [rating, setRating] = useState<number>(0);
+  const [review, setReview] = useState<string>("");
+
+  // wishlist button clicked
+  const handleWishlistClick = () => {
+    toast.success("Added to wishlist!");
+  };
+
+  const handleSubmitReview = () => {
+    if (rating === 0) {
+      toast.error("Please select a rating!");
+      return;
+    }
+    toast.success("Review submitted!");
+    setRating(0);
+    setReview("");
+  };
 
   const DEMO_BOOKS: Book[] = [
     {
@@ -101,7 +116,6 @@ toast.success("Added to wishlist!");
       genre: "Technology",
       image: "https://i.postimg.cc/Z5QT8y71/image.png",
     },
-
     {
       id: "7",
       title: "The Pragmatic Programmer",
@@ -272,20 +286,61 @@ toast.success("Added to wishlist!");
             {book.tags.map((t) => (
               <span
                 key={t}
-                className="text-sm rounded bg-sand-100 px-3 py-1 text-sand-700 border border-sand-300"
+                className="text-sm rounded bg-[#faf8f4] px-3 py-1 text-sand-700 border border-sand-300"
               >
                 #{t}
               </span>
             ))}
           </div>
-         <div className="flex gap-4">
-           <button className="mt-6 px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg shadow transition">
-            Trade Now
-          </button>
-          <button onClick={handleWishlistClick} className="mt-6 px-5 py-2.5 hover:bg-leaf-600 hover:text-white text-gray-500 font-semibold bg-gray-100 border border-gray-300 rounded-lg shadow transition">
-            Add to wishlist
-          </button>
-         </div>
+
+          {/* Action buttons */}
+          <div className="flex gap-4 mt-6">
+            <button className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg shadow transition">
+              Trade Now
+            </button>
+
+            <button
+              onClick={handleWishlistClick}
+              className="px-5 py-2.5 hover:bg-leaf-600 hover:text-white text-gray-500 font-semibold bg-[#faf8f4] border border-gray-300 rounded-lg shadow transition"
+            >
+              Add to wishlist
+            </button>
+
+            {/* Share Modal */}
+            <ShareModal book={book} />
+          </div>
+          {/* Rate & Review Section */}
+          <div className="mt-8 p-4 border border-sand-200 rounded-lg bg-sand-50">
+            <h2 className="text-xl font-semibold mb-2">Rate & Review</h2>
+            
+            <div className="flex items-center mb-3">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  onClick={() => setRating(star)}
+                  className={`text-2xl ${
+                    rating >= star ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                >
+                  ★
+                </button>
+              ))}
+            </div>
+
+            <textarea
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              placeholder="Write your review..."
+              className="w-full p-2 border border-sand-300 rounded-md text-sm"
+            />
+
+            <button
+              onClick={handleSubmitReview}
+              className="mt-3 px-4 py-2 bg-leaf-500 text-white rounded-lg hover:bg-leaf-600 transition"
+            >
+              Submit Review
+            </button>
+          </div>
         </div>
       </div>
     </section>
