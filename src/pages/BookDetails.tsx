@@ -330,7 +330,7 @@ export default function BookDetails() {
             <textarea
               value={review}
               onChange={(e) => setReview(e.target.value)}
-              placeholder="Write your review..."
+              placeholder="Write your review... "
               className="w-full p-2 border border-sand-300 rounded-md text-sm"
             />
 
