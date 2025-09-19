@@ -335,10 +335,10 @@ export default function BookDetails() {
             />
 
             <button
-              onClick={handleSubmitReview}
+              onClick= {handleSubmitReview}
               className="mt-3 px-4 py-2 bg-leaf-500 text-white rounded-lg hover:bg-leaf-600 transition"
             >
-              Submit Review
+              Submit Review 
             </button>
           </div>
         </div>
