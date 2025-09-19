@@ -226,6 +226,8 @@ export default function Browse() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {DEMO_BOOKS.map((book) => (
+
+          <Link to={`/book/${book.id}`}>
           <article
             key={book.id}
             className="rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow"
@@ -265,7 +267,7 @@ export default function Browse() {
             >
               View Details →
             </Link>
-          </article>
+          </article></Link>
         ))}
       </div>
     </section>
