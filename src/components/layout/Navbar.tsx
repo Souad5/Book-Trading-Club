@@ -63,7 +63,7 @@ export default function Navbar() {
                 <NavLink to="/login" className="btn-link">
                   Login
                 </NavLink>
-                <NavLink to="/register" className="btn-primary">
+                <NavLink to="/register" className="btn-primary text-amber-500">
                   Sign Up
                 </NavLink>
               </div>

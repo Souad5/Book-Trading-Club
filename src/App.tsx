@@ -7,8 +7,8 @@ import Browse from './pages/Browse'
 import HowItWorks from './pages/HowItWorks'
 import Register from "./pages/Register";
 import BookDetails from './pages/BookDetails'
-import Login from './Component/Login'
 import ForgotPassword from './Component/ForgotPassword'
+import Login from './Component/Login'
 
 function App() {
   return (
