@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router'
+import { useAuth } from "./../../firebase/AuthProvider";
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const { user } = useAuth();
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -29,7 +31,7 @@ export default function UserMenu() {
           role="menu"
           className="absolute right-0 mt-2 w-56 rounded-md border border-sand-200 bg-white p-2 shadow-subtle"
         >
-          <div className="px-2 py-1 text-sm text-sand-600">Signed in as student@btc.edu</div>
+          <div className="px-2 py-1 text-sm text-sand-600">{user?.email}</div>
           <div className="my-1 h-px bg-sand-200" />
           <div className="flex flex-col">
             <Link to="/dashboard" className="px-3 py-2 rounded hover:bg-sand-100">Dashboard</Link>

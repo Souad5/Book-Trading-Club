@@ -8,6 +8,7 @@ import HowItWorks from './pages/HowItWorks'
 import Register from "./pages/Register";
 import BookDetails from './pages/BookDetails'
 import Login from './Component/Login'
+import ForgotPassword from './Component/ForgotPassword'
 
 function App() {
   return (
@@ -21,7 +22,8 @@ function App() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login></Login>} />
-          <Route> </Route>
+          <Route path="/forget" element={<ForgotPassword></ForgotPassword>} />
+          
           
         </Routes>
       </main>
