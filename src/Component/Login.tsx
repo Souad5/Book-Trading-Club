@@ -15,7 +15,7 @@ const Login = () => {
   const { signInUser } = useAuth(); // email/password login
   const { signInWithGoogle } = useAuth(); // Google login from context (optional)
 
-  // Handle email/password login
+  
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
