@@ -7,6 +7,7 @@ import Browse from './pages/Browse'
 import HowItWorks from './pages/HowItWorks'
 import Register from "./pages/Register";
 import BookDetails from './pages/BookDetails'
+import ForgotPassword from './Component/ForgotPassword'
 import Login from './Component/Login'
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login></Login>} />
-          <Route> </Route>
+          <Route path="/forget" element={<ForgotPassword></ForgotPassword>} />
+          
           
         </Routes>
       </main>
