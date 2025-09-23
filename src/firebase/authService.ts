@@ -2,6 +2,8 @@
 import { auth } from "./firebase.config";
 import {
   GoogleAuthProvider,
+  GithubAuthProvider,
+  
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -10,16 +12,30 @@ import {
   sendPasswordResetEmail,
 } from "firebase/auth";
 import type { User } from "firebase/auth";
+import {  } from './authService';
 
+// Providers
 const googleProvider = new GoogleAuthProvider();
+const githubProvider = new GithubAuthProvider();
 
 // -------------------- Google login --------------------
 export const signInWithGoogle = async (): Promise<User> => {
   try {
     const result = await signInWithPopup(auth, googleProvider);
-    return result.user; // Firebase User object
+    return result.user;
   } catch (error) {
     console.error("Google Sign-In Error:", error);
+    throw error;
+  }
+};
+
+// -------------------- GitHub login --------------------
+export const signInWithGithub = async (): Promise<User> => {
+  try {
+    const result = await signInWithPopup(auth, githubProvider);
+    return result.user;
+  } catch (error) {
+    console.error("GitHub Sign-In Error:", error);
     throw error;
   }
 };
@@ -46,7 +62,6 @@ export const signInWithEmail = async (email: string, password: string): Promise<
   }
 };
 
-
 // -------------------- Sign out --------------------
 export const logOut = async (): Promise<void> => {
   try {
@@ -57,6 +72,7 @@ export const logOut = async (): Promise<void> => {
   }
 };
 
+// -------------------- Reset password --------------------
 export const resetPassword = async (email: string): Promise<void> => {
   try {
     await sendPasswordResetEmail(auth, email);
@@ -66,9 +82,6 @@ export const resetPassword = async (email: string): Promise<void> => {
     throw error;
   }
 };
-
-
-
 
 // -------------------- Auth state observer --------------------
 export const observeAuth = (callback: (user: User | null) => void) =>

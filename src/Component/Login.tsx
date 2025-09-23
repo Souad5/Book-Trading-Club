@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { FaEye, FaEyeSlash, FaFacebookF, FaApple } from "react-icons/fa";
+import { FaEye, FaEyeSlash,FaGithub, FaFacebookF} from "react-icons/fa";
 import picture from "../assests/photo/login-image.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../firebase/AuthProvider"; // use context for auth
@@ -13,7 +13,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { signInUser } = useAuth(); // email/password login
-  const { signInWithGoogle } = useAuth(); // Google login from context (optional)
+  const { signInWithGoogle,signInWithGithub  } = useAuth(); // Google login from context (optional)
 
   
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -41,6 +41,15 @@ const Login = () => {
       alert(`Google login failed: ${error.message}`);
     } finally {
       setLoading(false);
+    }
+  };
+
+    const handleGithubLogin = async () => {
+    try {
+      const user = await signInWithGithub();
+      alert(`Welcome ${user.displayName || user.email}`);
+    } catch (error) {
+      alert("GitHub login failed");
     }
   };
 
@@ -131,10 +140,11 @@ const Login = () => {
               <FcGoogle />
             </button>
             <button
+            onClick={handleGithubLogin}
               type="button"
               className="border border-gray-300 rounded p-2 hover:bg-gray-100 transition"
             >
-              <FaApple />
+              <FaGithub />
             </button>
           </div>
         </div>

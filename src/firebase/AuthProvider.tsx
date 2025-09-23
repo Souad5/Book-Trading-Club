@@ -1,7 +1,14 @@
 // AuthProvider.tsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 import type { User } from "firebase/auth";
-import { observeAuth, signInWithEmail, signUp, logOut, signInWithGoogle as googleLogin } from "./authService";
+import {
+  observeAuth,
+  signInWithEmail,
+  signUp,
+  logOut,
+  signInWithGoogle as googleLogin,
+  signInWithGithub as githubLogin,   // 👈 import GitHub login
+} from "./authService";
 
 export type AuthContextType = {
   user: User | null;
@@ -10,6 +17,7 @@ export type AuthContextType = {
   signUpUser: (email: string, password: string) => Promise<User>;
   signOutUser: () => Promise<void>;
   signInWithGoogle: () => Promise<User>;
+  signInWithGithub: () => Promise<User>;   // 👈 add here
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -26,13 +34,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return unsubscribe;
   }, []);
 
-  const signInUser = async (email: string, password: string) => await signInWithEmail(email, password);
-  const signUpUser = async (email: string, password: string) => await signUp(email, password);
-  const signOutUser = async () => await logOut();
-  const signInWithGoogle = async () => await googleLogin();
+  const signInUser = (email: string, password: string) => signInWithEmail(email, password);
+  const signUpUser = (email: string, password: string) => signUp(email, password);
+  const signOutUser = () => logOut();
+  const signInWithGoogle = () => googleLogin();
+  const signInWithGithub = () => githubLogin();   // 👈 define function
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInUser, signUpUser, signOutUser, signInWithGoogle }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signInUser,
+        signUpUser,
+        signOutUser,
+        signInWithGoogle,
+        signInWithGithub,   // 👈 provide it to context
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
