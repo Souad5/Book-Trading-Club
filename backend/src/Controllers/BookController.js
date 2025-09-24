@@ -10,9 +10,16 @@ export const GetAllBooks = async (req, res) => {
   }
 };
 
-export const CreateBook = (req, res) => {
-  const body = req.body;
-  res.status(201).json({ message: 'Book Post request working', body });
+export const CreateBook = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    const newBook = new Book({ title, content });
+    await newBook.save();
+    res.status(201).json({message: "Book Created Successfully", book: newBook});
+  } catch (error) {
+    console.error("Error in CreateBook:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 export const UpdateBook = (req, res) => {
