@@ -1,5 +1,13 @@
-export const GetAllBooks = (req, res) => {
-  res.status(200).json({ message: 'Book Get Request Working' });
+import Book from '../Models/Book.js';
+
+export const GetAllBooks = async (req, res) => {
+  try {
+    const books = await Book.find();
+    res.status(200).json(books);
+  } catch (error) {
+    console.error('Error in GetAllBooks:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
 
 export const CreateBook = (req, res) => {
