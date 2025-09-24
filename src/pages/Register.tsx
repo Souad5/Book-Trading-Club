@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaBook, FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "../firebase/AuthProvider"; // make sure path is correct
+import { useNavigate } from "react-router-dom";
 
 interface FormData {
   name: string;
@@ -19,21 +21,10 @@ const Register: React.FC = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // 🔹 Hide Sign Up button from Navbar when on Register page
-  useEffect(() => {
-    const signupBtn = document.querySelector("a[href='/register']");
-    if (signupBtn) {
-      (signupBtn as HTMLElement).style.display = "none";
-    }
-
-    return () => {
-      if (signupBtn) {
-        (signupBtn as HTMLElement).style.display = "inline-block";
-      }
-    };
-  }, []);
+  const { signUpUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -54,15 +45,24 @@ const Register: React.FC = () => {
     return newErrors;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-    } else {
-      setErrors({});
-      setSubmitted(true);
-      console.log("✅ User Registered:", formData);
+      return;
+    }
+    setErrors({});
+    setLoading(true);
+
+    try {
+      await signUpUser(formData.email, formData.password);
+      alert("🎉 Registration Successful!");
+      navigate("/login"); // redirect to login after registration
+    } catch (error: any) {
+      alert(`Registration Failed: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,7 +74,7 @@ const Register: React.FC = () => {
           <FaBook size={90} className="mb-6" />
           <h2 className="text-3xl font-bold text-center">Book Trading Club</h2>
           <p className="text-center mt-3 opacity-90">
-            Swap, sell, share, or find an investor for your next masterpiece. 
+            Swap, sell, share, or find an investor for your next masterpiece.
             Turn your books into opportunities!
           </p>
         </div>
@@ -179,20 +179,14 @@ const Register: React.FC = () => {
             </div>
 
             {/* Submit */}
-            <button className="btn w-full rounded-lg text-lg font-semibold tracking-wide bg-emerald-600 hover:bg-emerald-700 border-none text-white shadow-md">
-              Register
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn w-full rounded-lg text-lg font-semibold tracking-wide bg-emerald-600 hover:bg-emerald-700 border-none text-white shadow-md disabled:opacity-50"
+            >
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
-
-          {/* Success Message */}
-          {submitted && (
-            <div className="mt-6 p-5 bg-green-500 text-white rounded-lg shadow-md">
-              <h3 className="font-bold text-lg">🎉 Registration Successful</h3>
-              <p>Name: {formData.name}</p>
-              <p>Email: {formData.email}</p>
-              <p>Favorite Genre: {formData.genre}</p>
-            </div>
-          )}
         </div>
       </div>
     </div>
