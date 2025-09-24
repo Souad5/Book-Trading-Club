@@ -35,11 +35,13 @@ export default function Navbar() {
             {isAuthenticated && (
               <Link
                 to="/add-book"
-                className="hidden md:inline-flex btn-primary gap-2"
+                className="hidden md:inline-flex btn-primary bg-black gap-2"
               >
                 <FiPlus />
                 <span>Add Book</span>
+                
               </Link>
+              
             )}
           </div>
 
