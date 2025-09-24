@@ -10,15 +10,31 @@ export const GetAllBooks = async (req, res) => {
   }
 };
 
+export const GetBookById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const book = await Book.findById(id);
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+    res.status(200).json(book);
+  } catch (error) {
+    console.error('Error in GetBookById:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 export const CreateBook = async (req, res) => {
   try {
     const { title, content } = req.body;
     const newBook = new Book({ title, content });
     await newBook.save();
-    res.status(201).json({message: "Book Created Successfully", book: newBook});
+    res
+      .status(201)
+      .json({ message: 'Book Created Successfully', book: newBook });
   } catch (error) {
-    console.error("Error in CreateBook:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    console.error('Error in CreateBook:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -30,9 +46,16 @@ export const UpdateBook = (req, res) => {
     .json({ message: `Book Put request working for id: ${id}`, body: body });
 };
 
-export const DeleteBook = (req, res) => {
+export const DeleteBook = async (req, res) => {
   const { id } = req.params;
-  res
-    .status(201)
-    .json({ message: `Book Delete request working for id: ${id}` });
+  try {
+    const BookDelete = await Book.findByIdAndDelete(id);
+    if (!BookDelete) {
+      return res.status(404).json({ message: 'Book not found' });
+    }
+    res.status(200).json({ message: 'Book Deleted Successfully' });
+  } catch (error) {
+    console.error('Error in DeleteBook:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
