@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { FiBell, FiHeart, FiMail, FiPlus, FiUser } from "react-icons/fi";
+import { FiBell, FiHeart, FiMail, FiPlus,  } from "react-icons/fi";
 import NavLogo from "./NavLogo";
 import SearchBar from "./SearchBar";
 import NavLinks from "./NavLinks";
