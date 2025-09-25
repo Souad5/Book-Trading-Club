@@ -10,7 +10,7 @@ import { useAuth } from "./../../firebase/AuthProvider"; // use auth context
 export default function Navbar() {
   const { user, signOutUser } = useAuth(); // get auth state and logout
   const [mobileOpen, setMobileOpen] = useState(false);
- console.log(user?.email); // Logs email if user exists, otherwise undefined
+//  console.log(user?.email); // Logs email if user exists, otherwise undefined
 
 
   // Handle logout
