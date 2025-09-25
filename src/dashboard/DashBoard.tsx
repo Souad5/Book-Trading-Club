@@ -1,5 +1,5 @@
 import { useState } from "react";
-import AdminDashboard from "../dashboard/AdminDashboard";
+import AdminDashboard from "./Admin/AdminDashboard";
 // import UserDashboard from "../dashboard/UserDashboard";
 
 function Dashboard() {
