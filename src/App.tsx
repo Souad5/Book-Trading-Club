@@ -4,8 +4,12 @@ import Footer from './components/layout/Footer'
 import Home from './pages/Home'
 import Browse from './pages/Browse'
 import HowItWorks from './pages/HowItWorks'
-import About from './pages/About'
-import AdminDashboard from './dashboard/AdminDashboard'
+import Register from "./pages/Register"
+import BookDetails from './pages/BookDetails'
+import ForgotPassword from './Component/ForgotPassword'
+import Login from './Component/Login'
+import Dashboard from './dashboard/DashBoard'
+import AdminDashboard from './dashboard/Admin/AdminDashboard'
 
 function App() {
   return (
@@ -14,10 +18,15 @@ function App() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/book/:id" element={<BookDetails />} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/about" element={<About/>} />
-          <Route path="/admin-dashboard" element={<AdminDashboard/>} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forget" element={<ForgotPassword />} />
+
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/adminDashboard" element={<AdminDashboard />} />
         </Routes>
       </main>
       <Footer />
