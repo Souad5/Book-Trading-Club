@@ -32,17 +32,7 @@ export default function Navbar() {
           {/* Left: Logo and optional primary CTA */}
           <div className="flex items-center gap-3">
             <NavLogo />
-            {isAuthenticated && (
-              <Link
-                to="/add-book"
-                className="hidden md:inline-flex btn-primary bg-black gap-2"
-              >
-                <FiPlus />
-                <span>Add Book</span>
-                
-              </Link>
-              
-            )}
+            
           </div>
 
           {/* Center: Search on desktop for auth users */}
