@@ -1,10 +1,10 @@
 import type { FC } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom"; // Make sure this is imported
 import {
   Package,
   ShoppingCart,
   BarChart3,
-  
   PlusCircle,
   MessageSquare,
   Settings,
@@ -17,24 +17,47 @@ const SellerDashboard: FC = () => {
       <aside className="w-64 bg-indigo-700 text-white flex flex-col p-6">
         <h1 className="text-2xl font-bold mb-10">Seller Dashboard</h1>
         <nav className="space-y-4">
-          <a href="#" className="flex items-center gap-2 hover:text-gray-200">
+          <Link
+            to="/listings"
+            className="flex items-center gap-2 hover:text-gray-200"
+          >
             <Package size={20} /> My Listings
-          </a>
-          <a href="#" className="flex items-center gap-2 hover:text-gray-200">
-            <PlusCircle size={20} /> Add New Book
-          </a>
-          <a href="#" className="flex items-center gap-2 hover:text-gray-200">
+          </Link>
+
+          <Link
+            to="/add-book"
+            className="flex items-center gap-2 hover:text-gray-200"
+          >
+            <PlusCircle size={20} /> Add Book
+          </Link>
+
+          <Link
+            to="/orders"
+            className="flex items-center gap-2 hover:text-gray-200"
+          >
             <ShoppingCart size={20} /> Orders
-          </a>
-          <a href="#" className="flex items-center gap-2 hover:text-gray-200">
+          </Link>
+
+          <Link
+            to="/requests"
+            className="flex items-center gap-2 hover:text-gray-200"
+          >
             <MessageSquare size={20} /> Buyer Requests
-          </a>
-          <a href="#" className="flex items-center gap-2 hover:text-gray-200">
+          </Link>
+
+          <Link
+            to="/analytics"
+            className="flex items-center gap-2 hover:text-gray-200"
+          >
             <BarChart3 size={20} /> Analytics
-          </a>
-          <a href="#" className="flex items-center gap-2 hover:text-gray-200">
+          </Link>
+
+          <Link
+            to="/settings"
+            className="flex items-center gap-2 hover:text-gray-200"
+          >
             <Settings size={20} /> Settings
-          </a>
+          </Link>
         </nav>
       </aside>
 
@@ -92,12 +115,12 @@ const SellerDashboard: FC = () => {
 
         {/* Quick Action */}
         <div className="mt-10 flex justify-center">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            className="bg-indigo-600 text-white px-6 py-3 rounded-xl shadow-md font-medium flex items-center gap-2"
+          <Link
+            to="/add-book"
+            className="bg-indigo-600 text-white px-6 py-3 rounded-xl shadow-md font-medium flex items-center gap-2 hover:opacity-90 transition"
           >
             <PlusCircle size={20} /> Add New Book
-          </motion.button>
+          </Link>
         </div>
       </main>
     </div>

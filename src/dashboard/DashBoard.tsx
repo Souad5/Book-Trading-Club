@@ -9,7 +9,7 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sand-50 via-sand-100 to-sand-200 p-8">
       {/* Title */}
-      <h1 className="text-4xl font-extrabold text-center text-soil-800 mb-10 drop-shadow-sm">
+      <h1 className="text-4xl font-extrabold text-center text-soil-600 mb-10 drop-shadow-sm">
         Dashboard
       </h1>
 
