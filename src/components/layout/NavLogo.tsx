@@ -1,4 +1,4 @@
-import {Link} from "react-router"
+import {Link} from "react-router-dom"
 export default function NavLogo() {
   return (
     <Link to="/" className="flex items-center gap-2">
