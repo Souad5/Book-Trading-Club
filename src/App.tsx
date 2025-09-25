@@ -10,6 +10,7 @@ import ForgotPassword from './Component/ForgotPassword'
 import Login from './Component/Login'
 import Dashboard from './dashboard/DashBoard'
 import AdminDashboard from './dashboard/Admin/AdminDashboard'
+import AddNewBook from './components/Section/AddNewBook'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
 
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/adminDashboard" element={<AdminDashboard />} />
+          <Route path="/add-book" element={<AddNewBook />} />
         </Routes>
       </main>
       <Footer />

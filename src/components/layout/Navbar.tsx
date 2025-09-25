@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { FiBell, FiHeart, FiMail, FiPlus, FiUser } from "react-icons/fi";
+import { FiBell, FiHeart, FiMail, FiPlus,  } from "react-icons/fi";
 import NavLogo from "./NavLogo";
 import SearchBar from "./SearchBar";
 import NavLinks from "./NavLinks";
@@ -32,17 +32,7 @@ export default function Navbar() {
           {/* Left: Logo and optional primary CTA */}
           <div className="flex items-center gap-3">
             <NavLogo />
-            {isAuthenticated && (
-              <Link
-                to="/add-book"
-                className="hidden md:inline-flex btn-primary bg-black gap-2"
-              >
-                <FiPlus />
-                <span>Add Book</span>
-                
-              </Link>
-              
-            )}
+            
           </div>
 
           {/* Center: Search on desktop for auth users */}
