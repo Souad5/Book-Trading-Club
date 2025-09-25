@@ -1,7 +1,7 @@
 import { useState } from "react";
 import AdminDashboard from "./Admin/AdminDashboard";
+import SellerDashboard from "./Seller/SellerDashboard";
 // import UserDashboard from "../dashboard/UserDashboard";
-// import SellerDashboard from "../dashboard/SellerDashboard";
 
 function Dashboard() {
   const [role, setRole] = useState<"user" | "seller" | "admin">("user");
@@ -60,14 +60,7 @@ function Dashboard() {
             </p>
           </div>
         )}
-        {role === "seller" && (
-          <div className="text-center text-soil-700">
-            <h2 className="text-2xl font-semibold mb-4">Welcome Seller 🛍️</h2>
-            <p className="text-soil-500">
-              Manage your listings, check buyer requests, and track sales here.
-            </p>
-          </div>
-        )}
+        {role === "seller" && <SellerDashboard />}
       </div>
     </div>
   );
