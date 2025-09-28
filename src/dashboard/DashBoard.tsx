@@ -1,66 +1,158 @@
 import { useState } from "react";
+import {
+  FiHome,
+  FiBook,
+  FiRepeat,
+  FiHeart,
+  FiSettings,
+  FiPackage,
+  FiShoppingCart,
+  FiBarChart2,
+  FiPlusCircle,
+  FiMessageSquare,
+} from "react-icons/fi";
 import AdminDashboard from "./Admin/AdminDashboard";
 import SellerDashboard from "./Seller/SellerDashboard";
-// import UserDashboard from "../dashboard/UserDashboard";
+import UserDashboard from "./User/UserDashboard";
+import { Link } from "react-router";
 
 function Dashboard() {
   const [role, setRole] = useState<"user" | "seller" | "admin">("user");
+  const [activeItem, setActiveItem] = useState("Overview");
+
+  const getSidebarItems = () => {
+    if (role === "admin") {
+      return [
+        { name: "Overview", icon: <FiHome /> },
+        { name: "Manage Users", icon: <FiBook /> },
+        { name: "Reports", icon: <FiBarChart2 /> },
+        { name: "Settings", icon: <FiSettings /> },
+      ];
+    }
+
+    if (role === "seller") {
+      return [
+        { name: "Overview", icon: <FiHome /> },
+        { name: "My Listings", icon: <FiPackage /> },
+        { name: "Add Book", icon: <FiPlusCircle />, link: "/add-book" },
+        { name: "Orders", icon: <FiShoppingCart /> },
+        { name: "Buyer Requests", icon: <FiMessageSquare /> },
+        { name: "Analytics", icon: <FiBarChart2 /> },
+        { name: "Settings", icon: <FiSettings /> },
+      ];
+    }
+
+    // Default for "user"
+    return [
+      { name: "Overview", icon: <FiHome /> },
+      { name: "My Books", icon: <FiBook /> },
+      { name: "My Trades", icon: <FiRepeat /> },
+      { name: "Wishlist", icon: <FiHeart /> },
+      { name: "Settings", icon: <FiSettings /> },
+    ];
+  };
+
+  const sidebarItems = getSidebarItems();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sand-50 via-sand-100 to-sand-200 p-8">
-      {/* Title */}
-      <h1 className="text-4xl font-extrabold text-center text-soil-600 mb-10 drop-shadow-sm">
-        Dashboard
-      </h1>
-
-      {/* Role Switcher */}
-      <div className="flex justify-center mb-10">
-        <div className="inline-flex rounded-xl shadow-md overflow-hidden border border-sand-300 bg-white">
-          <button
-            onClick={() => setRole("user")}
-            className={`px-6 py-2 font-medium transition ${
-              role === "user"
-                ? "bg-leaf-500 text-white"
-                : "text-soil-700 hover:bg-sand-100"
-            }`}
-          >
-            User
-          </button>
-          <button
-            onClick={() => setRole("seller")}
-            className={`px-6 py-2 font-medium transition ${
-              role === "seller"
-                ? "bg-sand-500 text-white"
-                : "text-soil-700 hover:bg-sand-100"
-            }`}
-          >
-            Seller
-          </button>
-          <button
-            onClick={() => setRole("admin")}
-            className={`px-6 py-2 font-medium transition ${
-              role === "admin"
-                ? "bg-soil-600 text-white"
-                : "text-soil-700 hover:bg-sand-100"
-            }`}
-          >
-            Admin
-          </button>
+    <div className="flex min-h-screen ">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gradient-to-b from-blue-600 to-indigo-700 text-white shadow-lg flex flex-col">
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-8 tracking-wide">ShelfShare</h2>
+          <nav className="flex flex-col gap-2">
+            {sidebarItems.map((item) =>
+              item.link ? (
+                <Link
+                  to={item.link}
+                  key={item.name}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    activeItem === item.name
+                      ? "bg-white text-black bg-opacity-20 shadow-md"
+                      : "hover:bg-white hover:text-black hover:bg-opacity-10"
+                  }`}
+                >
+                  <span className="text-lg">{item.icon}</span>
+                  <span className="font-medium">{item.name}</span>
+                </Link>
+              ) : (
+                <button
+                  key={item.name}
+                  onClick={() => setActiveItem(item.name)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    activeItem === item.name
+                      ? "bg-white text-black bg-opacity-20 shadow-md"
+                      : "hover:bg-white hover:text-black hover:bg-opacity-10"
+                  }`}
+                >
+                  <span className="text-lg">{item.icon}</span>
+                  <span className="font-medium">{item.name}</span>
+                </button>
+              )
+            )}
+          </nav>
         </div>
-      </div>
+      </aside>
 
-      {/* Dashboard Content */}
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-8">
-        {role === "admin" && <AdminDashboard />}
-        {role === "user" && (
-          <div className="text-center text-soil-700">
-            <h2 className="text-2xl font-semibold mb-4">Welcome User 👤</h2>
-            <p className="text-soil-500">
-              Here you can see your books, trades, and wishlist.
-            </p>
+      {/* Main Content */}
+      <div className="flex-1 p-8">
+        {/* Role Switcher */}
+        <div className="flex justify-center mb-8">
+          <div className="inline-flex rounded-full shadow-lg overflow-hidden border border-gray-300 bg-white">
+            {["user", "seller", "admin"].map((r) => (
+              <button
+                key={r}
+                onClick={() => setRole(r as any)}
+                className={`px-8 py-3 font-medium transition-colors duration-300 ${
+                  role === r
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg"
+                    : "text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </button>
+            ))}
           </div>
-        )}
-        {role === "seller" && <SellerDashboard />}
+        </div>
+
+        {/* Dashboard View */}
+        <div className="bg-white rounded-2xl shadow-xl p-8 animate-fadeIn">
+          {role === "admin" && (
+            <div>
+              <h2 className="text-3xl font-bold mb-4 text-gradient">
+                Welcome, Admin 👑
+              </h2>
+              <p className="text-gray-600 ">
+                Here you can manage users, view reports, and configure settings.
+              </p>
+              <AdminDashboard />
+            </div>
+          )}
+
+          {role === "user" && (
+            <div>
+              <h2 className="text-3xl font-bold mb-4 text-gradient">
+                Welcome, User 👤
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Here you can view your books, trades, and wishlist.
+              </p>
+              <UserDashboard></UserDashboard>
+            </div>
+          )}
+
+          {role === "seller" && (
+            <div>
+              <h2 className="text-3xl font-bold mb-4 text-gradient">
+                Welcome, Seller 🛒
+              </h2>
+              <p className="text-gray-600">
+                Manage your book listings, view orders, and track analytics.
+              </p>
+              <SellerDashboard />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
