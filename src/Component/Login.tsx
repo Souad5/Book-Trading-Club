@@ -4,6 +4,7 @@ import { FaEye, FaEyeSlash,FaGithub, FaFacebookF} from "react-icons/fa";
 import picture from "../assests/photo/login-image.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../firebase/AuthProvider"; // use context for auth
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,10 +22,10 @@ const Login = () => {
     setLoading(true);
     try {
       await signInUser(email, password);
-      alert("✅ Login successful");
+      toast.success("✅ Login successful");
       navigate("/dashboard");
     } catch (error: any) {
-      alert(`Login failed: ${error.message}`);
+      toast.error(`Login failed: ${error.message}`);
     } finally {
       setLoading(false);
     }
