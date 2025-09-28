@@ -1,23 +1,25 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { FiBell, FiHeart, FiMail, FiPlus } from "react-icons/fi";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { FiPlus, FiLogOut, FiSun } from "react-icons/fi";
 import NavLogo from "./NavLogo";
 import SearchBar from "./SearchBar";
-// import NavLinks from "./NavLinks";
 import UserMenu from "./UserMenu";
 import { useAuth } from "./../../firebase/AuthProvider";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const { user, signOutUser } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Logout handler
   const handleLogout = async () => {
     try {
       await signOutUser();
-      alert("Logged out successfully");
+      toast.success("Logged out successfully");
+      navigate("/"); // redirect to homepage after logout
     } catch (error: any) {
-      alert(`Logout failed: ${error.message}`);
+      toast.error(`Logout failed: ${error.message}`);
     }
   };
 
@@ -66,24 +68,32 @@ export default function Navbar() {
 
           {/* Right: Auth actions */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Theme toggle button */}
-            <label className="flex items-center cursor-pointer">
-              <div className="relative">
-                <input type="checkbox" className="sr-only" />
-                <div className="w-10 h-4 bg-gray-300 rounded-full shadow-inner"></div>
-                <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
-              </div>
-              <span className="ml-2 text-sm text-gray-700"></span>
-            </label>
-
             {!isAuthenticated ? (
-              <div className="flex items-center gap-2">
-                <UserMenu />
-              </div>
+              <>
+                <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition">
+                  <FiSun className="h-5 w-5 text-orange-500" />
+                </button>
+                <NavLink to="/login" className="btn-link">
+                  Login
+                </NavLink>
+                <NavLink
+                  to="/register"
+                  className="btn-primary bg-leaf-600 text-white hover:bg-leaf-700"
+                >
+                  Sign Up
+                </NavLink>
+              </>
             ) : (
-              <div className="flex items-center gap-3">
-                <UserMenu />
-              </div>
+              <>
+                <div className="flex items-center gap-4">
+                  <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition">
+                    <FiSun className="h-5 w-5 text-orange-500" />
+                  </button>
+
+                  {/* User Menu */}
+                  <UserMenu />
+                </div>
+              </>
             )}
           </div>
 
@@ -133,6 +143,12 @@ export default function Navbar() {
                 <FiPlus />
                 <span>Add Book</span>
               </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-100 transition"
+              >
+                <FiLogOut /> Logout
+              </button>
             </>
           ) : (
             <div className="flex items-center gap-3 mt-3">
