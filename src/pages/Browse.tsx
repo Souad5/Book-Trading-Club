@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import { Link, useSearchParams } from "react-router-dom";
 import { useMemo } from "react";
 type Book = {
