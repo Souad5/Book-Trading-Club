@@ -279,6 +279,14 @@ export default function Browse() {
               </span>
             </div>
 
+             {/* Details link */}
+             <Link
+               to={`/book/${book.id}`}
+               className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+             >
+               View Details →
+             </Link>
+
            </article></Link>
         ))}
       </div>
