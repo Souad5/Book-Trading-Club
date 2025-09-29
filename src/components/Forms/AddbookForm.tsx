@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import FileInput from './Input';
 
 const AddBookForm = () => {
   const [title, setTitle] = useState<string>('');
@@ -26,8 +27,8 @@ const AddBookForm = () => {
     const uploaded = await res.json();
     const url = uploaded.secure_url || uploaded.url;
     if (!url) throw new Error('No URL returned from Cloudinary');
-    console.log(ImageURL);
-    setImageURL(url);
+    setImageURL(uploaded.secure_url || uploaded.url);
+    await console.log(ImageURL);
     if (!file) return toast.error('Please upload a cover image.');
     console.log({
       title,
@@ -127,7 +128,7 @@ const AddBookForm = () => {
         </div>
 
         {/* Cover Image */}
-        <div>
+        {/* <div>
           <label className="block text-gray-700 font-medium mb-1">
             Cover Image
           </label>
@@ -139,7 +140,13 @@ const AddBookForm = () => {
               setCover(e.target.files ? e.target.files[0] : null)
             }
           />
-        </div>
+        </div> */}
+        <FileInput
+          label="Cover Image"
+          accept="image/*"
+          onSelect={(file) => setCover(file)}
+          fileName={cover?.name}
+        />
 
         {/* Submit Button */}
         <motion.button
