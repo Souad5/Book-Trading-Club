@@ -197,6 +197,7 @@ export default function Home() {
                       {b.genre}
                     </span>
                   </div>
+                  <span className="mt-4 inline-block text-sm text-blue-600 hover:underline">View Details →</span>
                 </Link>
               </article>
             ))}
