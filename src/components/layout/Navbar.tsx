@@ -1,72 +1,99 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
-import { FiBell, FiHeart, FiMail, FiPlus, FiUser } from 'react-icons/fi'
-import NavLogo from './NavLogo'
-import SearchBar from './SearchBar'
-import NavLinks from './NavLinks'
-import UserMenu from './UserMenu'
+import { useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { FiPlus, FiLogOut, FiSun } from "react-icons/fi";
+import NavLogo from "./NavLogo";
+import SearchBar from "./SearchBar";
+import UserMenu from "./UserMenu";
+import { useAuth } from "./../../firebase/AuthProvider";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
-  // TODO: Replace with real auth state
-  const [isAuthenticated] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const { user, signOutUser } = useAuth();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      await signOutUser();
+      toast.success("Logged out successfully");
+      navigate("/"); // redirect to homepage after logout
+    } catch (error: any) {
+      toast.error(`Logout failed: ${error.message}`);
+    }
+  };
+
+  const isAuthenticated = !!user;
+
+  // Helper for active NavLink
+  const linkClasses = ({ isActive }: { isActive: boolean }) =>
+    `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+      isActive
+        ? "text-leaf-700 bg-leaf-100"
+        : "text-gray-700 hover:text-leaf-700 hover:bg-gray-100"
+    }`;
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-sand-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Left: Logo and optional primary CTA */}
-          <div className="flex items-center gap-3">
+          {/* Left: Logo */}
+          <div className="flex items-center gap-2">
             <NavLogo />
-            {isAuthenticated && (
-              <Link to="/add-book" className="hidden md:inline-flex btn-primary gap-2">
-                <FiPlus />
-                <span>Add Book</span>
-              </Link>
-            )}
           </div>
 
-          {/* Center: Search on desktop for auth users */}
-          <div className="hidden md:flex flex-1 px-6">
-            {isAuthenticated ? (
-              <div className="w-full max-w-2xl mx-auto">
+          {/* Center: Navigation + Search */}
+          <div className="hidden md:flex flex-1 px-6 items-center justify-center gap-6">
+            <nav className="flex gap-4">
+              <NavLink to="/" className={linkClasses}>
+                Home
+              </NavLink>
+              <NavLink to="/browse" className={linkClasses}>
+                Browse
+              </NavLink>
+              <NavLink to="/about" className={linkClasses}>
+                About
+              </NavLink>
+              <NavLink to="/contact" className={linkClasses}>
+                Contact
+              </NavLink>
+            </nav>
+
+            {isAuthenticated && (
+              <div className="w-full max-w-lg ml-6">
                 <SearchBar />
               </div>
-            ) : (
-              <nav className="mx-auto">
-                <NavLinks isAuthenticated={false} orientation="horizontal" />
-              </nav>
             )}
           </div>
 
-          {/* Right: Auth actions or icon menu */}
+          {/* Right: Auth actions */}
           <div className="hidden md:flex items-center gap-3">
             {!isAuthenticated ? (
-              <div className="flex items-center gap-3">
-                <NavLink to="/login" className="btn-link">Login</NavLink>
-                <NavLink to="/signup" className="btn-primary">Sign Up</NavLink>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <NavLink to="/wishlist" className="p-2 rounded hover:bg-sand-100" aria-label="Wishlist">
-                  <span className="relative inline-flex">
-                    <FiHeart className="h-5 w-5" />
-                  </span>
-                </NavLink>
-                <NavLink to="/messages" className="p-2 rounded hover:bg-sand-100" aria-label="Messages">
-                  <span className="relative inline-flex">
-                    <FiMail className="h-5 w-5" />
-                    <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-leaf-600 px-1 text-[10px] text-white">3</span>
-                  </span>
-                </NavLink>
-                <button className="p-2 rounded hover:bg-sand-100" aria-label="Notifications">
-                  <span className="relative inline-flex">
-                    <FiBell className="h-5 w-5" />
-                    <span className="absolute -top-1 -right-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-leaf-600 px-1 text-[10px] text-white">5</span>
-                  </span>
+              <>
+                <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition">
+                  <FiSun className="h-5 w-5 text-orange-500" />
                 </button>
-                <UserMenu />
-              </div>
+                <NavLink to="/login" className="btn-link">
+                  Login
+                </NavLink>
+                <NavLink
+                  to="/register"
+                  className="btn-primary bg-leaf-600 text-white hover:bg-leaf-700"
+                >
+                  Sign Up
+                </NavLink>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-4">
+                  <button className="p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition">
+                    <FiSun className="h-5 w-5 text-orange-500" />
+                  </button>
+
+                  {/* User Menu */}
+                  <UserMenu />
+                </div>
+              </>
             )}
           </div>
 
@@ -76,67 +103,73 @@ export default function Navbar() {
             className="md:hidden p-2 rounded hover:bg-sand-100"
             onClick={() => setMobileOpen((v) => !v)}
           >
-            <span className="sr-only">Toggle menu</span>
-            <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              className="h-6 w-6"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M3 6h18M3 12h18M3 18h18" />
             </svg>
           </button>
         </div>
       </div>
 
-      {/* Mobile panel */}
+      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-sand-200 bg-white">
-          <div className="px-4 py-3">
-            {isAuthenticated ? (
-              <div className="space-y-3">
-                <Link to="/add-book" className="btn-primary w-full inline-flex gap-2">
-                  <FiPlus />
-                  <span>Add Book</span>
-                </Link>
-                <div>
-                  <SearchBar />
-                </div>
-                <div className="grid grid-cols-3 gap-2">
-                  <NavLink to="/wishlist" className="p-2 rounded bg-sand-100 text-center">
-                    <FiHeart className="mx-auto" />
-                    <span className="text-sm">Wishlist</span>
-                  </NavLink>
-                  <NavLink to="/messages" className="p-2 rounded bg-sand-100 text-center">
-                    <FiMail className="mx-auto" />
-                    <span className="text-sm">Messages</span>
-                  </NavLink>
-                  <button className="p-2 rounded bg-sand-100 text-center w-full">
-                    <FiBell className="mx-auto" />
-                    <span className="text-sm">Alerts</span>
-                  </button>
-                </div>
-                <div className="flex items-center gap-2 pt-2">
-                  <FiUser />
-                  <span className="font-medium">Account</span>
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <Link to="/dashboard" className="btn-link">Dashboard</Link>
-                  <Link to="/profile" className="btn-link">My Profile</Link>
-                  <Link to="/trades" className="btn-link">Trade History</Link>
-                  <Link to="/settings" className="btn-link">Settings</Link>
-                  <button className="btn-link text-left">Logout</button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <NavLinks isAuthenticated={false} orientation="vertical" />
-                <div className="flex items-center gap-3">
-                  <NavLink to="/login" className="btn-link">Login</NavLink>
-                  <NavLink to="/signup" className="btn-primary">Sign Up</NavLink>
-                </div>
-              </div>
-            )}
-          </div>
+        <div className="md:hidden border-t border-sand-200 bg-white px-4 py-4 space-y-2">
+          {isAuthenticated && (
+            <div className="w-full mb-2">
+              <SearchBar />
+            </div>
+          )}
+          <NavLink to="/" className={linkClasses}>
+            Home
+          </NavLink>
+          <NavLink to="/browse" className={linkClasses}>
+            Browse
+          </NavLink>
+          <NavLink to="/about" className={linkClasses}>
+            About
+          </NavLink>
+          <NavLink to="/contact" className={linkClasses}>
+            Contact
+          </NavLink>
+
+          {isAuthenticated ? (
+            <>
+              <Link
+                to="/add-book"
+                className="btn-primary w-full inline-flex gap-2 items-center justify-center mt-3 bg-leaf-600 text-white hover:bg-leaf-700"
+              >
+                <FiPlus />
+                <span>Add Book</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-100 transition"
+              >
+                <FiLogOut /> Logout
+              </button>
+            </>
+          ) : (
+            <div className="flex items-center gap-3 mt-3">
+              <NavLink to="/login" className="btn-link">
+                Login
+              </NavLink>
+              <NavLink
+                to="/register"
+                className="btn-primary bg-leaf-600 text-white hover:bg-leaf-700"
+              >
+                Sign Up
+              </NavLink>
+            </div>
+          )}
         </div>
       )}
     </header>
-  )
+  );
 }
-
-
