@@ -13,7 +13,7 @@ type Book = {
   genre: string;
   image: string;
 };
-const DEMO_BOOKS: Book[] = [
+export const DEMO_BOOKS: Book[] = [
   {
     id: "1",
     title: "The Alchemist",
