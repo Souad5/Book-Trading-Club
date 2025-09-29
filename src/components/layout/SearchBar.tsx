@@ -1,12 +1,19 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FiSearch } from 'react-icons/fi'
 
 export default function SearchBar() {
   const [query, setQuery] = useState('')
+  const navigate = useNavigate()
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO: implement navigate to search results
+    const q = query.trim()
+    if (q.length > 0) {
+      navigate(`/browse?query=${encodeURIComponent(q)}`)
+    } else {
+      navigate('/browse')
+    }
   }
 
   return (

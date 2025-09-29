@@ -128,19 +128,6 @@ const AddBookForm = () => {
         </div>
 
         {/* Cover Image */}
-        {/* <div>
-          <label className="block text-gray-700 font-medium mb-1">
-            Cover Image
-          </label>
-          <input
-            className="w-full border border-gray-300 rounded-lg p-1 focus:ring-2 focus:ring-leaf-400 outline-none"
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setCover(e.target.files ? e.target.files[0] : null)
-            }
-          />
-        </div> */}
         <FileInput
           label="Cover Image"
           accept="image/*"

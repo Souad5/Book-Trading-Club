@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import { useMemo } from "react";
+
 type Book = {
   id: string;
   title: string;
@@ -12,7 +14,8 @@ type Book = {
   genre: string;
   image: string;
 };
-const DEMO_BOOKS: Book[] = [
+
+export const DEMO_BOOKS: Book[] = [
   {
     id: "1",
     title: "The Alchemist",
@@ -91,7 +94,6 @@ const DEMO_BOOKS: Book[] = [
     genre: "Technology",
     image: "https://i.postimg.cc/Z5QT8y71/image.png",
   },
-  
   {
     id: "7",
     title: "The Pragmatic Programmer",
@@ -211,8 +213,20 @@ const DEMO_BOOKS: Book[] = [
   },
 ];
 
-
 export default function Browse() {
+  const [searchParams] = useSearchParams();
+  const rawQuery = searchParams.get("query") || "";
+
+  const filtered = useMemo(() => {
+    const q = rawQuery.trim().toLowerCase();
+    if (q.length === 0) return DEMO_BOOKS;
+    return DEMO_BOOKS.filter((b) => {
+      const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(
+        " "
+      )}`.toLowerCase();
+      return haystack.includes(q);
+    });
+  }, [rawQuery]);
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
       <div className="rounded-2xl border border-sand-200 bg-gradient-to-br from-sand-50 via-white to-leaf-50 p-8 mb-6">
@@ -224,50 +238,59 @@ export default function Browse() {
         </p>
       </div>
 
+      {rawQuery && (
+        <p className="mb-4 text-sm text-sand-700">
+          Showing results for: <span className="font-medium">{rawQuery}</span>
+        </p>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {DEMO_BOOKS.map((book) => (
+        {filtered.length === 0 && (
+          <div className="col-span-full text-sand-700">
+            No books matched your search.
+          </div>
+        )}
+        {filtered.map((book) => (
+          <Link to={`/book/${book.id}`} key={book.id}>
+            <article className="rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow">
+              {/* Book image */}
+              <div className="h-40 w-full overflow-hidden rounded-md bg-sand-100/60">
+                <img
+                  src={book.image}
+                  alt={book.title}
+                  className="h-full w-full object-cover"
+                />
+              </div>
 
-          <Link to={`/book/${book.id}`}>
-          <article
-            key={book.id}
-            className="rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow"
-          >
-            {/* Book image */}
-            <div className="h-40 w-full overflow-hidden rounded-md bg-sand-100/60">
-              <img
-                src={book.image}
-                alt={book.title}
-                className="h-full w-full object-cover"
-              />
-            </div>
+              {/* Title + Author */}
+              <h3 className="mt-3 font-semibold text-soil-900">
+                {book.title}
+              </h3>
+              <p className="text-sm text-sand-700">
+                {book.author} · {book.language}
+              </p>
 
-            {/* Title + Author */}
-            <h3 className="mt-3 font-semibold text-soil-900">{book.title}</h3>
-            <p className="text-sm text-sand-700">
-              {book.author} · {book.language}
-            </p>
+              {/* Tags */}
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                <span className="rounded bg-sand-100 px-2 py-1">
+                  {book.location}
+                </span>
+                <span className="rounded bg-sand-100 px-2 py-1">
+                  {book.condition}
+                </span>
+                <span className="rounded bg-sand-100 px-2 py-1">
+                  {book.exchangeType}
+                </span>
+              </div>
 
-            {/* Tags */}
-            <div className="mt-3 flex flex-wrap gap-2 text-xs">
-              <span className="rounded bg-sand-100 px-2 py-1">
-                {book.location}
-              </span>
-              <span className="rounded bg-sand-100 px-2 py-1">
-                {book.condition}
-              </span>
-              <span className="rounded bg-sand-100 px-2 py-1">
-                {book.exchangeType}
-              </span>
-            </div>
-
-            {/* Details link */}
-            <Link
-              to={`/book/${book.id}`}
-              className="mt-4 inline-block text-sm text-blue-600 hover:underline"
-            >
-              View Details →
-            </Link>
-          </article></Link>
+              {/* Details link */}
+              <Link
+                to={`/book/${book.id}`}
+                className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+              >
+                View Details →
+              </Link>
+            </article>
+          </Link>
         ))}
       </div>
     </section>
