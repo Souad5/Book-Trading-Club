@@ -1,30 +1,56 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { toast } from "react-toastify";
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
+import FileInput from './Input';
 
 const AddBookForm = () => {
-  const [title, setTitle] = useState<string>("");
-  const [author, setAuthor] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
-  const [price, setPrice] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
+  const [title, setTitle] = useState<string>('');
+  const [author, setAuthor] = useState<string>('');
+  const [category, setCategory] = useState<string>('');
+  const [price, setPrice] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [ImageURL, setImageURL] = useState<string>('');
   const [cover, setCover] = useState<File | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ title, author, category, price, description, cover });
-     toast.success("Book added successfully!");
-        // Clear form
-     setTitle("");
-     setAuthor("");
-     setCategory("");
-     setPrice("");
-     setDescription("");
-     setCover(null);
+    const file = cover;
+    console.log(file);
+    const data = new FormData();
+    data.append('file', file as Blob);
+    data.append('upload_preset', 'Syntax_Surfers_cloudinary');
+    data.append('cloud_name', 'dbduiiimr');
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/dbduiiimr/image/upload',
+      { method: 'POST', body: data }
+    );
+    const uploaded = await res.json();
+    const url = uploaded.secure_url || uploaded.url;
+    if (!url) throw new Error('No URL returned from Cloudinary');
+    setImageURL(uploaded.secure_url || uploaded.url);
+    await console.log(ImageURL);
+    if (!file) return toast.error('Please upload a cover image.');
+    console.log({
+      title,
+      author,
+      category,
+      price,
+      description,
+      cover,
+      coverUrl: url,
+    });
+    toast.success('Book added successfully!');
+    // Clear form
+    setTitle('');
+    setAuthor('');
+    setCategory('');
+    setPrice('');
+    setDescription('');
+    setImageURL('');
+    setCover(null);
   };
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-2xl  px-8 pb-8 mt-10">
-      
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Title */}
         <div>
@@ -54,7 +80,9 @@ const AddBookForm = () => {
 
         {/* Category */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Category</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Category
+          </label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -71,7 +99,9 @@ const AddBookForm = () => {
 
         {/* Price */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Price ($)</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Price ($)
+          </label>
           <input
             type="number"
             value={price}
@@ -85,7 +115,9 @@ const AddBookForm = () => {
 
         {/* Description */}
         <div>
-          <label className="block text-gray-700 font-medium mb-1">Description</label>
+          <label className="block text-gray-700 font-medium mb-1">
+            Description
+          </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -96,15 +128,12 @@ const AddBookForm = () => {
         </div>
 
         {/* Cover Image */}
-        <div>
-          <label className="block text-gray-700 font-medium mb-1">Cover Image</label>
-          <input
-          className="w-full border border-gray-300 rounded-lg p-1 focus:ring-2 focus:ring-leaf-400 outline-none"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setCover(e.target.files ? e.target.files[0] : null)}
-          />
-        </div>
+        <FileInput
+          label="Cover Image"
+          accept="image/*"
+          onSelect={(file) => setCover(file)}
+          fileName={cover?.name}
+        />
 
         {/* Submit Button */}
         <motion.button

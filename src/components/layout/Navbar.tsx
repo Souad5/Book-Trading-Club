@@ -121,11 +121,6 @@ export default function Navbar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="md:hidden border-t border-sand-200 bg-white px-4 py-4 space-y-2">
-          {isAuthenticated && (
-            <div className="w-full mb-2">
-              <SearchBar />
-            </div>
-          )}
           <NavLink to="/" className={linkClasses}>
             Home
           </NavLink>
