@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import FileInput from './Input';
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
 
 const AddBookForm = () => {
   const [title, setTitle] = useState<string>('');
@@ -13,6 +14,7 @@ const AddBookForm = () => {
   const [cover, setCover] = useState<File | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const axiosSecure = UseAxiosSecure();
     e.preventDefault();
     const file = cover;
     console.log(file);
@@ -39,7 +41,22 @@ const AddBookForm = () => {
       cover,
       coverUrl: url,
     });
-    toast.success('Book added successfully!');
+    const newBook = {
+      title,
+      author,
+      category,
+      price,
+      description,
+      imageUrl: url,
+    };
+    console.log(newBook);
+    await axiosSecure
+      .post('/api/books', newBook)
+      .then(() => toast.success('Book added successfully!'))
+      .catch((err) => {
+        console.log(`❌ Error adding donation:`, err);
+      });
+
     // Clear form
     setTitle('');
     setAuthor('');
