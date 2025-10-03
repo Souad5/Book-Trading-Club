@@ -17,7 +17,7 @@ import Loader from './components/Shared Components/Loader.jsx';
 function App() {
   const { user, loading } = useContext(AuthContext);
   if (loading) return <Loader />;
-  console.log(user);
+  // console.log(user?.uid);
   return (
     <div className="min-h-full flex flex-col">
       <Navbar />

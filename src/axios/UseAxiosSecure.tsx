@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const axiosSecure = axios.create({
   baseURL: 'https://book-trading-club-backend.vercel.app/',
-  timeout: 1000,
+  timeout: 10000,
   headers: { 'X-Custom-Header': 'foobar' },
 });
 
