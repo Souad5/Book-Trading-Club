@@ -11,8 +11,13 @@ import Login from './Component/Login';
 import Dashboard from './dashboard/DashBoard';
 import AdminDashboard from './dashboard/Admin/AdminDashboard';
 import AddNewBook from './components/Section/AddNewBook';
-
+import { useContext } from 'react';
+import { AuthContext } from './firebase/AuthProvider';
+import Loader from './components/Shared Components/Loader.jsx';
 function App() {
+  const { user, loading } = useContext(AuthContext);
+  if (loading) return <Loader />;
+  console.log(user);
   return (
     <div className="min-h-full flex flex-col">
       <Navbar />
