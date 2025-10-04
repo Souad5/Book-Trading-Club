@@ -1,6 +1,7 @@
 import HeroSection from "@/components/Section/HeroSection";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { DEMO_BOOKS as BROWSE_BOOKS } from "./Browse";
 import { Search } from "lucide-react";
 import WantToBeSellerSection from "@/components/Section/WantToBeSeller";
 import TopSellersSection from "@/components/Section/TopSeller";
@@ -16,70 +17,10 @@ type Book = {
   exchangeType: "swap" | "donate" | "sell";
   language: string;
   genre: string;
+  image: string;
 };
 
-const DEMO_BOOKS: Book[] = [
-  {
-    id: "1",
-    title: "Atomic Habits",
-    author: "James Clear",
-    isbn: "9780735211292",
-    tags: ["self-help", "productivity"],
-    location: "Dhaka",
-    condition: "good",
-    exchangeType: "swap",
-    language: "English",
-    genre: "Non-fiction",
-  },
-  {
-    id: "2",
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    isbn: "9780061120084",
-    tags: ["classic", "justice"],
-    location: "Chattogram",
-    condition: "fair",
-    exchangeType: "donate",
-    language: "English",
-    genre: "Fiction",
-  },
-  {
-    id: "3",
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    isbn: "9780062315007",
-    tags: ["philosophy", "journey"],
-    location: "Dhaka",
-    condition: "new",
-    exchangeType: "sell",
-    language: "English",
-    genre: "Adventure",
-  },
-  {
-    id: "4",
-    title: "বেলা অবেলা কালবেলা",
-    author: "সেলিনা হোসেন",
-    isbn: "9789840422654",
-    tags: ["bangla", "novel"],
-    location: "Khulna",
-    condition: "good",
-    exchangeType: "swap",
-    language: "Bangla",
-    genre: "Novel",
-  },
-  {
-    id: "5",
-    title: "Sapiens: A Brief History of Humankind",
-    author: "Yuval Noah Harari",
-    isbn: "9780062316097",
-    tags: ["history", "evolution"],
-    location: "Dhaka",
-    condition: "good",
-    exchangeType: "sell",
-    language: "English",
-    genre: "History",
-  },
-];
+const DEMO_BOOKS: Book[] = BROWSE_BOOKS as unknown as Book[];
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -226,12 +167,15 @@ export default function Home() {
 
           {/* Book Results */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((b) => (
+            {results.slice(0, 6).map((b) => (
               <article
                 key={b.id}
                 className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow"
               >
                 <Link to={`/book/${b.id}`} className="block space-y-2">
+                  <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
+                    <img src={b.image} alt={b.title} className="h-full w-full object-cover" />
+                  </div>
                   <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
                     {b.title}
                   </h3>
@@ -253,6 +197,7 @@ export default function Home() {
                       {b.genre}
                     </span>
                   </div>
+                  <span className="mt-4 inline-block text-sm text-blue-600 hover:underline">View Details →</span>
                 </Link>
               </article>
             ))}

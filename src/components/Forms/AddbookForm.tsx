@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import FileInput from './Input';
-
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
+import { AuthContext } from '@/firebase/AuthProvider';
+import { ImSpinner3 } from 'react-icons/im';
 const AddBookForm = () => {
+  const { user } = useContext(AuthContext);
   const [title, setTitle] = useState<string>('');
   const [author, setAuthor] = useState<string>('');
   const [category, setCategory] = useState<string>('');
@@ -11,9 +14,12 @@ const AddBookForm = () => {
   const [description, setDescription] = useState<string>('');
   const [ImageURL, setImageURL] = useState<string>('');
   const [cover, setCover] = useState<File | null>(null);
+  const [saving, setSaving] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const axiosSecure = UseAxiosSecure();
     e.preventDefault();
+    setSaving(true);
     const file = cover;
     console.log(file);
     const data = new FormData();
@@ -39,7 +45,25 @@ const AddBookForm = () => {
       cover,
       coverUrl: url,
     });
-    toast.success('Book added successfully!');
+    const newBook = {
+      title,
+      author,
+      category,
+      price,
+      description,
+      imageUrl: url,
+      uid: user?.uid,
+    };
+    console.log(newBook);
+    await axiosSecure
+      .post('/api/books', newBook)
+      .then(() => toast.success('Book added successfully!'))
+      .catch((err) => {
+        console.log(`❌ Error adding donation:`, err);
+        toast.error('Failed to add book. Please try again.');
+      });
+    setSaving(false);
+
     // Clear form
     setTitle('');
     setAuthor('');
@@ -128,19 +152,6 @@ const AddBookForm = () => {
         </div>
 
         {/* Cover Image */}
-        {/* <div>
-          <label className="block text-gray-700 font-medium mb-1">
-            Cover Image
-          </label>
-          <input
-            className="w-full border border-gray-300 rounded-lg p-1 focus:ring-2 focus:ring-leaf-400 outline-none"
-            type="file"
-            accept="image/*"
-            onChange={(e) =>
-              setCover(e.target.files ? e.target.files[0] : null)
-            }
-          />
-        </div> */}
         <FileInput
           label="Cover Image"
           accept="image/*"
@@ -149,14 +160,28 @@ const AddBookForm = () => {
         />
 
         {/* Submit Button */}
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          type="submit"
-          className="w-full bg-leaf-500 text-white font-semibold py-3 rounded-xl shadow-md hover:opacity-90 transition"
-        >
-          Add Book
-        </motion.button>
+        {!saving && (
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            type="submit"
+            className="w-full bg-leaf-500 text-white font-semibold py-3 rounded-xl shadow-md hover:opacity-90 transition"
+          >
+            Add Book
+          </motion.button>
+        )}
+        {saving && (
+          <motion.button
+            // whileHover={{ scale: 1.05 }}
+            // whileTap={{ scale: 0.95 }}
+            type="submit"
+            disabled
+            className="w-full flex items-center justify-center gap-3 bg-leaf-200 text-white font-semibold py-3 rounded-xl shadow-md "
+          >
+            <ImSpinner3 className="animate-spin text-2xl" />
+            Adding
+          </motion.button>
+        )}
       </form>
     </div>
   );
