@@ -125,7 +125,8 @@ function Dashboard() {
               <p className="text-gray-600 ">
                 Here you can manage users, view reports, and configure settings.
               </p>
-              <AdminDashboard />
+              <AdminDashboard activeItem={activeItem} />
+
             </div>
           )}
 

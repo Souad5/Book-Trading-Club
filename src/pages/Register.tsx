@@ -131,7 +131,7 @@ const Register: React.FC = () => {
                   onChange={handleChange}
                 />
                 <span
-                  className="absolute right-3 top-3 cursor-pointer text-gray-600"
+                  className="absolute right-3 top-1 cursor-pointer text-gray-600"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -158,26 +158,7 @@ const Register: React.FC = () => {
             </div>
 
             {/* Genre */}
-            <div>
-              <label className="label font-semibold">Favorite Genre</label>
-              <select
-                name="genre"
-                className="select select-bordered w-full rounded-lg shadow-sm border-gray-300"
-                value={formData.genre}
-                onChange={handleChange}
-              >
-                <option value="">-- Select Genre --</option>
-                <option value="fiction">Fiction</option>
-                <option value="non-fiction">Non-fiction</option>
-                <option value="fantasy">Fantasy</option>
-                <option value="sci-fi">Sci-Fi</option>
-                <option value="biography">Biography</option>
-              </select>
-              {errors.genre && (
-                <p className="text-red-500 text-sm">{errors.genre}</p>
-              )}
-            </div>
-
+            
             {/* Submit */}
             <button
               type="submit"
