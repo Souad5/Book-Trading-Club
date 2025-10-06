@@ -1,18 +1,19 @@
-import { useContext, useState } from 'react';
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
-import FileInput from './Input';
-import UseAxiosSecure from '@/axios/UseAxiosSecure';
-import { AuthContext } from '@/firebase/AuthProvider';
-import { ImSpinner3 } from 'react-icons/im';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import FileInput from "./Input";
+import UseAxiosSecure from "@/axios/UseAxiosSecure";
+import { useAuth } from "@/firebase/AuthProvider";
+import { ImSpinner3 } from "react-icons/im";
 const AddBookForm = () => {
-  const { user } = useContext(AuthContext);
-  const [title, setTitle] = useState<string>('');
-  const [author, setAuthor] = useState<string>('');
-  const [category, setCategory] = useState<string>('');
-  const [price, setPrice] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [ImageURL, setImageURL] = useState<string>('');
+  const { user } = useAuth();
+
+  const [title, setTitle] = useState<string>("");
+  const [author, setAuthor] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [ImageURL, setImageURL] = useState<string>("");
   const [cover, setCover] = useState<File | null>(null);
   const [saving, setSaving] = useState<boolean>(false);
 
@@ -23,19 +24,19 @@ const AddBookForm = () => {
     const file = cover;
     console.log(file);
     const data = new FormData();
-    data.append('file', file as Blob);
-    data.append('upload_preset', 'Syntax_Surfers_cloudinary');
-    data.append('cloud_name', 'dbduiiimr');
+    data.append("file", file as Blob);
+    data.append("upload_preset", "Syntax_Surfers_cloudinary");
+    data.append("cloud_name", "dbduiiimr");
     const res = await fetch(
-      'https://api.cloudinary.com/v1_1/dbduiiimr/image/upload',
-      { method: 'POST', body: data }
+      "https://api.cloudinary.com/v1_1/dbduiiimr/image/upload",
+      { method: "POST", body: data }
     );
     const uploaded = await res.json();
     const url = uploaded.secure_url || uploaded.url;
-    if (!url) throw new Error('No URL returned from Cloudinary');
+    if (!url) throw new Error("No URL returned from Cloudinary");
     setImageURL(uploaded.secure_url || uploaded.url);
     await console.log(ImageURL);
-    if (!file) return toast.error('Please upload a cover image.');
+    if (!file) return toast.error("Please upload a cover image.");
     console.log({
       title,
       author,
@@ -56,21 +57,21 @@ const AddBookForm = () => {
     };
     console.log(newBook);
     await axiosSecure
-      .post('/api/books', newBook)
-      .then(() => toast.success('Book added successfully!'))
+      .post("/api/books", newBook)
+      .then(() => toast.success("Book added successfully!"))
       .catch((err) => {
         console.log(`❌ Error adding donation:`, err);
-        toast.error('Failed to add book. Please try again.');
+        toast.error("Failed to add book. Please try again.");
       });
     setSaving(false);
 
     // Clear form
-    setTitle('');
-    setAuthor('');
-    setCategory('');
-    setPrice('');
-    setDescription('');
-    setImageURL('');
+    setTitle("");
+    setAuthor("");
+    setCategory("");
+    setPrice("");
+    setDescription("");
+    setImageURL("");
     setCover(null);
   };
   return (

@@ -1,23 +1,24 @@
-import { Route, Routes } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
-import Home from './pages/Home';
-import Browse from './pages/Browse';
-import HowItWorks from './pages/HowItWorks';
-import Register from './pages/Register';
-import BookDetails from './pages/BookDetails';
-import ForgotPassword from './Component/ForgotPassword';
-import Login from './Component/Login';
-import Dashboard from './dashboard/DashBoard';
-import AdminDashboard from './dashboard/Admin/AdminDashboard';
-import AddNewBook from './components/Section/AddNewBook';
-import { useContext } from 'react';
-import { AuthContext } from './firebase/AuthProvider';
-import Loader from './components/Shared Components/Loader.jsx';
+import { Route, Routes } from "react-router-dom";
+import Navbar from "./components/layout/Navbar";
+import Footer from "./components/layout/Footer";
+import Home from "./pages/Home";
+import Browse from "./pages/Browse";
+import HowItWorks from "./pages/HowItWorks";
+import Register from "./pages/Register";
+import BookDetails from "./pages/BookDetails";
+import ForgotPassword from "./Component/ForgotPassword";
+import Login from "./Component/Login";
+import Dashboard from "./dashboard/DashBoard";
+import AdminDashboard from "./dashboard/Admin/AdminDashboard";
+import AddNewBook from "./components/Section/AddNewBook";
+import Loader from "./components/SharedComponents/Loader";
+import { useAuth } from "./firebase/AuthProvider"; // 👈 use your custom hook
+
 function App() {
-  const { user, loading } = useContext(AuthContext);
+  const {  loading } = useAuth(); 
+
   if (loading) return <Loader />;
-  // console.log(user?.uid);
+
   return (
     <div className="min-h-full flex flex-col">
       <Navbar />
@@ -30,7 +31,6 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forget" element={<ForgotPassword />} />
-
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/adminDashboard" element={<AdminDashboard />} />
           <Route path="/add-book" element={<AddNewBook />} />
