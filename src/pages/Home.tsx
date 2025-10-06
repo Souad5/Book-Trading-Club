@@ -1,10 +1,16 @@
 import HeroSection from "@/components/Section/HeroSection";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+<<<<<<< Updated upstream
 import { DEMO_BOOKS as BROWSE_BOOKS } from "./Browse";
 import { Search } from "lucide-react";
+=======
+import { Search, Heart } from "lucide-react";
+>>>>>>> Stashed changes
 import WantToBeSellerSection from "@/components/Section/WantToBeSeller";
 import TopSellersSection from "@/components/Section/TopSeller";
+import { toast } from "react-toastify";
+import { useFavorites } from "@/hooks/useFavorites";
 
 type Book = {
   id: string;
@@ -29,6 +35,36 @@ export default function Home() {
   const [exchangeType, setExchangeType] = useState("");
   const [language, setLanguage] = useState("");
   const [genre, setGenre] = useState("");
+  
+  // Use the new favorites hook
+  const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
+
+  const handleToggleFavorite = async (bookId: string) => {
+    const book = DEMO_BOOKS.find(b => b.id === bookId);
+    const bookTitle = book?.title || "Unknown Book";
+    
+    if (!isAuthenticated) {
+      toast.error("Please log in to add books to favorites");
+      return;
+    }
+    
+    const wasFavorite = isFavorite(bookId);
+    const success = await toggleFavorite(bookId);
+    
+    if (success) {
+      if (wasFavorite) {
+        toast.success(`"${bookTitle}" removed from favourites`, {
+          toastId: `remove-${bookId}`
+        });
+      } else {
+        toast.success(`"${bookTitle}" added to favourites`, {
+          toastId: `add-${bookId}`
+        });
+      }
+    } else {
+      toast.error("Failed to update favorites");
+    }
+  };
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -170,8 +206,27 @@ export default function Home() {
             {results.slice(0, 6).map((b) => (
               <article
                 key={b.id}
-                className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow"
+                className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
               >
+                {/* Favorite Heart Icon */}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleToggleFavorite(b.id);
+                  }}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
+                  aria-label={isFavorite(b.id) ? "Remove from favorites" : "Add to favorites"}
+                >
+                  <Heart
+                    className={`w-5 h-5 transition-colors duration-200 ${
+                      isFavorite(b.id)
+                        ? "fill-red-500 text-red-500"
+                        : "text-gray-400 hover:text-red-400"
+                    }`}
+                  />
+                </button>
+
                 <Link to={`/book/${b.id}`} className="block space-y-2">
                   <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
                     <img src={b.image} alt={b.title} className="h-full w-full object-cover" />
