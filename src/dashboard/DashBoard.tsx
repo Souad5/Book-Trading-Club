@@ -47,7 +47,7 @@ function Dashboard() {
       { name: "Overview", icon: <FiHome /> },
       { name: "My Books", icon: <FiBook /> },
       { name: "My Trades", icon: <FiRepeat /> },
-      { name: "Wishlist", icon: <FiHeart /> },
+      { name: "Favourite Books", icon: <FiHeart /> },
       { name: "Settings", icon: <FiSettings /> },
     ];
   };
@@ -135,7 +135,7 @@ function Dashboard() {
                 Welcome, User 👤
               </h2>
               <p className="text-gray-600 mb-6">
-                Here you can view your books, trades, and wishlist.
+                Here you can view your books, trades, and favourite books.
               </p>
               <UserDashboard></UserDashboard>
             </div>
