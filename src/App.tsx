@@ -1,18 +1,3 @@
-<<<<<<< Updated upstream
-import { Route, Routes } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
-import Home from './pages/Home';
-import Browse from './pages/Browse';
-import HowItWorks from './pages/HowItWorks';
-import Register from './pages/Register';
-import BookDetails from './pages/BookDetails';
-import ForgotPassword from './Component/ForgotPassword';
-import Login from './Component/Login';
-import Dashboard from './dashboard/DashBoard';
-import AdminDashboard from './dashboard/Admin/AdminDashboard';
-import AddNewBook from './components/Section/AddNewBook';
-=======
 import { Route, Routes } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -27,7 +12,6 @@ import Dashboard from './dashboard/DashBoard'
 import AdminDashboard from './dashboard/Admin/AdminDashboard'
 import AddNewBook from './components/Section/AddNewBook'
 import FavouriteBooks from './pages/Wishlist'
->>>>>>> Stashed changes
 
 function App() {
   return (
