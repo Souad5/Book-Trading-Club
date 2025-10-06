@@ -13,6 +13,7 @@ import AdminDashboard from "./dashboard/Admin/AdminDashboard";
 import AddNewBook from "./components/Section/AddNewBook";
 import Loader from "./components/SharedComponents/Loader";
 import { useAuth } from "./firebase/AuthProvider"; // 👈 use your custom hook
+import ChatPopup from "./components/Modals/ChatPopup";
 
 function App() {
   const {  loading } = useAuth(); 
@@ -23,6 +24,7 @@ function App() {
     <div className="min-h-full flex flex-col">
       <Navbar />
       <main className="flex-1">
+        <ChatPopup></ChatPopup>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/book/:id" element={<BookDetails />} />
