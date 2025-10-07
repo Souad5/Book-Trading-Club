@@ -17,6 +17,7 @@ import { useAuth } from './firebase/AuthProvider';
 import Loader from './components/SharedComponents/Loader';
 import About from './pages/About';
 import Contact from './pages/Contact';
+import ChatPopup from './components/Modals/ChatPopup';
 
 function App() {
   const { loading } = useAuth();
@@ -24,6 +25,7 @@ function App() {
   return (
     <div className="min-h-full flex flex-col">
       <Navbar />
+      <ChatPopup></ChatPopup>
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />

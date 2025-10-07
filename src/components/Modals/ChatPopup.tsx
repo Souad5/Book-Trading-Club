@@ -7,6 +7,20 @@ interface Message {
   text: string;
 }
 
+// ✅ Predefined questions and answers
+const predefinedQA: Record<string, string> = {
+  "How can I order?":
+    "You can place an order by clicking the 'Order Now' button and following the checkout steps.",
+  "How can I contact the admin?":
+    "You can contact the admin via the Contact Us page or by emailing support@example.com.",
+  "Do you provide refunds?":
+    "Yes, we offer refunds within 7 days if the product doesn’t meet your expectations.",
+  "How long does delivery take?":
+    "Delivery usually takes 3–5 business days depending on your location.",
+  "What payment methods are accepted?":
+    "We accept debit/credit cards, mobile banking, and cash on delivery in select areas.",
+};
+
 const ChatPopup = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -15,41 +29,51 @@ const ChatPopup = () => {
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Show chat popup after delay
+  // Show chat popup after a delay
   useEffect(() => {
     const timer = setTimeout(() => setShowPopup(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Scroll to bottom whenever messages change
+  // Auto-scroll when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  // ✅ Main send function
+  const handleSend = async (customInput?: string) => {
+    const textToSend = customInput || input;
+    if (!textToSend.trim()) return;
 
-    // Add user message
-    const userMessage: Message = { type: "user", text: input };
+    const userMessage: Message = { type: "user", text: textToSend };
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
 
-    // Show typing indicator
-    setLoading(true);
+    // 🧠 If it's a predefined question — instantly show stored answer (no API call)
+    if (predefinedQA[textToSend]) {
+      const aiMessage: Message = { type: "ai", text: predefinedQA[textToSend] };
+      setMessages((prev) => [...prev, aiMessage]);
+      return;
+    }
 
+    // 🧠 Otherwise, call Gemini API
+    setLoading(true);
     try {
-      const aiText = await generateResponse(input);
+      const aiText = await generateResponse(textToSend);
       const aiMessage: Message = { type: "ai", text: aiText };
       setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
+      console.error(err);
       setMessages((prev) => [
         ...prev,
-        { type: "ai", text: "Oops! Something went wrong." },
+        { type: "ai", text: "Oops! Something went wrong. Please try again." },
       ]);
     } finally {
       setLoading(false);
     }
   };
+
+  const quickQuestions = Object.keys(predefinedQA);
 
   return (
     <>
@@ -67,7 +91,7 @@ const ChatPopup = () => {
               💬 Chat with us
             </button>
           ) : (
-            <div className="bg-white rounded-2xl shadow-xl w-80 h-96 flex flex-col overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-xl w-80 h-[450px] flex flex-col overflow-hidden">
               {/* Header */}
               <div className="bg-blue-600 text-white p-3 flex justify-between items-center rounded-t-2xl">
                 <h2 className="font-semibold text-sm">AI Assistant</h2>
@@ -79,18 +103,14 @@ const ChatPopup = () => {
                 </button>
               </div>
 
-              {/* Messages */}
+              {/* Messages Section */}
               <div className="flex-1 p-3 overflow-y-auto text-sm space-y-2">
                 {messages.map((msg, idx) => (
                   <motion.div
                     key={idx}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`${
-                      msg.type === "user"
-                        ? "text-right"
-                        : "text-left"
-                    }`}
+                    className={`${msg.type === "user" ? "text-right" : "text-left"}`}
                   >
                     <span
                       className={`inline-block px-3 py-1 rounded-lg ${
@@ -104,7 +124,7 @@ const ChatPopup = () => {
                   </motion.div>
                 ))}
 
-                {/* Loading indicator */}
+                {/* Typing indicator */}
                 <AnimatePresence>
                   {loading && (
                     <motion.div
@@ -120,10 +140,27 @@ const ChatPopup = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
+
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input */}
+              {/* Quick question buttons */}
+              <div className="p-2 border-t bg-gray-50">
+                <p className="text-xs text-gray-500 mb-1">Try asking:</p>
+                <div className="flex flex-wrap gap-1">
+                  {quickQuestions.map((q, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handleSend(q)}
+                      className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-lg hover:bg-blue-200 transition"
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Input box */}
               <div className="p-3 border-t flex gap-2">
                 <input
                   type="text"
@@ -134,7 +171,7 @@ const ChatPopup = () => {
                   onKeyDown={(e) => e.key === "Enter" && handleSend()}
                 />
                 <button
-                  onClick={handleSend}
+                  onClick={() => handleSend()}
                   className="bg-blue-600 text-white px-3 rounded hover:bg-blue-700 transition"
                 >
                   Send
