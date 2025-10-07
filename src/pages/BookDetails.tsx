@@ -1,7 +1,9 @@
-import { useParams, Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import ShareModal from "../components/Modals/ShareModal"; 
-import { useState } from "react";
+import { useParams, Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import ShareModal from '../components/Modals/ShareModal';
+import { useState } from 'react';
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
+import { useQuery } from '@tanstack/react-query';
 
 type Book = {
   id: string;
@@ -10,233 +12,250 @@ type Book = {
   isbn: string;
   tags: string[];
   location: string;
-  condition: "new" | "good" | "fair";
-  exchangeType: "swap" | "donate" | "sell";
+  condition: 'new' | 'good' | 'fair';
+  exchangeType: 'swap' | 'donate' | 'sell';
   language: string;
   genre: string;
   image: string;
 };
 
-
 export default function BookDetails() {
   const [rating, setRating] = useState<number>(0);
-  const [review, setReview] = useState<string>("");
+  const [review, setReview] = useState<string>('');
 
   // wishlist button clicked
   const handleWishlistClick = () => {
-    toast.success("Added to wishlist!");
+    
+    toast.success('Added to wishlist!');
   };
 
   const handleSubmitReview = () => {
     if (rating === 0) {
-      toast.error("Please select a rating!");
+      toast.error('Please select a rating!');
       return;
     }
-    toast.success("Review submitted!");
+    toast.success('Review submitted!');
     setRating(0);
-    setReview("");
+    setReview('');
   };
 
   const DEMO_BOOKS: Book[] = [
     {
-      id: "1",
-      title: "The Alchemist",
-      author: "Paulo Coelho",
-      isbn: "9780061122415",
-      tags: ["inspirational", "journey"],
-      location: "Dhaka",
-      condition: "good",
-      exchangeType: "swap",
-      language: "English",
-      genre: "Fiction",
-      image: "https://i.postimg.cc/HLqfxWJD/the-alchemist.jpg",
+      id: '1',
+      title: 'The Alchemist',
+      author: 'Paulo Coelho',
+      isbn: '9780061122415',
+      tags: ['inspirational', 'journey'],
+      location: 'Dhaka',
+      condition: 'good',
+      exchangeType: 'swap',
+      language: 'English',
+      genre: 'Fiction',
+      image: 'https://i.postimg.cc/HLqfxWJD/the-alchemist.jpg',
     },
     {
-      id: "2",
-      title: "Sapiens",
-      author: "Yuval Noah Harari",
-      isbn: "9780099590088",
-      tags: ["history", "anthropology"],
-      location: "Chattogram",
-      condition: "new",
-      exchangeType: "sell",
-      language: "English",
-      genre: "Non-fiction",
-      image: "https://i.postimg.cc/TPgttVPF/image.png",
+      id: '2',
+      title: 'Sapiens',
+      author: 'Yuval Noah Harari',
+      isbn: '9780099590088',
+      tags: ['history', 'anthropology'],
+      location: 'Chattogram',
+      condition: 'new',
+      exchangeType: 'sell',
+      language: 'English',
+      genre: 'Non-fiction',
+      image: 'https://i.postimg.cc/TPgttVPF/image.png',
     },
     {
-      id: "3",
-      title: "Atomic Habits",
-      author: "James Clear",
-      isbn: "9780735211292",
-      tags: ["self-help", "productivity"],
-      location: "Rajshahi",
-      condition: "good",
-      exchangeType: "donate",
-      language: "English",
-      genre: "Self-help",
-      image: "https://i.postimg.cc/Hx34NB1Z/image.png",
+      id: '3',
+      title: 'Atomic Habits',
+      author: 'James Clear',
+      isbn: '9780735211292',
+      tags: ['self-help', 'productivity'],
+      location: 'Rajshahi',
+      condition: 'good',
+      exchangeType: 'donate',
+      language: 'English',
+      genre: 'Self-help',
+      image: 'https://i.postimg.cc/Hx34NB1Z/image.png',
     },
     {
-      id: "4",
-      title: "Norwegian Wood",
-      author: "Haruki Murakami",
-      isbn: "9780375704024",
-      tags: ["classic", "japanese"],
-      location: "Dhaka",
-      condition: "fair",
-      exchangeType: "swap",
-      language: "English",
-      genre: "Literary",
-      image: "https://i.postimg.cc/cH5tYjSS/image.png",
+      id: '4',
+      title: 'Norwegian Wood',
+      author: 'Haruki Murakami',
+      isbn: '9780375704024',
+      tags: ['classic', 'japanese'],
+      location: 'Dhaka',
+      condition: 'fair',
+      exchangeType: 'swap',
+      language: 'English',
+      genre: 'Literary',
+      image: 'https://i.postimg.cc/cH5tYjSS/image.png',
     },
     {
-      id: "5",
-      title: "One Hundred Years of Solitude",
-      author: "Gabriel García Márquez",
-      isbn: "9780060883287",
-      tags: ["magic realism"],
-      location: "Sylhet",
-      condition: "good",
-      exchangeType: "swap",
-      language: "English",
-      genre: "Fiction",
-      image: "https://i.postimg.cc/Hn8nM9Hv/image.png",
+      id: '5',
+      title: 'One Hundred Years of Solitude',
+      author: 'Gabriel García Márquez',
+      isbn: '9780060883287',
+      tags: ['magic realism'],
+      location: 'Sylhet',
+      condition: 'good',
+      exchangeType: 'swap',
+      language: 'English',
+      genre: 'Fiction',
+      image: 'https://i.postimg.cc/Hn8nM9Hv/image.png',
     },
     {
-      id: "6",
-      title: "Clean Code",
-      author: "Robert C. Martin",
-      isbn: "9780132350884",
-      tags: ["programming", "best practices"],
-      location: "Khulna",
-      condition: "new",
-      exchangeType: "sell",
-      language: "English",
-      genre: "Technology",
-      image: "https://i.postimg.cc/Z5QT8y71/image.png",
+      id: '6',
+      title: 'Clean Code',
+      author: 'Robert C. Martin',
+      isbn: '9780132350884',
+      tags: ['programming', 'best practices'],
+      location: 'Khulna',
+      condition: 'new',
+      exchangeType: 'sell',
+      language: 'English',
+      genre: 'Technology',
+      image: 'https://i.postimg.cc/Z5QT8y71/image.png',
     },
     {
-      id: "7",
-      title: "The Pragmatic Programmer",
-      author: "Andrew Hunt & David Thomas",
-      isbn: "9780201616224",
-      tags: ["programming", "career"],
-      location: "Chattogram",
-      condition: "good",
-      exchangeType: "sell",
-      language: "English",
-      genre: "Technology",
-      image: "https://i.postimg.cc/RVmPVSmf/image.png",
+      id: '7',
+      title: 'The Pragmatic Programmer',
+      author: 'Andrew Hunt & David Thomas',
+      isbn: '9780201616224',
+      tags: ['programming', 'career'],
+      location: 'Chattogram',
+      condition: 'good',
+      exchangeType: 'sell',
+      language: 'English',
+      genre: 'Technology',
+      image: 'https://i.postimg.cc/RVmPVSmf/image.png',
     },
     {
-      id: "8",
-      title: "Design Patterns",
-      author: "Erich Gamma et al.",
-      isbn: "9780201633610",
-      tags: ["programming", "architecture"],
-      location: "Sylhet",
-      condition: "fair",
-      exchangeType: "swap",
-      language: "English",
-      genre: "Technology",
-      image: "https://i.postimg.cc/VkdXzpJn/image.png",
+      id: '8',
+      title: 'Design Patterns',
+      author: 'Erich Gamma et al.',
+      isbn: '9780201633610',
+      tags: ['programming', 'architecture'],
+      location: 'Sylhet',
+      condition: 'fair',
+      exchangeType: 'swap',
+      language: 'English',
+      genre: 'Technology',
+      image: 'https://i.postimg.cc/VkdXzpJn/image.png',
     },
     {
-      id: "9",
-      title: "কৃতদাসের হাসি",
-      author: "সেলিনা হোসেন",
-      isbn: "9789847024565",
-      tags: ["bangla", "novel"],
-      location: "Rajshahi",
-      condition: "good",
-      exchangeType: "donate",
-      language: "Bangla",
-      genre: "Fiction",
-      image: "https://i.postimg.cc/CL6fr7c1/image.png",
+      id: '9',
+      title: 'কৃতদাসের হাসি',
+      author: 'সেলিনা হোসেন',
+      isbn: '9789847024565',
+      tags: ['bangla', 'novel'],
+      location: 'Rajshahi',
+      condition: 'good',
+      exchangeType: 'donate',
+      language: 'Bangla',
+      genre: 'Fiction',
+      image: 'https://i.postimg.cc/CL6fr7c1/image.png',
     },
     {
-      id: "10",
-      title: "The Subtle Art of Not Giving a F*ck",
-      author: "Mark Manson",
-      isbn: "9780062457714",
-      tags: ["self-help", "modern"],
-      location: "Dhaka",
-      condition: "new",
-      exchangeType: "sell",
-      language: "English",
-      genre: "Self-help",
-      image: "https://i.postimg.cc/XJVJYBsm/image.png",
+      id: '10',
+      title: 'The Subtle Art of Not Giving a F*ck',
+      author: 'Mark Manson',
+      isbn: '9780062457714',
+      tags: ['self-help', 'modern'],
+      location: 'Dhaka',
+      condition: 'new',
+      exchangeType: 'sell',
+      language: 'English',
+      genre: 'Self-help',
+      image: 'https://i.postimg.cc/XJVJYBsm/image.png',
     },
     {
-      id: "11",
-      title: "Rich Dad Poor Dad",
-      author: "Robert T. Kiyosaki",
-      isbn: "9781612680194",
-      tags: ["finance", "wealth"],
-      location: "Khulna",
-      condition: "good",
-      exchangeType: "swap",
-      language: "English",
-      genre: "Business",
-      image: "https://i.postimg.cc/0NCkF29f/image.png",
+      id: '11',
+      title: 'Rich Dad Poor Dad',
+      author: 'Robert T. Kiyosaki',
+      isbn: '9781612680194',
+      tags: ['finance', 'wealth'],
+      location: 'Khulna',
+      condition: 'good',
+      exchangeType: 'swap',
+      language: 'English',
+      genre: 'Business',
+      image: 'https://i.postimg.cc/0NCkF29f/image.png',
     },
     {
-      id: "12",
-      title: "Thinking, Fast and Slow",
-      author: "Daniel Kahneman",
-      isbn: "9780374533557",
-      tags: ["psychology", "behavior"],
-      location: "Sylhet",
-      condition: "fair",
-      exchangeType: "donate",
-      language: "English",
-      genre: "Psychology",
-      image: "https://i.postimg.cc/qBNthyJH/image.png",
+      id: '12',
+      title: 'Thinking, Fast and Slow',
+      author: 'Daniel Kahneman',
+      isbn: '9780374533557',
+      tags: ['psychology', 'behavior'],
+      location: 'Sylhet',
+      condition: 'fair',
+      exchangeType: 'donate',
+      language: 'English',
+      genre: 'Psychology',
+      image: 'https://i.postimg.cc/qBNthyJH/image.png',
     },
     {
-      id: "13",
-      title: "Digital Fortress",
-      author: "Dan Brown",
-      isbn: "9780312944926",
-      tags: ["thriller", "technology"],
-      location: "Rajshahi",
-      condition: "good",
-      exchangeType: "swap",
-      language: "English",
-      genre: "Thriller",
-      image: "https://i.postimg.cc/2jnDKSTB/image.png",
+      id: '13',
+      title: 'Digital Fortress',
+      author: 'Dan Brown',
+      isbn: '9780312944926',
+      tags: ['thriller', 'technology'],
+      location: 'Rajshahi',
+      condition: 'good',
+      exchangeType: 'swap',
+      language: 'English',
+      genre: 'Thriller',
+      image: 'https://i.postimg.cc/2jnDKSTB/image.png',
     },
     {
-      id: "14",
-      title: "ছুটির ঘণ্টা",
-      author: "সেলিনা হোসেন",
-      isbn: "9789847027894",
-      tags: ["bangla", "children"],
-      location: "Chattogram",
-      condition: "good",
-      exchangeType: "donate",
-      language: "Bangla",
-      genre: "Children",
-      image: "https://i.postimg.cc/NfQWC75W/image.png",
+      id: '14',
+      title: 'ছুটির ঘণ্টা',
+      author: 'সেলিনা হোসেন',
+      isbn: '9789847027894',
+      tags: ['bangla', 'children'],
+      location: 'Chattogram',
+      condition: 'good',
+      exchangeType: 'donate',
+      language: 'Bangla',
+      genre: 'Children',
+      image: 'https://i.postimg.cc/NfQWC75W/image.png',
     },
     {
-      id: "15",
-      title: "The Great Gatsby",
-      author: "F. Scott Fitzgerald",
-      isbn: "9780743273565",
-      tags: ["classic", "jazz age"],
-      location: "Dhaka",
-      condition: "fair",
-      exchangeType: "swap",
-      language: "English",
-      genre: "Literary",
-      image: "https://i.postimg.cc/BnVkvrM0/image.png",
+      id: '15',
+      title: 'The Great Gatsby',
+      author: 'F. Scott Fitzgerald',
+      isbn: '9780743273565',
+      tags: ['classic', 'jazz age'],
+      location: 'Dhaka',
+      condition: 'fair',
+      exchangeType: 'swap',
+      language: 'English',
+      genre: 'Literary',
+      image: 'https://i.postimg.cc/BnVkvrM0/image.png',
     },
   ];
 
   const { id } = useParams<{ id: string }>();
-  const book = DEMO_BOOKS.find((b) => b.id === id);
+  console.log(id);
+  const axiosSecure = UseAxiosSecure();
+  const {
+    data: book = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['book'], // new key: all users
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/api/books/${id}`); // no email filter
+      return res.data;
+    },
+  });
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  console.log(book);
 
   if (!book) {
     return <div className="p-6">❌ Book not found.</div>;
@@ -252,7 +271,7 @@ export default function BookDetails() {
         {/* Book Image */}
         <div className="w-full">
           <img
-            src={book.image}
+            src={book.imageUrl}
             alt={book.title}
             className="w-full h-auto rounded-xl shadow-lg object-cover"
           />
@@ -312,14 +331,14 @@ export default function BookDetails() {
           {/* Rate & Review Section */}
           <div className="mt-8 p-4 border border-sand-200 rounded-lg bg-sand-50">
             <h2 className="text-xl font-semibold mb-2">Rate & Review</h2>
-            
+
             <div className="flex items-center mb-3">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   onClick={() => setRating(star)}
                   className={`text-2xl ${
-                    rating >= star ? "text-yellow-400" : "text-gray-300"
+                    rating >= star ? 'text-yellow-400' : 'text-gray-300'
                   }`}
                 >
                   ★
@@ -335,10 +354,10 @@ export default function BookDetails() {
             />
 
             <button
-              onClick= {handleSubmitReview}
+              onClick={handleSubmitReview}
               className="mt-3 px-4 py-2 bg-leaf-500 text-white rounded-lg hover:bg-leaf-600 transition"
             >
-              Submit Review 
+              Submit Review
             </button>
           </div>
         </div>
@@ -346,3 +365,4 @@ export default function BookDetails() {
     </section>
   );
 }
+// done

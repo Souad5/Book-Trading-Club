@@ -1,11 +1,11 @@
 import {Link} from "react-router-dom"
 export default function NavLogo() {
   return (
-    <Link to="/" className="flex items-center gap-2">
+    <Link to="/" className="flex items-center gap-2 rounded-4xl">
       <img
-        src="https://i.ibb.co.com/Mkkv0g6P/booklogo.png"
+        src="https://i.postimg.cc/MZMVDkG2/Untitled-design-2.png"
         alt="ShelfShare logo"
-        className="h-8 w-8 rounded"
+        className="h-16 w-16 rounded"
       />
       <span className="text-lg font-semibold text-soil-900">ShelfShare</span>
     </Link>
