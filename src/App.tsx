@@ -11,13 +11,16 @@ import Login from './Component/Login';
 import Dashboard from './dashboard/DashBoard';
 import AdminDashboard from './dashboard/Admin/AdminDashboard';
 import AddNewBook from './components/Section/AddNewBook';
-import { useContext } from 'react';
-import { AuthContext } from './firebase/AuthProvider';
-import Loader from './components/Shared Components/Loader.jsx';
+import FavouriteBooks from './pages/Wishlist';
+
+import { useAuth } from './firebase/AuthProvider';
+import Loader from './components/SharedComponents/Loader';
+import About from './pages/About';
+import Contact from './pages/Contact';
+
 function App() {
-  const { user, loading } = useContext(AuthContext);
+  const { loading } = useAuth();
   if (loading) return <Loader />;
-  // console.log(user?.uid);
   return (
     <div className="min-h-full flex flex-col">
       <Navbar />
@@ -30,10 +33,12 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forget" element={<ForgotPassword />} />
-
+          <Route path="/wishlist" element={<FavouriteBooks />} />
+          <Route path="/about" element={<About/>}/>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/adminDashboard" element={<AdminDashboard />} />
           <Route path="/add-book" element={<AddNewBook />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
       <Footer />
