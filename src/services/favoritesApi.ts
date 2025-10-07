@@ -1,8 +1,8 @@
 const API_BASE_URL =
   (import.meta as any).env?.VITE_API_URL ||
-  'http://localhost:3000/api';
+  'https://book-trading-club-backend.vercel.app/api';
 
-export interface FavoritesResponse {  
+export interface FavoritesResponse {
   success: boolean;
   favoriteBooks?: string[];
   message?: string;
