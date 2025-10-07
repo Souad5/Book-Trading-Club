@@ -1,5 +1,4 @@
-import React from "react";
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
 const Contact = () => {
   return (
@@ -7,7 +6,7 @@ const Contact = () => {
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
         className="max-w-2xl w-full bg-white shadow-2xl rounded-3xl p-10"
       >
         <motion.h2

@@ -2,7 +2,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ShareModal from '../components/Modals/ShareModal';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '@/components/SharedComponents/Loader';
@@ -13,7 +13,7 @@ type ApiBook = {
   id?: string;
   title: string;
   author: string;
-  isbn?: string; // may be absent depending on backend
+  isbn?: string;
   location?: string;
   condition?: string;
   exchangeType?: string;
@@ -28,7 +28,6 @@ export default function BookDetails() {
   const [review, setReview] = useState<string>('');
 
   const handleWishlistClick = () => {
-    
     toast.success('Added to wishlist!');
   };
 
@@ -61,34 +60,26 @@ export default function BookDetails() {
     refetchOnWindowFocus: false,
   });
 
-  // Show loader on initial load or while switching between different ids
-  const showLoading = useMemo(() => {
-    if (isLoading) return true;
-    if (isFetching && book && String(book.id ?? book._id) !== String(id)) {
-      return true;
-    }
-    return false;
-  }, [isLoading, isFetching, book, id]);
+  // ---- Compute values WITHOUT hooks (to keep hook order stable) ----
+  const currentBookId = book?.id ?? book?._id;
+  const showLoading =
+    isLoading || (isFetching && book && String(currentBookId) !== String(id));
 
+  // Guard: loading
   if (showLoading) return <Loader />;
 
-  if (!book) {
-    return <div className="p-6">❌ Book not found.</div>;
-  }
+  // Guard: not found
+  if (!book) return <div className="p-6">❌ Book not found.</div>;
 
-  // Normalize for ShareModal which expects { id: string; title: string; author: string }
-  const normalizedId = book.id ?? book._id;
-  const shareBook = useMemo(
-    () =>
-      normalizedId
-        ? {
-            id: String(normalizedId),
-            title: book.title,
-            author: book.author,
-          }
-        : null,
-    [normalizedId, book.title, book.author]
-  );
+  // Shape for ShareModal
+  const shareBook =
+    currentBookId != null
+      ? {
+          id: String(currentBookId),
+          title: book.title,
+          author: book.author,
+        }
+      : null;
 
   return (
     <section className="p-6 max-w-5xl mx-auto">
@@ -166,7 +157,7 @@ export default function BookDetails() {
               Add to wishlist
             </button>
 
-            {/* Share Modal */}
+            {/* Share Modal (only if we have a concrete id) */}
             {shareBook && <ShareModal book={shareBook} />}
           </div>
 
@@ -207,4 +198,3 @@ export default function BookDetails() {
     </section>
   );
 }
-// done
