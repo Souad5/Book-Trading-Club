@@ -12,12 +12,12 @@ import Dashboard from './dashboard/DashBoard';
 import AdminDashboard from './dashboard/Admin/AdminDashboard';
 import AddNewBook from './components/Section/AddNewBook';
 import FavouriteBooks from './pages/Wishlist';
-import { useContext } from 'react';
-import { AuthContext } from './firebase/AuthProvider';
+
+import { useAuth } from './firebase/AuthProvider';
 import Loader from './components/SharedComponents/Loader';
 
 function App() {
-  const { user, loading } = useContext(AuthContext);
+  const { loading } = useAuth();
   if (loading) return <Loader />;
   return (
     <div className="min-h-full flex flex-col">

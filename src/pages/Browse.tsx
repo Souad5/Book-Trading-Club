@@ -1,8 +1,9 @@
+// src/pages/Browse.tsx
 import { useSearchParams } from 'react-router-dom';
-
 import UseAxiosSecure from '@/axios/UseAxiosSecure.js';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import BookCard from '@/Component/BookCard';
+
 type Book = {
   id: string;
   title: string;
@@ -17,7 +18,7 @@ type Book = {
   image: string;
 };
 
-// --- API shape coming from your Mongoose model ---
+// API shape coming from your Mongoose model
 type ApiBook = {
   _id: string;
   title: string;
@@ -28,16 +29,11 @@ type ApiBook = {
   Exchange?: string;
   Language?: string;
   category: string;
-  tags: string[];
+  tags?: string[];
   price: number;
   description: string;
   imageUrl: string;
 };
-
-// demo data unchanged (omitted for brevity) …
-export const DEMO_BOOKS: Book[] = [
-  /* ...same as yours... */
-];
 
 // map DB → UI
 const normalize = (b: ApiBook): Book => ({
@@ -57,10 +53,11 @@ const normalize = (b: ApiBook): Book => ({
 export default function Browse() {
   const [searchParams] = useSearchParams();
   const rawQuery = (searchParams.get('query') || '').trim().toLowerCase();
+
   const axiosSecure = UseAxiosSecure();
 
   const {
-    data: books, // Book[] after select()
+    data: books = [], // ✅ default to empty array
     isLoading,
     isError,
     error,
@@ -71,13 +68,12 @@ export default function Browse() {
       return res.data;
     },
     select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
-    // If you want to see something while refetching-on-focus:
-    keepPreviousData: true,
+    placeholderData: keepPreviousData, // ✅ v5 replacement for keepPreviousData option
     staleTime: 30_000,
     retry: 1,
+    refetchOnWindowFocus: false,
   });
 
-  // ---- Render gates ----
   if (isLoading) {
     return (
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
@@ -91,19 +87,18 @@ export default function Browse() {
     );
   }
 
-  // Use API books when available; fall back to demo on error/empty
-  const source: Book[] =
-    !isError && books && books.length > 0 ? books : DEMO_BOOKS;
-
-  // helpful console for first successful load
-  if (books) {
-    // eslint-disable-next-line no-console
-    console.log('Fetched books:', books);
-  } else if (isError) {
-    // eslint-disable-next-line no-console
-    console.warn(
-      'Using demo data because fetch failed:',
-      (error as any)?.message ?? error
+  if (isError) {
+    return (
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
+          <h2 className="text-xl font-semibold text-red-700">
+            Failed to load books
+          </h2>
+          <p className="mt-2 text-red-600 text-sm">
+            {(error as any)?.message ?? 'Please try again later.'}
+          </p>
+        </div>
+      </section>
     );
   }
 
@@ -126,9 +121,7 @@ export default function Browse() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {books.length === 0 ? (
-          <div className="col-span-full text-sand-700">
-            No books matched your search.
-          </div>
+          <div className="col-span-full text-sand-700">No books found.</div>
         ) : (
           books.map((book) => <BookCard key={book.id} book={book} />)
         )}

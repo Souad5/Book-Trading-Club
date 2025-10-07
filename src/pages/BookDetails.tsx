@@ -1,3 +1,4 @@
+// src/pages/BookDetails.tsx
 import { useParams, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import ShareModal from '../components/Modals/ShareModal';
@@ -6,25 +7,26 @@ import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '@/components/SharedComponents/Loader';
 
-// type Book = {
-//   id: string;
-//   title: string;
-//   author: string;
-//   isbn: string;
-//   tags: string[];
-//   location: string;
-//   condition: 'new' | 'good' | 'fair';
-//   exchangeType: 'swap' | 'donate' | 'sell';
-//   language: string;
-//   genre: string;
-//   image: string;
-// };
+// --- API shape for a single book (as returned by your backend) ---
+type ApiBook = {
+  _id?: string;
+  id?: string;
+  title: string;
+  author: string;
+  isbn?: string; // may be absent depending on backend
+  location?: string;
+  condition?: string;
+  exchangeType?: string;
+  language?: string;
+  genre?: string;
+  imageUrl: string;
+  tags?: string[];
+};
 
 export default function BookDetails() {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
 
-  // wishlist button clicked
   const handleWishlistClick = () => {
     toast.success('Added to wishlist!');
   };
@@ -40,40 +42,52 @@ export default function BookDetails() {
   };
 
   const { id } = useParams<{ id: string }>();
-  console.log(id);
   const axiosSecure = UseAxiosSecure();
+
   const {
-    data: book = [],
+    data: book,
     isLoading,
     isFetching,
-  } = useQuery({
-    queryKey: ['book', id], // new key: all users
+  } = useQuery<ApiBook>({
+    queryKey: ['book', id],
     queryFn: async () => {
-      const res = await axiosSecure.get(`/api/books/${id}`); // no email filter
+      const res = await axiosSecure.get<ApiBook>(`/api/books/${id}`);
       return res.data;
     },
-    enabled: !!id, // wait until id exists
-    staleTime: 0, // always considered stale
-    refetchOnMount: 'always', // refresh when you arrive
+    enabled: !!id,
+    staleTime: 0,
+    refetchOnMount: 'always',
     refetchOnWindowFocus: false,
   });
+
+  // Show loader on initial load or while switching between different ids
   const showLoading = useMemo(() => {
     if (isLoading) return true;
-    // If we have some book but its id doesn't match the URL param AND we're fetching, show loader
     if (isFetching && book && String(book.id ?? book._id) !== String(id)) {
       return true;
     }
     return false;
   }, [isLoading, isFetching, book, id]);
 
-  if (showLoading) {
-    return <Loader></Loader>;
-  }
-  console.log(book);
+  if (showLoading) return <Loader />;
 
   if (!book) {
     return <div className="p-6">❌ Book not found.</div>;
   }
+
+  // Normalize for ShareModal which expects { id: string; title: string; author: string }
+  const normalizedId = book.id ?? book._id;
+  const shareBook = useMemo(
+    () =>
+      normalizedId
+        ? {
+            id: String(normalizedId),
+            title: book.title,
+            author: book.author,
+          }
+        : null,
+    [normalizedId, book.title, book.author]
+  );
 
   return (
     <section className="p-6 max-w-5xl mx-auto">
@@ -95,28 +109,40 @@ export default function BookDetails() {
         <div className="space-y-4">
           <h1 className="text-3xl font-bold text-soil-900">{book.title}</h1>
           <p className="text-lg text-sand-700">by {book.author}</p>
-          <p className="text-sm text-sand-500">ISBN: {book.isbn}</p>
+          {book.isbn && (
+            <p className="text-sm text-sand-500">ISBN: {book.isbn}</p>
+          )}
 
           <div className="grid grid-cols-2 gap-3 text-sm mt-4">
-            <p>
-              <strong>Location:</strong> {book.location}
-            </p>
-            <p>
-              <strong>Condition:</strong> {book.condition}
-            </p>
-            <p>
-              <strong>Exchange:</strong> {book.exchangeType}
-            </p>
-            <p>
-              <strong>Language:</strong> {book.language}
-            </p>
-            <p className="col-span-2">
-              <strong>Genre:</strong> {book.genre}
-            </p>
+            {book.location && (
+              <p>
+                <strong>Location:</strong> {book.location}
+              </p>
+            )}
+            {book.condition && (
+              <p>
+                <strong>Condition:</strong> {book.condition}
+              </p>
+            )}
+            {book.exchangeType && (
+              <p>
+                <strong>Exchange:</strong> {book.exchangeType}
+              </p>
+            )}
+            {book.language && (
+              <p>
+                <strong>Language:</strong> {book.language}
+              </p>
+            )}
+            {book.genre && (
+              <p className="col-span-2">
+                <strong>Genre:</strong> {book.genre}
+              </p>
+            )}
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            {book.tags.map((t) => (
+            {(book.tags ?? []).map((t: string) => (
               <span
                 key={t}
                 className="text-sm rounded bg-[#faf8f4] px-3 py-1 text-sand-700 border border-sand-300"
@@ -140,8 +166,9 @@ export default function BookDetails() {
             </button>
 
             {/* Share Modal */}
-            <ShareModal book={book} />
+            {shareBook && <ShareModal book={shareBook} />}
           </div>
+
           {/* Rate & Review Section */}
           <div className="mt-8 p-4 border border-sand-200 rounded-lg bg-sand-50">
             <h2 className="text-xl font-semibold mb-2">Rate & Review</h2>
