@@ -1,16 +1,15 @@
-import HeroSection from "@/components/Section/HeroSection";
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-<<<<<<< Updated upstream
-import { DEMO_BOOKS as BROWSE_BOOKS } from "./Browse";
-import { Search } from "lucide-react";
-=======
-import { Search, Heart } from "lucide-react";
->>>>>>> Stashed changes
-import WantToBeSellerSection from "@/components/Section/WantToBeSeller";
-import TopSellersSection from "@/components/Section/TopSeller";
-import { toast } from "react-toastify";
-import { useFavorites } from "@/hooks/useFavorites";
+import HeroSection from '@/components/Section/HeroSection';
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+
+import { DEMO_BOOKS as BROWSE_BOOKS } from './Browse';
+
+import { Search, Heart } from 'lucide-react';
+
+import WantToBeSellerSection from '@/components/Section/WantToBeSeller';
+import TopSellersSection from '@/components/Section/TopSeller';
+import { toast } from 'react-toastify';
+import { useFavorites } from '@/hooks/useFavorites';
 
 type Book = {
   id: string;
@@ -19,8 +18,8 @@ type Book = {
   isbn: string;
   tags: string[];
   location: string;
-  condition: "new" | "good" | "fair";
-  exchangeType: "swap" | "donate" | "sell";
+  condition: 'new' | 'good' | 'fair';
+  exchangeType: 'swap' | 'donate' | 'sell';
   language: string;
   genre: string;
   image: string;
@@ -29,40 +28,40 @@ type Book = {
 const DEMO_BOOKS: Book[] = BROWSE_BOOKS as unknown as Book[];
 
 export default function Home() {
-  const [query, setQuery] = useState("");
-  const [location, setLocation] = useState("");
-  const [condition, setCondition] = useState("");
-  const [exchangeType, setExchangeType] = useState("");
-  const [language, setLanguage] = useState("");
-  const [genre, setGenre] = useState("");
-  
+  const [query, setQuery] = useState('');
+  const [location, setLocation] = useState('');
+  const [condition, setCondition] = useState('');
+  const [exchangeType, setExchangeType] = useState('');
+  const [language, setLanguage] = useState('');
+  const [genre, setGenre] = useState('');
+
   // Use the new favorites hook
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
 
   const handleToggleFavorite = async (bookId: string) => {
-    const book = DEMO_BOOKS.find(b => b.id === bookId);
-    const bookTitle = book?.title || "Unknown Book";
-    
+    const book = DEMO_BOOKS.find((b) => b.id === bookId);
+    const bookTitle = book?.title || 'Unknown Book';
+
     if (!isAuthenticated) {
-      toast.error("Please log in to add books to favorites");
+      toast.error('Please log in to add books to favorites');
       return;
     }
-    
+
     const wasFavorite = isFavorite(bookId);
     const success = await toggleFavorite(bookId);
-    
+
     if (success) {
       if (wasFavorite) {
         toast.success(`"${bookTitle}" removed from favourites`, {
-          toastId: `remove-${bookId}`
+          toastId: `remove-${bookId}`,
         });
       } else {
         toast.success(`"${bookTitle}" added to favourites`, {
-          toastId: `add-${bookId}`
+          toastId: `add-${bookId}`,
         });
       }
     } else {
-      toast.error("Failed to update favorites");
+      toast.error('Failed to update favorites');
     }
   };
 
@@ -70,15 +69,15 @@ export default function Home() {
     const q = query.trim().toLowerCase();
     return DEMO_BOOKS.filter((b) => {
       const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(
-        " "
+        ' '
       )}`.toLowerCase();
       const matchesText = q.length === 0 || haystack.includes(q);
       const matchesLocation = !location || b.location === location;
       const matchesCondition =
-        !condition || b.condition === (condition as Book["condition"]);
+        !condition || b.condition === (condition as Book['condition']);
       const matchesExchange =
         !exchangeType ||
-        b.exchangeType === (exchangeType as Book["exchangeType"]);
+        b.exchangeType === (exchangeType as Book['exchangeType']);
       const matchesLanguage = !language || b.language === language;
       const matchesGenre = !genre || b.genre === genre;
       return (
@@ -216,20 +215,28 @@ export default function Home() {
                     handleToggleFavorite(b.id);
                   }}
                   className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
-                  aria-label={isFavorite(b.id) ? "Remove from favorites" : "Add to favorites"}
+                  aria-label={
+                    isFavorite(b.id)
+                      ? 'Remove from favorites'
+                      : 'Add to favorites'
+                  }
                 >
                   <Heart
                     className={`w-5 h-5 transition-colors duration-200 ${
                       isFavorite(b.id)
-                        ? "fill-red-500 text-red-500"
-                        : "text-gray-400 hover:text-red-400"
+                        ? 'fill-red-500 text-red-500'
+                        : 'text-gray-400 hover:text-red-400'
                     }`}
                   />
                 </button>
 
                 <Link to={`/book/${b.id}`} className="block space-y-2">
                   <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
-                    <img src={b.image} alt={b.title} className="h-full w-full object-cover" />
+                    <img
+                      src={b.image}
+                      alt={b.title}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                   <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
                     {b.title}
@@ -252,7 +259,9 @@ export default function Home() {
                       {b.genre}
                     </span>
                   </div>
-                  <span className="mt-4 inline-block text-sm text-blue-600 hover:underline">View Details →</span>
+                  <span className="mt-4 inline-block text-sm text-blue-600 hover:underline">
+                    View Details →
+                  </span>
                 </Link>
               </article>
             ))}
