@@ -15,9 +15,12 @@ import FavouriteBooks from './pages/Wishlist';
 import { useContext } from 'react';
 import { AuthContext } from './firebase/AuthProvider';
 import Loader from './components/SharedComponents/Loader';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 function App() {
   const { user, loading } = useContext(AuthContext);
+  
   if (loading) return <Loader />;
   return (
     <div className="min-h-full flex flex-col">
@@ -32,10 +35,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forget" element={<ForgotPassword />} />
           <Route path="/wishlist" element={<FavouriteBooks />} />
-
+          <Route path="/about" element={<About/>}/>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/adminDashboard" element={<AdminDashboard />} />
           <Route path="/add-book" element={<AddNewBook />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
       <Footer />
