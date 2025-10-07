@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link, useParams } from 'react-router';
 
 const BookCard = ({ book }) => {
+
   return (
     <Link to={`/book/${book.id}`} key={book.id}>
       <article className="rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow">
