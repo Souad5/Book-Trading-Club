@@ -1,7 +1,7 @@
 // src/components/HeroSection.tsx
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router';
 
 export default function HeroSection() {
   return (
@@ -14,7 +14,7 @@ export default function HeroSection() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/public/video/videoplayback.mp4" type="video/mp4" />
+        <source src="/video/videoplayback.mp4" type="video/mp4" />
         {/* Fallback for browsers that don't support video */}
         Your browser does not support the video tag.
       </video>
@@ -35,16 +35,23 @@ export default function HeroSection() {
         </h1>
 
         <p className="mt-6 text-lg sm:text-xl text-gray-200 max-w-2xl mx-auto">
-          Join <span className="font-semibold">ShelfShare</span> – the AI-powered
-          book trading club where your books find new shelves, and your next read
-          finds you.
+          Join <span className="font-semibold">ShelfShare</span> – the
+          AI-powered book trading club where your books find new shelves, and
+          your next read finds you.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-purple-600 hover:bg-purple-700 text-white">
+          <Button
+            size="lg"
+            className="bg-purple-600 hover:bg-purple-700 text-white"
+          >
             Start Sharing
           </Button>
-          <Button size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
+          <Button
+            size="lg"
+            variant="outline"
+            className="text-white border-white hover:bg-white/10"
+          >
             <Link to="/browse">Browse Books</Link>
           </Button>
         </div>

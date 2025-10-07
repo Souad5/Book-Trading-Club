@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FiPlus, FiLogOut, FiSun } from "react-icons/fi";
+import { FiPlus, FiLogOut, FiSun, FiHeart } from "react-icons/fi";
 import NavLogo from "./NavLogo";
 import SearchBar from "./SearchBar";
 import UserMenu from "./UserMenu";
@@ -51,6 +51,14 @@ export default function Navbar() {
               <NavLink to="/browse" className={linkClasses}>
                 Browse
               </NavLink>
+              {isAuthenticated && (
+                <NavLink to="/wishlist" className={linkClasses}>
+                  <div className="flex items-center gap-1">
+                    <FiHeart className="w-4 h-4" />
+                    <span>Favourite</span>
+                  </div>
+                </NavLink>
+              )}
               <NavLink to="/about" className={linkClasses}>
                 About
               </NavLink>
@@ -127,6 +135,14 @@ export default function Navbar() {
           <NavLink to="/browse" className={linkClasses}>
             Browse
           </NavLink>
+          {isAuthenticated && (
+            <NavLink to="/wishlist" className={linkClasses}>
+              <div className="flex items-center gap-2">
+                <FiHeart className="w-4 h-4" />
+                <span>Favourite</span>
+              </div>
+            </NavLink>
+          )}
           <NavLink to="/about" className={linkClasses}>
             About
           </NavLink>

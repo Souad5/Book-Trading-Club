@@ -52,7 +52,7 @@ export default function UserMenu() {
           {/* Menu items */}
           <div className="flex flex-col">
             <Link to="/wishlist" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded">
-              <FiHeart /> Wishlist
+              <FiHeart /> Favourite Books
             </Link>
             <Link to="/messages" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded relative">
               <FiMail /> Messages
