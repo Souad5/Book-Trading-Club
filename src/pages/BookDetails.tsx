@@ -28,6 +28,7 @@ export default function BookDetails() {
   const [review, setReview] = useState<string>('');
 
   const handleWishlistClick = () => {
+    
     toast.success('Added to wishlist!');
   };
 
@@ -206,3 +207,4 @@ export default function BookDetails() {
     </section>
   );
 }
+// done

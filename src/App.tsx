@@ -15,6 +15,8 @@ import FavouriteBooks from './pages/Wishlist';
 
 import { useAuth } from './firebase/AuthProvider';
 import Loader from './components/SharedComponents/Loader';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 function App() {
   const { loading } = useAuth();
@@ -32,10 +34,11 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/forget" element={<ForgotPassword />} />
           <Route path="/wishlist" element={<FavouriteBooks />} />
-
+          <Route path="/about" element={<About/>}/>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/adminDashboard" element={<AdminDashboard />} />
           <Route path="/add-book" element={<AddNewBook />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
       </main>
       <Footer />
