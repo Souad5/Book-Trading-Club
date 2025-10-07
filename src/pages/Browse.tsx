@@ -1,9 +1,8 @@
 import { useSearchParams } from 'react-router-dom';
-import { useMemo } from 'react';
-import BookCard from '../Component/BookCard.jsx';
+
 import UseAxiosSecure from '@/axios/UseAxiosSecure.js';
 import { useQuery } from '@tanstack/react-query';
-
+import BookCard from '@/Component/BookCard';
 type Book = {
   id: string;
   title: string;
@@ -95,8 +94,6 @@ export default function Browse() {
   // Use API books when available; fall back to demo on error/empty
   const source: Book[] =
     !isError && books && books.length > 0 ? books : DEMO_BOOKS;
-
-
 
   // helpful console for first successful load
   if (books) {
