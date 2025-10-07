@@ -1,6 +1,8 @@
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  (import.meta as any).env?.VITE_API_URL ||
+  'http://localhost:3000/api';
 
-export interface FavoritesResponse {
+export interface FavoritesResponse {  
   success: boolean;
   favoriteBooks?: string[];
   message?: string;
@@ -10,11 +12,11 @@ export interface FavoritesResponse {
 
 class FavoritesApiService {
   private async makeRequest<T>(
-    endpoint: string, 
+    endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    
+
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
@@ -24,7 +26,9 @@ class FavoritesApiService {
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `API request failed: ${response.status} ${response.statusText}`
+      );
     }
 
     return response.json();
@@ -37,12 +41,14 @@ class FavoritesApiService {
     try {
       const params = new URLSearchParams();
       if (email) params.append('email', email);
-      
+
       const queryString = params.toString();
-      const endpoint = `/favorites/${uid}${queryString ? `?${queryString}` : ''}`;
-      
+      const endpoint = `/favorites/${uid}${
+        queryString ? `?${queryString}` : ''
+      }`;
+
       const response = await this.makeRequest<FavoritesResponse>(endpoint);
-      
+
       if (response.success) {
         return response.favoriteBooks || [];
       } else {
@@ -58,15 +64,22 @@ class FavoritesApiService {
   /**
    * Add book to favorites
    */
-  async addToFavorites(uid: string, bookId: string, email?: string): Promise<boolean> {
+  async addToFavorites(
+    uid: string,
+    bookId: string,
+    email?: string
+  ): Promise<boolean> {
     try {
-      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}`, {
-        method: 'POST',
-        body: JSON.stringify({ 
-          bookId,
-          email 
-        }),
-      });
+      const response = await this.makeRequest<FavoritesResponse>(
+        `/favorites/${uid}`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            bookId,
+            email,
+          }),
+        }
+      );
 
       return response.success;
     } catch (error) {
@@ -80,9 +93,12 @@ class FavoritesApiService {
    */
   async removeFromFavorites(uid: string, bookId: string): Promise<boolean> {
     try {
-      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/${bookId}`, {
-        method: 'DELETE',
-      });
+      const response = await this.makeRequest<FavoritesResponse>(
+        `/favorites/${uid}/${bookId}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       return response.success;
     } catch (error) {
@@ -94,25 +110,32 @@ class FavoritesApiService {
   /**
    * Toggle favorite status (add if not present, remove if present)
    */
-  async toggleFavorite(uid: string, bookId: string, email?: string): Promise<{ success: boolean; action: 'added' | 'removed' | null }> {
+  async toggleFavorite(
+    uid: string,
+    bookId: string,
+    email?: string
+  ): Promise<{ success: boolean; action: 'added' | 'removed' | null }> {
     try {
-      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/toggle`, {
-        method: 'PUT',
-        body: JSON.stringify({ 
-          bookId,
-          email 
-        }),
-      });
+      const response = await this.makeRequest<FavoritesResponse>(
+        `/favorites/${uid}/toggle`,
+        {
+          method: 'PUT',
+          body: JSON.stringify({
+            bookId,
+            email,
+          }),
+        }
+      );
 
       return {
         success: response.success,
-        action: response.action || null
+        action: response.action || null,
       };
     } catch (error) {
       console.error('Error toggling favorite:', error);
       return {
         success: false,
-        action: null
+        action: null,
       };
     }
   }
