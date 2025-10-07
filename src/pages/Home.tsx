@@ -1,5 +1,5 @@
 import HeroSection from '@/components/Section/HeroSection';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { DEMO_BOOKS as BROWSE_BOOKS } from './Browse';
@@ -10,6 +10,7 @@ import WantToBeSellerSection from '@/components/Section/WantToBeSeller';
 import TopSellersSection from '@/components/Section/TopSeller';
 import { toast } from 'react-toastify';
 import { useFavorites } from '@/hooks/useFavorites';
+import { AuthContext } from '@/firebase/AuthProvider';
 
 type Book = {
   id: string;
@@ -34,6 +35,9 @@ export default function Home() {
   const [exchangeType, setExchangeType] = useState('');
   const [language, setLanguage] = useState('');
   const [genre, setGenre] = useState('');
+
+  const { user } = useContext(AuthContext);
+  console.log(user);
 
   // Use the new favorites hook
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
