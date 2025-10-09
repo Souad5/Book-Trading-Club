@@ -5,7 +5,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { useQuery } from '@tanstack/react-query';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom'; // Fixed import to react-router-dom
+import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 // API shape coming from your Mongoose model
@@ -38,6 +38,7 @@ export default function BookDetails() {
     data: book,
     isLoading,
     isFetching,
+    isError,
   } = useQuery<ApiBook>({
     queryKey: ['book', id],
     queryFn: async () => {
@@ -56,7 +57,7 @@ export default function BookDetails() {
       return;
     }
 
-    const bookId = book?._id; // Make sure to use _id consistently
+    const bookId = book?._id;
     if (!bookId) {
       toast.error('Book ID is not available');
       return;
@@ -87,9 +88,12 @@ export default function BookDetails() {
 
   if (showLoading) return <Loader />;
 
+  if (isError) {
+    return <div className="p-6">❌ Failed to load book details.</div>;
+  }
+
   if (!book) return <div className="p-6">❌ Book not found.</div>;
 
-  // ShareBook object to pass to ShareModal
   const shareBook =
     currentBookId != null
       ? {
@@ -168,20 +172,23 @@ export default function BookDetails() {
               Trade Now
             </button>
 
-            <button
-              onClick={handleWishlistClick} // Handle click for favorites
-              className="px-5 py-2.5 hover:bg-leaf-600 hover:text-white text-gray-500 font-semibold bg-[#faf8f4] border border-gray-300 rounded-lg shadow transition"
-            >
-              {/* Favorite Heart Icon */}
-              <Heart
-                className={`w-5 h-5 transition-colors duration-200 ${
-                  isFavorite(book?._id)
-                    ? 'fill-red-500 text-red-500'
-                    : 'text-gray-400 hover:text-red-400'
-                }`}
-              />
-              Add to wishlist
-            </button>
+            {isFavorite(book?._id) ? (
+              <button
+                onClick={handleWishlistClick}
+                className="flex items-center gap-2 px-5 py-2.5 hover:bg-leaf-600 hover:text-white text-gray-500 font-semibold bg-[#faf8f4] border border-gray-300 rounded-lg shadow transition"
+              >
+                <Heart className="w-5 h-5 fill-red-500 text-red-500" />
+                Remove from Wishlist
+              </button>
+            ) : (
+              <button
+                onClick={handleWishlistClick}
+                className="flex items-center gap-2 px-5 py-2.5 hover:bg-leaf-600 hover:text-white text-gray-500 font-semibold bg-[#faf8f4] border border-gray-300 rounded-lg shadow transition"
+              >
+                <Heart className="w-5 h-5 text-gray-400 hover:text-red-400" />
+                Add to wishlist
+              </button>
+            )}
 
             {shareBook && <ShareModal book={shareBook} />}
           </div>
