@@ -131,7 +131,7 @@ export default function FavouriteBooks() {
     );
 
   const handleToggleFavorite = async (bookId: string) => {
-    const book = DEMO_BOOKS.find((b) => b.id === bookId);
+    const book = books.find((b) => b.id === bookId);
     const bookTitle = book?.title || 'Unknown Book';
 
     if (!isAuthenticated) {
