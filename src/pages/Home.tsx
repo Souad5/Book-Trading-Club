@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { useFavorites } from '@/hooks/useFavorites';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import Loader2 from '@/components/SharedComponents/Loader2';
 
 type Book = {
   id: string;
@@ -252,12 +253,14 @@ export default function Home() {
 
           {/* Loading / Error states for the section */}
           {isLoading && (
-            <div className="text-slate-600">Loading latest books…</div>
+            <div className="flex justify-center">
+              <Loader2 />
+            </div>
           )}
           {isError && (
             <div className="text-red-600">
               Failed to load books:{' '}
-              {(error as any)?.message ?? 'Try again later.'}
+              {(error as Error)?.message ?? 'Try again later.'}
             </div>
           )}
 
