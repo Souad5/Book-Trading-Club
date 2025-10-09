@@ -1,102 +1,170 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Heart, Search } from "lucide-react";
-import { toast } from "react-toastify";
-import { useFavorites } from "@/hooks/useFavorites";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Heart, Search } from 'lucide-react';
+import { toast } from 'react-toastify';
+import { useFavorites } from '@/hooks/useFavorites';
+import { useQuery } from '@tanstack/react-query';
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
+import Loader2 from '@/components/SharedComponents/Loader2';
 
 type Book = {
   id: string;
   title: string;
   author: string;
+  price: number;
   isbn: string;
   tags: string[];
   location: string;
-  condition: "new" | "good" | "fair";
-  exchangeType: "swap" | "donate" | "sell";
+  condition: string;
+  exchangeType: string;
   language: string;
   genre: string;
-  image?: string;
+  image: string;
 };
+
+// API shape coming from your Mongoose model
+type ApiBook = {
+  _id: string;
+  title: string;
+  author: string;
+  ISBN?: string;
+  Location?: string;
+  Condition?: string;
+  Exchange?: string;
+  Language?: string;
+  category: string;
+  tags?: string[];
+  price: number;
+  description: string;
+  imageUrl: string;
+};
+
+// map DB → UI
+const normalize = (b: ApiBook): Book => ({
+  id: b._id,
+  title: b.title,
+  author: b.author,
+  isbn: b.ISBN ?? 'N/A',
+  tags: b.tags ?? [],
+  location: b.Location ?? 'Dhaka',
+  condition: (b.Condition ?? 'Good').toLowerCase(),
+  exchangeType: (b.Exchange ?? 'Swap').toLowerCase(),
+  language: b.Language ?? 'English',
+  genre: b.category ?? 'Fiction',
+  image: b.imageUrl,
+  price: b.price,
+});
 
 // This would normally come from a global state or API
 const DEMO_BOOKS: Book[] = [
   {
-    id: "1",
-    title: "Atomic Habits",
-    author: "James Clear",
-    isbn: "9780735211292",
-    tags: ["self-help", "productivity"],
-    location: "Dhaka",
-    condition: "good",
-    exchangeType: "swap",
-    language: "English",
-    genre: "Non-fiction",
+    id: '1',
+    title: 'Atomic Habits',
+    author: 'James Clear',
+    isbn: '9780735211292',
+    tags: ['self-help', 'productivity'],
+    location: 'Dhaka',
+    condition: 'good',
+    exchangeType: 'swap',
+    language: 'English',
+    genre: 'Non-fiction',
   },
   {
-    id: "2",
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    isbn: "9780061120084",
-    tags: ["classic", "justice"],
-    location: "Chattogram",
-    condition: "fair",
-    exchangeType: "donate",
-    language: "English",
-    genre: "Fiction",
+    id: '2',
+    title: 'To Kill a Mockingbird',
+    author: 'Harper Lee',
+    isbn: '9780061120084',
+    tags: ['classic', 'justice'],
+    location: 'Chattogram',
+    condition: 'fair',
+    exchangeType: 'donate',
+    language: 'English',
+    genre: 'Fiction',
   },
   {
-    id: "3",
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    isbn: "9780062315007",
-    tags: ["philosophy", "journey"],
-    location: "Dhaka",
-    condition: "new",
-    exchangeType: "sell",
-    language: "English",
-    genre: "Adventure",
+    id: '3',
+    title: 'The Alchemist',
+    author: 'Paulo Coelho',
+    isbn: '9780062315007',
+    tags: ['philosophy', 'journey'],
+    location: 'Dhaka',
+    condition: 'new',
+    exchangeType: 'sell',
+    language: 'English',
+    genre: 'Adventure',
   },
 ];
 
 export default function FavouriteBooks() {
-  const [searchQuery, setSearchQuery] = useState("");
-  
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const axiosSecure = UseAxiosSecure();
+
+  const {
+    data: books = [], // ✅ default to empty array
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['books'],
+    queryFn: async () => {
+      const res = await axiosSecure.get<ApiBook[]>('/api/books');
+      return res.data;
+    },
+    select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
+  });
+
   // Use the new favorites hook
-  const { favorites, toggleFavorite, isFavorite, isAuthenticated, loading, error } = useFavorites();
+  const {
+    favorites,
+    toggleFavorite,
+    isFavorite,
+    isAuthenticated,
+    loading,
+    error,
+  } = useFavorites();
+
+  if (isLoading || loading)
+    return (
+      <div className='flex justify-center items-center min-h-screen'>
+        <Loader2 />
+      </div>
+    );
 
   const handleToggleFavorite = async (bookId: string) => {
-    const book = DEMO_BOOKS.find(b => b.id === bookId);
-    const bookTitle = book?.title || "Unknown Book";
-    
+    const book = DEMO_BOOKS.find((b) => b.id === bookId);
+    const bookTitle = book?.title || 'Unknown Book';
+
     if (!isAuthenticated) {
-      toast.error("Please log in to manage favorites");
+      toast.error('Please log in to manage favorites');
       return;
     }
-    
+
     const wasFavorite = isFavorite(bookId);
     const success = await toggleFavorite(bookId);
-    
+
     if (success) {
       if (wasFavorite) {
         toast.success(`"${bookTitle}" removed from favourites`, {
-          toastId: `remove-${bookId}`
+          toastId: `remove-${bookId}`,
         });
       } else {
         toast.success(`"${bookTitle}" added to favourites`, {
-          toastId: `add-${bookId}`
+          toastId: `add-${bookId}`,
         });
       }
     } else {
-      toast.error("Failed to update favorites");
+      toast.error('Failed to update favorites');
     }
   };
 
-  const favoriteBooks = DEMO_BOOKS.filter(book => favorites.includes(book.id));
-  
-  const filteredBooks = favoriteBooks.filter(book => 
-    book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.genre.toLowerCase().includes(searchQuery.toLowerCase())
+  const favoriteBooks = books.filter((book) => favorites.includes(book.id));
+
+  console.log(favoriteBooks); // This is straight from the DB
+  const filteredBooks = favoriteBooks.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.genre.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -130,15 +198,12 @@ export default function FavouriteBooks() {
 
       {/* Book Count and Status */}
       <div className="mb-6">
-        {loading && (
-          <p className="text-blue-600">Loading your favourites...</p>
-        )}
-        {error && (
-          <p className="text-red-600">Error: {error}</p>
-        )}
+        {loading && <p className="text-blue-600">Loading your favourites...</p>}
+        {error && <p className="text-red-600">Error: {error}</p>}
         {!loading && !error && (
           <p className="text-gray-600">
-            {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
+            {filteredBooks.length}{' '}
+            {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
           </p>
         )}
       </div>
@@ -157,9 +222,7 @@ export default function FavouriteBooks() {
                 className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
                 aria-label="Remove from favorites"
               >
-                <Heart
-                  className="w-5 h-5 fill-red-500 text-red-500 transition-colors duration-200 hover:fill-red-600"
-                />
+                <Heart className="w-5 h-5 fill-red-500 text-red-500 transition-colors duration-200 hover:fill-red-600" />
               </button>
 
               <Link to={`/book/${book.id}`} className="block space-y-2">
@@ -208,10 +271,9 @@ export default function FavouriteBooks() {
             {searchQuery ? 'No books found' : 'Your favourites list is empty'}
           </h3>
           <p className="text-gray-500 mb-6">
-            {searchQuery 
+            {searchQuery
               ? 'Try adjusting your search terms.'
-              : 'Start adding books to your favourites by clicking the heart icon on any book.'
-            }
+              : 'Start adding books to your favourites by clicking the heart icon on any book.'}
           </p>
           {!searchQuery && (
             <Link
