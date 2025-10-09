@@ -1,9 +1,10 @@
+import { motion } from 'framer-motion';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import ShareModal from '@/components/Modals/ShareModal';
 import Loader from '@/components/SharedComponents/Loader';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useQuery } from '@tanstack/react-query';
-import { Heart } from 'lucide-react';
+import { Heart, MoveLeft } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -104,23 +105,43 @@ export default function BookDetails() {
       : null;
 
   return (
-    <section className="p-6 max-w-5xl mx-auto">
-      <Link to="/" className="text-blue-600 text-sm">
-        &larr; Back to Home
+    <motion.section
+      className="p-6 max-w-5xl mx-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Link to="/browse" className="text-black text-sm flex gap-2 items-center rounded-full border border-black transition-all duration-300 hover:bg-gray-600 hover:border-none hover:text-white p-2 w-[10rem]">
+        <MoveLeft />
+        Back to Browse
       </Link>
 
-      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+      <motion.div
+        className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-start"
+        initial={{ x: '-100vw' }}
+        animate={{ x: 0 }}
+        transition={{ type: 'spring', stiffness: 60 }}
+      >
         {/* Book Image */}
-        <div className="w-full">
+        <motion.div
+          className="w-full"
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: 'spring', stiffness: 300 }}
+        >
           <img
             src={book.imageUrl}
             alt={book.title}
             className="w-full h-auto rounded-xl shadow-lg object-cover"
           />
-        </div>
+        </motion.div>
 
         {/* Book Info */}
-        <div className="space-y-4">
+        <motion.div
+          className="space-y-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           <h1 className="text-3xl font-bold text-soil-900">{book.title}</h1>
           <p className="text-lg text-sand-700">by {book.author}</p>
           {book.ISBN && (
@@ -167,34 +188,38 @@ export default function BookDetails() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-4 mt-6">
+          <motion.div className="flex items-center gap-4 mt-6">
             <button className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg shadow transition">
               Trade Now
             </button>
 
             {isFavorite(book?._id) ? (
-              <button
+              <motion.button
                 onClick={handleWishlistClick}
                 className="flex items-center gap-2 px-5 py-2.5 hover:bg-leaf-600 hover:text-white text-gray-500 font-semibold bg-[#faf8f4] border border-gray-300 rounded-lg shadow transition"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 200 }}
               >
                 <Heart className="w-5 h-5 fill-red-500 text-red-500" />
                 Remove from Wishlist
-              </button>
+              </motion.button>
             ) : (
-              <button
+              <motion.button
                 onClick={handleWishlistClick}
                 className="flex items-center gap-2 px-5 py-2.5 hover:bg-leaf-600 hover:text-white text-gray-500 font-semibold bg-[#faf8f4] border border-gray-300 rounded-lg shadow transition"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: 'spring', stiffness: 200 }}
               >
                 <Heart className="w-5 h-5 text-gray-400 hover:text-red-400" />
                 Add to wishlist
-              </button>
+              </motion.button>
             )}
 
             {shareBook && <ShareModal book={shareBook} />}
-          </div>
+          </motion.div>
 
           {/* Rate & Review Section */}
-          <div className="mt-8 p-4 border border-sand-200 rounded-lg bg-sand-50">
+          <motion.div className="mt-8 p-4 border border-sand-200 rounded-lg bg-sand-50">
             <h2 className="text-xl font-semibold mb-2">Rate & Review</h2>
 
             <div className="flex items-center mb-3">
@@ -221,9 +246,9 @@ export default function BookDetails() {
             <button className="mt-3 px-4 py-2 bg-leaf-500 text-white rounded-lg hover:bg-leaf-600 transition">
               Submit Review
             </button>
-          </div>
-        </div>
-      </div>
-    </section>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </motion.section>
   );
 }
