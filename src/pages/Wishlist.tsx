@@ -55,46 +55,6 @@ const normalize = (b: ApiBook): Book => ({
   price: b.price,
 });
 
-// This would normally come from a global state or API
-const DEMO_BOOKS: Book[] = [
-  {
-    id: '1',
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    isbn: '9780735211292',
-    tags: ['self-help', 'productivity'],
-    location: 'Dhaka',
-    condition: 'good',
-    exchangeType: 'swap',
-    language: 'English',
-    genre: 'Non-fiction',
-  },
-  {
-    id: '2',
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    isbn: '9780061120084',
-    tags: ['classic', 'justice'],
-    location: 'Chattogram',
-    condition: 'fair',
-    exchangeType: 'donate',
-    language: 'English',
-    genre: 'Fiction',
-  },
-  {
-    id: '3',
-    title: 'The Alchemist',
-    author: 'Paulo Coelho',
-    isbn: '9780062315007',
-    tags: ['philosophy', 'journey'],
-    location: 'Dhaka',
-    condition: 'new',
-    exchangeType: 'sell',
-    language: 'English',
-    genre: 'Adventure',
-  },
-];
-
 export default function FavouriteBooks() {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -103,7 +63,6 @@ export default function FavouriteBooks() {
   const {
     data: books = [], // ✅ default to empty array
     isLoading,
-    isError,
   } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
@@ -125,13 +84,13 @@ export default function FavouriteBooks() {
 
   if (isLoading || loading)
     return (
-      <div className='flex justify-center items-center min-h-screen'>
+      <div className="flex justify-center items-center min-h-screen">
         <Loader2 />
       </div>
     );
 
   const handleToggleFavorite = async (bookId: string) => {
-    const book = DEMO_BOOKS.find((b) => b.id === bookId);
+    const book = books.find((b) => b.id === bookId);
     const bookTitle = book?.title || 'Unknown Book';
 
     if (!isAuthenticated) {
