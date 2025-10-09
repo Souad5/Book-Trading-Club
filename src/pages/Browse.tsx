@@ -8,6 +8,7 @@ type Book = {
   id: string;
   title: string;
   author: string;
+  price: number;
   isbn: string;
   tags: string[];
   location: string;
@@ -48,6 +49,7 @@ const normalize = (b: ApiBook): Book => ({
   language: b.Language ?? 'English',
   genre: b.category ?? 'Fiction',
   image: b.imageUrl,
+  price: b.price,
 });
 
 export default function Browse() {
