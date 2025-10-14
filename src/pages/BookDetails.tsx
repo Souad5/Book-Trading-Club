@@ -111,8 +111,8 @@ export default function BookDetails() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <Link to="/browse" className="text-black text-sm flex gap-2 items-center rounded-full border border-black transition-all duration-300 hover:bg-gray-600 hover:border-none hover:text-white p-2 w-[10rem]">
-        <MoveLeft />
+      <Link to="/browse" className="text-black text-sm flex gap-2 items-center  rounded-full px-4 border border-black transition-all duration-300 hover:bg-gray-600 hover:border-none hover:text-white p-2 w-[10rem]">
+        <MoveLeft className='pt-1' />
         Back to Browse
       </Link>
 

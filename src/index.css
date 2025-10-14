@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-/* @plugin "daisyui"; */
+
 @theme {
   --color-leaf-50: #f3faf3;
   --color-leaf-100: #e5f5e6;

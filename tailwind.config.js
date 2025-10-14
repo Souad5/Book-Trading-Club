@@ -1,9 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    './index.html',
-    './src/**/*.{js,ts,jsx,tsx}',
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  daisyui: {
+    base: false, // <— key line: don't touch html/body
+    // themes: false, // (optional) if you don't want any theme at all
+  },
   theme: {
     extend: {
       colors: {
@@ -47,7 +48,18 @@ export default {
         accent: '#2ec4b6', // modern vibrant accent for CTAs
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'],
+        sans: [
+          'Inter',
+          'ui-sans-serif',
+          'system-ui',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'Noto Sans',
+          'Apple Color Emoji',
+          'Segoe UI Emoji',
+        ],
       },
       boxShadow: {
         subtle: '0 1px 2px rgba(0,0,0,0.05)',
@@ -55,6 +67,4 @@ export default {
     },
   },
   plugins: [],
-}
-
-
+};

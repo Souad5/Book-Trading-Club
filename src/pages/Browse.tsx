@@ -79,7 +79,7 @@ export default function Browse() {
   if (isLoading) {
     return (
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="rounded-2xl border border-sand-200 bg-gradient-to-br from-sand-50 via-white to-leaf-50 p-8 mb-6">
+        <div className="gap-5 rounded-2xl border border-sand-200 bg-gradient-to-br from-sand-50 via-white to-leaf-50 p-8 mb-6">
           <h1 className="text-3xl font-semibold text-soil-900 tracking-tight">
             Browse Books
           </h1>
