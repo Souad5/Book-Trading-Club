@@ -26,15 +26,36 @@ type ApiBook = {
   imageUrl: string;
 };
 
+// ---- Reviews API shapes ----
+type Review = {
+  _id: string;
+  userId: string;
+  bookId: string;
+  rating: number;
+  content: string;
+  title: string;
+  createdAt: string;
+  user?: { displayName?: string };
+};
+
+// Your API returns a wrapper object, not an array.
+// (If your backend can also send `null`, keep `Review[] | null`)
+type ReviewAPI = {
+  error: boolean;
+  message: string;
+  data: Review[] | null;
+};
+
 export default function BookDetails() {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
 
-  const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites(); // Use favorites hook
+  const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
 
   const { id } = useParams<{ id: string }>();
   const axiosSecure = UseAxiosSecure();
 
+  // ---- Book details ----
   const {
     data: book,
     isLoading,
@@ -51,6 +72,26 @@ export default function BookDetails() {
     refetchOnMount: 'always',
     refetchOnWindowFocus: false,
   });
+
+  // ---- Book reviews (use the BOOK id) ----
+  const {
+    data: reviewsResp,
+    isLoading: isReviewsLoading,
+    isError: isReviewsError,
+  } = useQuery<ReviewAPI>({
+    queryKey: ['book-reviews', book?._id],
+    queryFn: async () => {
+      const res = await axiosSecure.get<ReviewAPI>(
+        `/api/reviews/get-book-reviews/${book!._id}`
+      );
+      return res.data;
+    },
+    enabled: !!book?._id, // only fetch when the book is loaded
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+  });
+
+  const reviews: Review[] = reviewsResp?.data ?? [];
 
   const handleWishlistClick = async () => {
     if (!isAuthenticated) {
@@ -87,7 +128,9 @@ export default function BookDetails() {
   const showLoading =
     isLoading || (isFetching && book && String(currentBookId) !== String(id));
 
-  if (showLoading) return <Loader />;
+  if (showLoading || isReviewsLoading) return <Loader />;
+
+  console.log(reviews);
 
   if (isError) {
     return <div className="p-6">❌ Failed to load book details.</div>;
@@ -111,8 +154,11 @@ export default function BookDetails() {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <Link to="/browse" className="text-black text-sm flex gap-2 items-center  rounded-full px-4 border border-black transition-all duration-300 hover:bg-gray-600 hover:border-none hover:text-white p-2 w-[10rem]">
-        <MoveLeft className='pt-1' />
+      <Link
+        to="/browse"
+        className="text-black text-sm flex gap-2 items-center rounded-full px-4 border border-black transition-all duration-300 hover:bg-gray-600 hover:border-none hover:text-white p-2 w-[10rem]"
+      >
+        <MoveLeft className="pt-1" />
         Back to Browse
       </Link>
 
@@ -222,6 +268,44 @@ export default function BookDetails() {
           <motion.div className="mt-8 p-4 border border-sand-200 rounded-lg bg-sand-50">
             <h2 className="text-xl font-semibold mb-2">Rate & Review</h2>
 
+            {/* Reviews List (from query) */}
+            <div className="mb-4">
+              {isReviewsError && (
+                <p className="text-red-500">Failed to load reviews.</p>
+              )}
+
+              {!isReviewsError && reviews.length === 0 && (
+                <p className="text-sand-600">No reviews yet. Be the first!</p>
+              )}
+
+              {reviews.length > 0 && (
+                <ul className="space-y-3">
+                  {reviews.map((r) => (
+                    <li
+                      key={r._id}
+                      className="p-3 bg-white rounded border border-sand-200"
+                    >
+                      <div className="text-sm text-sand-600">
+                        <strong>{r.user?.displayName || 'Anonymous'}</strong>{' '}
+                        <span className="ml-2">
+                          ({new Date(r.createdAt).toLocaleDateString()})
+                        </span>
+                      </div>
+                      <div className="text-yellow-500 text-sm">
+                        {'★'.repeat(r.rating)}{' '}
+                        <span className="text-gray-300">
+                          {'★'.repeat(Math.max(0, 5 - r.rating))}
+                        </span>
+                      </div>
+                      <h1 className='text-lg font-bold'>{r?.title}</h1>
+                      <p className="text-sand-800 text-sm mt-1">{r.content}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* Your rating input */}
             <div className="flex items-center mb-3">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
