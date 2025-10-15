@@ -277,32 +277,6 @@ export default function BookDetails() {
               {!isReviewsError && reviews.length === 0 && (
                 <p className="text-sand-600">No reviews yet. Be the first!</p>
               )}
-
-              {reviews.length > 0 && (
-                <ul className="space-y-3">
-                  {reviews.map((r) => (
-                    <li
-                      key={r._id}
-                      className="p-3 bg-white rounded border border-sand-200"
-                    >
-                      <div className="text-sm text-sand-600">
-                        <strong>{r.user?.displayName || 'Anonymous'}</strong>{' '}
-                        <span className="ml-2">
-                          ({new Date(r.createdAt).toLocaleDateString()})
-                        </span>
-                      </div>
-                      <div className="text-yellow-500 text-sm">
-                        {'★'.repeat(r.rating)}{' '}
-                        <span className="text-gray-300">
-                          {'★'.repeat(Math.max(0, 5 - r.rating))}
-                        </span>
-                      </div>
-                      <h1 className='text-lg font-bold'>{r?.title}</h1>
-                      <p className="text-sand-800 text-sm mt-1">{r.content}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
             </div>
 
             {/* Your rating input */}
@@ -333,6 +307,34 @@ export default function BookDetails() {
           </motion.div>
         </motion.div>
       </motion.div>
+      <div className='my-20 space-y-16'>
+        <h1 className='text-4xl font-extrabold font-mono text-center'>Current Reviews</h1>
+        {reviews.length > 0 && (
+          <ul className="space-y-3">
+            {reviews.map((r) => (
+              <li
+                key={r._id}
+                className="p-3 bg-white rounded border border-sand-200"
+              >
+                <div className="text-sm text-sand-600">
+                  <strong>{r.user?.displayName || 'Anonymous'}</strong>{' '}
+                  <span className="ml-2">
+                    ({new Date(r.createdAt).toLocaleDateString()})
+                  </span>
+                </div>
+                <div className="text-yellow-500 text-sm">
+                  {'★'.repeat(r.rating)}{' '}
+                  <span className="text-gray-300">
+                    {'★'.repeat(Math.max(0, 5 - r.rating))}
+                  </span>
+                </div>
+                <h1 className="text-lg font-bold">{r?.title}</h1>
+                <p className="text-sand-800 text-sm mt-1">{r.content}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </motion.section>
   );
 }
