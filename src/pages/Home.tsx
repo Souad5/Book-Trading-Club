@@ -324,7 +324,7 @@ export default function Home() {
                         {b.genre}
                       </span>
                     </div>
-                    <span className="mt-4 inline-block text-sm text-blue-600 hover:underline">
+                    <span className="mt-4 inline-block text-sm text-blue-600 px-3 py-1 hover:text-white hover:bg-blue-600 border rounded-full">
                       View Details →
                     </span>
                   </Link>

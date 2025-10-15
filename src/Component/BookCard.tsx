@@ -76,7 +76,7 @@ const BookCard = ({ book }: BookCardProps) => {
         <Link
           to={`/book/${bookId}`}
           onClick={(e) => e.stopPropagation()}
-          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+          className="mt-4 inline-block text-sm text-blue-600 px-3 py-1 hover:text-white hover:bg-blue-600 border rounded-xl"
         >
           View Details →
         </Link>

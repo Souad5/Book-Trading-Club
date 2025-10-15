@@ -10,8 +10,20 @@ import {
   signInWithGithub as githubLogin, // 👈 import GitHub login
 } from './authService';
 
+export type DBUser = {
+  _id: string;
+  uid: string;
+  email: string;
+  role: string;
+  displayName: string;
+  favoriteBooks: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AuthContextType = {
   user: User | null;
+  dbUser: DBUser | null;
   loading: boolean;
   signInUser: (email: string, password: string) => Promise<User>;
   signUpUser: (email: string, password: string) => Promise<User>;
@@ -26,13 +38,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [dbUser, setDBUser] = useState<DBUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = observeAuth((currentUser) => {
+    const unsubscribe = observeAuth(async (currentUser) => {
+      setLoading(true);
       setUser(currentUser);
+
+      if (currentUser) {
+        try {
+          const res = await fetch(
+            `https://book-trading-club-backend.vercel.app/api/users/${currentUser.uid}`
+          );
+          const data: DBUser = await res.json(); // 👈 parse JSON
+          setDBUser(data); // 👈 set DB user
+        } catch (err) {
+          console.error('Failed to fetch DB user:', err);
+          setDBUser(null);
+        }
+      } else {
+        setDBUser(null);
+      }
+
       setLoading(false);
     });
+
     return unsubscribe;
   }, []);
 
@@ -49,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         user,
         loading,
+        dbUser,
         signInUser,
         signUpUser,
         signOutUser,
