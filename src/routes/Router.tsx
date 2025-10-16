@@ -1,7 +1,7 @@
 
 
 import HomePageLayout from '@/components/layout/HomePageLayout';
-import AddNewBook from '@/components/Section/AddNewBook';
+import AddNewBook from '@/pages/Add Book/AddNewBook';
 import Dashboard from '@/dashboard/DashBoard';
 import About from '@/pages/About/About';
 import BookDetails from '@/pages/Book Details/BookDetails';
