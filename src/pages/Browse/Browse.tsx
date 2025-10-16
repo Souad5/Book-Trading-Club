@@ -2,7 +2,7 @@
 import { useSearchParams } from 'react-router-dom';
 import UseAxiosSecure from '@/axios/UseAxiosSecure.js';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-import BookCard from '@/Component/BookCard';
+import BookCard from '@/pages/Browse/BookCard';
 
 type Book = {
   id: string;

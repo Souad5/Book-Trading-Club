@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
-import { FaEye, FaEyeSlash,FaGithub, FaFacebookF} from "react-icons/fa";
-import picture from "../assests/photo/login-image.png";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../firebase/AuthProvider"; // use context for auth
-import { toast } from "react-toastify";
+import React, { useState } from 'react';
+import { FcGoogle } from 'react-icons/fc';
+import { FaEye, FaEyeSlash, FaGithub, FaFacebookF } from 'react-icons/fa';
+import picture from '../../assests/photo/login-image.png';
+import { Link, useNavigate } from 'react-router-dom';
+// use context for auth
+import { toast } from 'react-toastify';
+import { useAuth } from '@/firebase/AuthProvider';
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { signInUser } = useAuth(); // email/password login
-  const { signInWithGoogle,signInWithGithub  } = useAuth(); // Google login from context (optional)
+  const { signInWithGoogle, signInWithGithub } = useAuth(); // Google login from context (optional)
 
-  
   const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     try {
       await signInUser(email, password);
-      toast.success("✅ Login successful");
-      navigate("/dashboard");
+      toast.success('✅ Login successful');
+      navigate('/dashboard');
     } catch (error: any) {
       toast.error(`Login failed: ${error.message}`);
     } finally {
@@ -37,7 +37,7 @@ const Login = () => {
     try {
       const user = await signInWithGoogle();
       alert(`Welcome ${user.displayName || user.email}`);
-      navigate("/dashboard");
+      navigate('/dashboard');
     } catch (error: any) {
       alert(`Google login failed: ${error.message}`);
     } finally {
@@ -45,12 +45,12 @@ const Login = () => {
     }
   };
 
-    const handleGithubLogin = async () => {
+  const handleGithubLogin = async () => {
     try {
       const user = await signInWithGithub();
       alert(`Welcome ${user.displayName || user.email}`);
     } catch (error) {
-      alert("GitHub login failed");
+      alert('GitHub login failed');
     }
   };
 
@@ -79,7 +79,7 @@ const Login = () => {
             <div className="relative">
               <label className="text-gray-600 text-sm">Password</label>
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••••••"
                 className="w-full mt-1 p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={password}
@@ -110,12 +110,12 @@ const Login = () => {
               disabled={loading}
               className="w-full bg-blue-600 text-white py-3 rounded font-semibold hover:bg-blue-500 transition disabled:opacity-50"
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? 'Logging in...' : 'Login'}
             </button>
           </form>
 
           <p className="text-center text-gray-500 text-sm mt-4">
-            Don’t have an account?{" "}
+            Don’t have an account?{' '}
             <Link to="/register" className="text-red-500 font-semibold">
               Sign up
             </Link>
@@ -141,7 +141,7 @@ const Login = () => {
               <FcGoogle />
             </button>
             <button
-            onClick={handleGithubLogin}
+              onClick={handleGithubLogin}
               type="button"
               className="border border-gray-300 rounded p-2 hover:bg-gray-100 transition"
             >

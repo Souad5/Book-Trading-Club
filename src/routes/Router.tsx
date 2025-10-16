@@ -1,5 +1,5 @@
-import ForgotPassword from '@/Component/ForgotPassword';
-import Login from '@/Component/Login';
+
+
 import HomePageLayout from '@/components/layout/HomePageLayout';
 import AddNewBook from '@/components/Section/AddNewBook';
 import Dashboard from '@/dashboard/DashBoard';
@@ -7,8 +7,10 @@ import About from '@/pages/About/About';
 import BookDetails from '@/pages/Book Details/BookDetails';
 import Browse from '@/pages/Browse/Browse';
 import Contact from '@/pages/Contact/Contact';
+import ForgotPassword from '@/pages/Forgot Password/ForgotPassword';
 import Home from '@/pages/Home/Home';
 import HowItWorks from '@/pages/How It Works/HowItWorks';
+import Login from '@/pages/Login/Login';
 import Register from '@/pages/Register/Register';
 
 import FavouriteBooks from '@/pages/Wishlist/Wishlist';
