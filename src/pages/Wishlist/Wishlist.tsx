@@ -1,11 +1,10 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Heart, Search } from 'lucide-react';
-import { toast } from 'react-toastify';
-import { useFavorites } from '@/hooks/useFavorites';
-import { useQuery } from '@tanstack/react-query';
-import UseAxiosSecure from '@/axios/UseAxiosSecure';
-import Loader2 from '@/components/Loaders/Loader2';
+import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { Heart, Search } from "lucide-react";
+import notify from "@/lib/notify";
+import { useFavorites } from "@/hooks/useFavorites";
+import UseAxiosSecure from "@/axios/UseAxiosSecure";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 type Book = {
   id: string;
@@ -44,15 +43,14 @@ const normalize = (b: ApiBook): Book => ({
   id: b._id,
   title: b.title,
   author: b.author,
-  isbn: b.ISBN ?? 'N/A',
+  isbn: b.ISBN ?? "N/A",
   tags: b.tags ?? [],
-  location: b.Location ?? 'Dhaka',
-  condition: (b.Condition ?? 'Good').toLowerCase(),
-  exchangeType: (b.Exchange ?? 'Swap').toLowerCase(),
-  language: b.Language ?? 'English',
-  genre: b.category ?? 'Fiction',
+  location: (b.Location ?? "Dhaka").toString(),
+  condition: (b.Condition ?? "Good").toLowerCase() as Book["condition"],
+  exchangeType: (b.Exchange ?? "Swap").toLowerCase() as Book["exchangeType"],
+  language: b.Language ?? "English",
+  genre: b.category ?? "Fiction",
   image: b.imageUrl,
-  price: b.price,
 });
 
 export default function FavouriteBooks() {
@@ -89,12 +87,26 @@ export default function FavouriteBooks() {
       </div>
     );
 
-  const handleToggleFavorite = async (bookId: string) => {
-    const book = books.find((b) => b.id === bookId);
-    const bookTitle = book?.title || 'Unknown Book';
+  const axiosSecure = UseAxiosSecure();
+  const { data: allBooks = [], isLoading: booksLoading, isError: booksError } = useQuery({
+    queryKey: ["wishlist-books"],
+    queryFn: async () => {
+      const res = await axiosSecure.get<ApiBook[]>("/api/books");
+      return res.data;
+    },
+    select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
 
+  const handleToggleFavorite = async (bookId: string) => {
+    const book = allBooks.find(b => b.id === bookId);
+    const bookTitle = book?.title || "Unknown Book";
+    
     if (!isAuthenticated) {
-      toast.error('Please log in to manage favorites');
+      notify.error("Please log in to manage favorites");
       return;
     }
 
@@ -103,27 +115,21 @@ export default function FavouriteBooks() {
 
     if (success) {
       if (wasFavorite) {
-        toast.success(`"${bookTitle}" removed from favourites`, {
-          toastId: `remove-${bookId}`,
-        });
+        notify.success(`"${bookTitle}" removed from favourites`, { toastId: `remove-${bookId}` });
       } else {
-        toast.success(`"${bookTitle}" added to favourites`, {
-          toastId: `add-${bookId}`,
-        });
+        notify.success(`"${bookTitle}" added to favourites`, { toastId: `add-${bookId}` });
       }
     } else {
-      toast.error('Failed to update favorites');
+      notify.error("Failed to update favorites");
     }
   };
 
-  const favoriteBooks = books.filter((book) => favorites.includes(book.id));
-
-  console.log(favoriteBooks); // This is straight from the DB
-  const filteredBooks = favoriteBooks.filter(
-    (book) =>
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.genre.toLowerCase().includes(searchQuery.toLowerCase())
+  const favoriteBooks = useMemo(() => allBooks.filter(book => favorites.includes(book.id)), [allBooks, favorites]);
+  
+  const filteredBooks = favoriteBooks.filter(book => 
+    book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    book.genre.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -157,8 +163,12 @@ export default function FavouriteBooks() {
 
       {/* Book Count and Status */}
       <div className="mb-6">
-        {loading && <p className="text-blue-600">Loading your favourites...</p>}
-        {error && <p className="text-red-600">Error: {error}</p>}
+        {(loading || booksLoading) && (
+          <p className="text-blue-600">Loading your favourites...</p>
+        )}
+        {(error || booksError) && (
+          <p className="text-red-600">Error loading favourites.</p>
+        )}
         {!loading && !error && (
           <p className="text-gray-600">
             {filteredBooks.length}{' '}
@@ -185,6 +195,13 @@ export default function FavouriteBooks() {
               </button>
 
               <Link to={`/book/${book.id}`} className="block space-y-2">
+                <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
+                  <img
+                    src={book.image || ''}
+                    alt={book.title}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
                 <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
                   {book.title}
                 </h3>
@@ -196,17 +213,12 @@ export default function FavouriteBooks() {
                   <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
                     {book.location}
                   </span>
-                  <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
                     {book.condition}
                   </span>
                   <span className="rounded bg-green-100 text-green-700 px-2 py-1">
                     {book.exchangeType}
                   </span>
                   <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
-                    {book.genre}
-                  </span>
-                </div>
-              </Link>
 
               {/* Action Buttons */}
               <div className="mt-4 flex gap-2">
