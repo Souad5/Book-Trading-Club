@@ -1,7 +1,3 @@
-<<<<<<< Updated upstream
-import { Link, useSearchParams } from "react-router-dom";
-import { useMemo } from "react";
-=======
 // src/pages/Browse.tsx
 import { useSearchParams } from 'react-router-dom';
 import UseAxiosSecure from '@/axios/UseAxiosSecure.js';
@@ -225,9 +221,6 @@ export const DEMO_BOOKS: Book[] = [
 
 export default function Browse() {
   const [searchParams] = useSearchParams();
-<<<<<<< Updated upstream
-  const rawQuery = searchParams.get("query") || "";
-=======
   const initialQuery = (searchParams.get('query') || '').trim();
   const [query, setQuery] = useState(initialQuery);
   const [location, setLocation] = useState('');
@@ -337,7 +330,6 @@ export default function Browse() {
       </section>
     );
   }
->>>>>>> Stashed changes
 
   const filtered = useMemo(() => {
     const q = rawQuery.trim().toLowerCase();
@@ -360,18 +352,6 @@ export default function Browse() {
         </p>
       </div>
 
-<<<<<<< Updated upstream
-      {rawQuery && (
-        <p className="mb-4 text-sm text-sand-700">
-          Showing results for: <span className="font-medium">{rawQuery}</span>
-        </p>
-      )}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {filtered.length === 0 && (
-          <div className="col-span-full text-sand-700">
-            No books matched your search.
-          </div>
-=======
       {/* Filters */}
       <div className="rounded-2xl bg-white p-6 md:p-8 shadow-xl border border-gray-100 mb-8">
         <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-900 mb-5">
@@ -465,7 +445,6 @@ export default function Browse() {
           <div className="col-span-full text-sand-700">No books found.</div>
         ) : (
           results.map((book) => <BookCard key={book.id} book={book} />)
->>>>>>> Stashed changes
         )}
         {filtered.map((book) => (
           <Link to={`/book/${book.id}`} key={book.id}>

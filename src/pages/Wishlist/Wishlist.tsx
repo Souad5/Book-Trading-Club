@@ -10,14 +10,15 @@ type Book = {
   id: string;
   title: string;
   author: string;
+  price: number;
   isbn: string;
   tags: string[];
   location: string;
-  condition: "new" | "good" | "fair";
-  exchangeType: "swap" | "donate" | "sell";
+  condition: string;
+  exchangeType: string;
   language: string;
   genre: string;
-  image?: string;
+  image: string;
 };
 
 // API shape coming from your Mongoose model
@@ -53,10 +54,38 @@ const normalize = (b: ApiBook): Book => ({
 });
 
 export default function FavouriteBooks() {
-  const [searchQuery, setSearchQuery] = useState("");
-  
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const axiosSecure = UseAxiosSecure();
+
+  const {
+    data: books = [], // ✅ default to empty array
+    isLoading,
+  } = useQuery({
+    queryKey: ['books'],
+    queryFn: async () => {
+      const res = await axiosSecure.get<ApiBook[]>('/api/books');
+      return res.data;
+    },
+    select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
+  });
+
   // Use the new favorites hook
-  const { favorites, toggleFavorite, isFavorite, isAuthenticated, loading, error } = useFavorites();
+  const {
+    favorites,
+    toggleFavorite,
+    isFavorite,
+    isAuthenticated,
+    loading,
+    error,
+  } = useFavorites();
+
+  if (isLoading || loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 />
+      </div>
+    );
 
   const axiosSecure = UseAxiosSecure();
   const { data: allBooks = [], isLoading: booksLoading, isError: booksError } = useQuery({
@@ -80,10 +109,10 @@ export default function FavouriteBooks() {
       notify.error("Please log in to manage favorites");
       return;
     }
-    
+
     const wasFavorite = isFavorite(bookId);
     const success = await toggleFavorite(bookId);
-    
+
     if (success) {
       if (wasFavorite) {
         notify.success(`"${bookTitle}" removed from favourites`, { toastId: `remove-${bookId}` });
@@ -142,7 +171,8 @@ export default function FavouriteBooks() {
         )}
         {!loading && !error && (
           <p className="text-gray-600">
-            {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
+            {filteredBooks.length}{' '}
+            {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
           </p>
         )}
       </div>
@@ -161,9 +191,7 @@ export default function FavouriteBooks() {
                 className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
                 aria-label="Remove from favorites"
               >
-                <Heart
-                  className="w-5 h-5 fill-red-500 text-red-500 transition-colors duration-200 hover:fill-red-600"
-                />
+                <Heart className="w-5 h-5 fill-red-500 text-red-500 transition-colors duration-200 hover:fill-red-600" />
               </button>
 
               <Link to={`/book/${book.id}`} className="block space-y-2">
@@ -185,17 +213,12 @@ export default function FavouriteBooks() {
                   <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
                     {book.location}
                   </span>
-                  <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
                     {book.condition}
                   </span>
                   <span className="rounded bg-green-100 text-green-700 px-2 py-1">
                     {book.exchangeType}
                   </span>
                   <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
-                    {book.genre}
-                  </span>
-                </div>
-              </Link>
 
               {/* Action Buttons */}
               <div className="mt-4 flex gap-2">
@@ -219,10 +242,9 @@ export default function FavouriteBooks() {
             {searchQuery ? 'No books found' : 'Your favourites list is empty'}
           </h3>
           <p className="text-gray-500 mb-6">
-            {searchQuery 
+            {searchQuery
               ? 'Try adjusting your search terms.'
-              : 'Start adding books to your favourites by clicking the heart icon on any book.'
-            }
+              : 'Start adding books to your favourites by clicking the heart icon on any book.'}
           </p>
           {!searchQuery && (
             <Link

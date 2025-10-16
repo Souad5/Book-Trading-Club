@@ -48,8 +48,8 @@ export default function Navbar() {
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
     `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
       isActive
-        ? "text-leaf-700 bg-leaf-100"
-        : "text-gray-700 hover:text-leaf-700 hover:bg-gray-100"
+        ? 'text-leaf-700 bg-leaf-100'
+        : 'text-gray-700 hover:text-leaf-700 hover:bg-gray-100'
     }`;
 
   return (
@@ -235,7 +235,7 @@ export default function Navbar() {
               </NavLink>
               <NavLink
                 to="/register"
-                className="btn-primary bg-leaf-600 text-white hover:bg-leaf-700"
+                className="bg-black text-white"
               >
                 Sign Up
               </NavLink>

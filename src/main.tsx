@@ -1,15 +1,16 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App.tsx";
-import './app.css'
-import { ToastContainer } from "react-toastify";
-import { AuthProvider } from "./firebase/AuthProvider"; // <-- import AuthProvider
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 
-createRoot(document.getElementById("root")!).render(
+import App from './App.tsx';
+import './index.css';
+import { ToastContainer } from 'react-toastify';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './firebase/AuthProvider'; // <-- import AuthProvider
+const querclient = new QueryClient();
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
+    <AuthProvider>
+      <QueryClientProvider client={querclient}>
         <App />
         <ToastContainer
           position="top-right"
@@ -24,7 +25,9 @@ createRoot(document.getElementById("root")!).render(
           theme="light"
           limit={1}
         />
-      </AuthProvider>
-    </BrowserRouter>
+      </QueryClientProvider>
+    </AuthProvider>
   </StrictMode>
 );
+
+// done

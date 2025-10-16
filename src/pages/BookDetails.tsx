@@ -1,10 +1,3 @@
-<<<<<<< Updated upstream
-import { useParams, Link } from "react-router-dom";
-import { toast } from "react-toastify";
-import ShareModal from "../components/Modals/ShareModal"; 
-import { useState } from "react";
-=======
-// src/pages/BookDetails.tsx
 import { useParams, Link } from 'react-router-dom';
 import notify from '@/lib/notify';
 import ShareModal from '../components/Modals/ShareModal';
@@ -12,7 +5,7 @@ import { useMemo, useState } from 'react';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import Loader from '@/components/SharedComponents/Loader';
->>>>>>> Stashed changes
+
 
 type Book = {
   id: string;
@@ -35,26 +28,15 @@ export default function BookDetails() {
 
   // wishlist button clicked
   const handleWishlistClick = () => {
-<<<<<<< Updated upstream
-    toast.success("Added to wishlist!");
-=======
     notify.success('Added to wishlist!');
->>>>>>> Stashed changes
   };
 
   const handleSubmitReview = () => {
     if (rating === 0) {
-<<<<<<< Updated upstream
-      toast.error("Please select a rating!");
-      return;
-    }
-    toast.success("Review submitted!");
-=======
       notify.error('Please select a rating!');
       return;
     }
     notify.success('Review submitted!');
->>>>>>> Stashed changes
     setRating(0);
     setReview("");
   };
@@ -257,10 +239,6 @@ export default function BookDetails() {
     },
   ];
 
-<<<<<<< Updated upstream
-  const { id } = useParams<{ id: string }>();
-  const book = DEMO_BOOKS.find((b) => b.id === id);
-=======
   // Show loader on initial load or while switching between different ids
   const showLoading = useMemo(() => {
     if (isLoading) return true;
@@ -286,7 +264,6 @@ export default function BookDetails() {
   );
 
   if (showLoading) return <Loader />;
->>>>>>> Stashed changes
 
   if (!book) {
     return <div className="p-6">❌ Book not found.</div>;

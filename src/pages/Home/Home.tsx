@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 import { Search, Heart } from 'lucide-react';
 import WantToBeSellerSection from '@/components/Section/WantToBeSeller';
 import TopSellersSection from '@/components/Section/TopSeller';
-import notify from '@/lib/notify';
+import { toast } from 'react-toastify';
 import { useFavorites } from '@/hooks/useFavorites';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
-
+import Loader2 from '@/components/Loaders/Loader2';
 
 type Book = {
   id: string;
@@ -18,14 +18,44 @@ type Book = {
   isbn: string;
   tags: string[];
   location: string;
-  condition: "new" | "good" | "fair";
-  exchangeType: "swap" | "donate" | "sell";
+  condition: 'new' | 'good' | 'fair';
+  exchangeType: 'swap' | 'donate' | 'sell';
   language: string;
   genre: string;
   image: string;
 };
 
-const DEMO_BOOKS: Book[] = BROWSE_BOOKS as unknown as Book[];
+// API shape (from your Mongoose model)
+type ApiBook = {
+  _id: string;
+  title: string;
+  author: string;
+  ISBN?: string;
+  Location?: string;
+  Condition?: string;
+  Exchange?: string;
+  Language?: string;
+  category: string;
+  tags?: string[];
+  price: number;
+  description: string;
+  imageUrl: string;
+};
+
+// map DB → UI
+const normalize = (b: ApiBook): Book => ({
+  id: b._id,
+  title: b.title,
+  author: b.author,
+  isbn: b.ISBN ?? 'N/A',
+  tags: b.tags ?? [],
+  location: (b.Location ?? 'Dhaka').toString(),
+  condition: (b.Condition ?? 'Good').toLowerCase() as Book['condition'],
+  exchangeType: (b.Exchange ?? 'Swap').toLowerCase() as Book['exchangeType'],
+  language: b.Language ?? 'English',
+  genre: b.category ?? 'Fiction',
+  image: b.imageUrl,
+});
 
 export default function Home() {
   const [query, setQuery] = useState('');
@@ -34,45 +64,70 @@ export default function Home() {
   const [exchangeType, setExchangeType] = useState('');
   const [language, setLanguage] = useState('');
   const [genre, setGenre] = useState('');
-  const [sorting, setSorting] = useState<'asc' | 'desc' | ''>('');
+
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
 
+  const axiosSecure = UseAxiosSecure();
+
+  const {
+    data: books = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['home-books'],
+    queryFn: async () => {
+      const res = await axiosSecure.get<ApiBook[]>('/api/books');
+      return res.data;
+    },
+    select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
   const handleToggleFavorite = async (bookId: string) => {
-    const book = DEMO_BOOKS.find(b => b.id === bookId);
-    const bookTitle = book?.title || "Unknown Book";
-    
+    const book = books.find((b) => b.id === bookId);
+    const bookTitle = book?.title || 'Unknown Book';
+
     if (!isAuthenticated) {
-      notify.error('Please log in to add books to favorites');
+      toast.error('Please log in to add books to favorites');
       return;
     }
-    
+
     const wasFavorite = isFavorite(bookId);
     const success = await toggleFavorite(bookId);
-    
+
     if (success) {
       if (wasFavorite) {
-        notify.success(`"${bookTitle}" removed from favourites`, { toastId: `remove-${bookId}` });
+        toast.success(`"${bookTitle}" removed from favourites`, {
+          toastId: `remove-${bookId}`,
+        });
       } else {
-        notify.success(`"${bookTitle}" added to favourites`, { toastId: `add-${bookId}` });
+        toast.success(`"${bookTitle}" added to favourites`, {
+          toastId: `add-${bookId}`,
+        });
       }
     } else {
-      notify.error('Failed to update favorites');
+      toast.error('Failed to update favorites');
     }
   };
 
+  // Filtered results (limit to 6 for the section)
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    const filtered = books.filter((b) => {
+    return books.filter((b) => {
       const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(
-        " "
+        ' '
       )}`.toLowerCase();
       const matchesText = q.length === 0 || haystack.includes(q);
       const matchesLocation = !location || b.location === location;
       const matchesCondition =
-        !condition || b.condition === (condition as Book["condition"]);
+        !condition || b.condition === (condition as Book['condition']);
       const matchesExchange =
         !exchangeType ||
-        b.exchangeType === (exchangeType as Book["exchangeType"]);
+        b.exchangeType === (exchangeType as Book['exchangeType']);
       const matchesLanguage = !language || b.language === language;
       const matchesGenre = !genre || b.genre === genre;
       return (
@@ -84,30 +139,20 @@ export default function Home() {
         matchesGenre
       );
     });
-    
-    if (!sorting) return filtered;
+  }, [books, query, location, condition, exchangeType, language, genre]);
 
-    const sorted = [...filtered].sort((a, b) => {
-      const at = a.title.toLowerCase();
-      const bt = b.title.toLowerCase();
-      if (at < bt) return sorting === 'asc' ? -1 : 1;
-      if (at > bt) return sorting === 'asc' ? 1 : -1;
-      return 0;
-    });
-    return sorted;
-  }, [books, query, location, condition, exchangeType, language, genre, sorting]);
-
+  // Unique filter options
   const locations = useMemo(
-    () => Array.from(new Set(DEMO_BOOKS.map((b) => b.location))),
-    []
+    () => Array.from(new Set(books.map((b) => b.location))).filter(Boolean),
+    [books]
   );
   const languages = useMemo(
-    () => Array.from(new Set(DEMO_BOOKS.map((b) => b.language))),
-    []
+    () => Array.from(new Set(books.map((b) => b.language))).filter(Boolean),
+    [books]
   );
   const genres = useMemo(
-    () => Array.from(new Set(DEMO_BOOKS.map((b) => b.genre))),
-    []
+    () => Array.from(new Set(books.map((b) => b.genre))).filter(Boolean),
+    [books]
   );
 
   return (
@@ -135,7 +180,7 @@ export default function Home() {
               Search Books
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <input
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
                 placeholder="Search title, author, ISBN, or tag"
@@ -203,86 +248,100 @@ export default function Home() {
                   </option>
                 ))}
               </select>
-
-              {/* Sorting */}
-              <select
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
-                value={sorting}
-                onChange={(e) => setSorting(e.target.value as 'asc' | 'desc' | '')}
-              >
-                <option value="">Sorting</option>
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-              </select>
             </div>
           </div>
 
-          {/* Book Results */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.slice(0, 6).map((b) => (
-              <article
-                key={b.id}
-                className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
-              >
-                {/* Favorite Heart Icon */}
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    handleToggleFavorite(b.id);
-                  }}
-                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
-                  aria-label={isFavorite(b.id) ? "Remove from favorites" : "Add to favorites"}
-                >
-                  <Heart
-                    className={`w-5 h-5 transition-colors duration-200 ${
-                      isFavorite(b.id)
-                        ? "fill-red-500 text-red-500"
-                        : "text-gray-400 hover:text-red-400"
-                    }`}
-                  />
-                </button>
+          {/* Loading / Error states for the section */}
+          {isLoading && (
+            <div className="flex justify-center">
+              <Loader2 />
+            </div>
+          )}
+          {isError && (
+            <div className="text-red-600">
+              Failed to load books:{' '}
+              {(error as Error)?.message ?? 'Try again later.'}
+            </div>
+          )}
 
-                <Link to={`/book/${b.id}`} className="block space-y-2">
-                  <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
-                    <img src={b.image} alt={b.title} className="h-full w-full object-cover" />
-                  </div>
-                  <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
-                    {b.title}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {b.author} · {b.language}
-                  </p>
-                  <p className="text-xs text-gray-500">ISBN: {b.isbn}</p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                    <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
-                      {b.location}
+          {/* Book Results */}
+          {!isLoading && !isError && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {results.slice(0, 6).map((b) => (
+                <article
+                  key={b.id}
+                  className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
+                >
+                  {/* Favorite Heart Icon */}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleToggleFavorite(b.id);
+                    }}
+                    className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
+                    aria-label={
+                      isFavorite(b.id)
+                        ? 'Remove from favorites'
+                        : 'Add to favorites'
+                    }
+                  >
+                    <Heart
+                      className={`w-5 h-5 transition-colors duration-200 ${
+                        isFavorite(b.id)
+                          ? 'fill-red-500 text-red-500'
+                          : 'text-gray-400 hover:text-red-400'
+                      }`}
+                    />
+                  </button>
+
+                  <Link to={`/book/${b.id}`} className="block space-y-2">
+                    <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
+                      <img
+                        src={b.image}
+                        alt={b.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </div>
+                    <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
+                      {b.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {b.author} · {b.language}
+                    </p>
+                    <p className="text-xs text-gray-500">ISBN: {b.isbn}</p>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                      <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
+                        {b.location}
+                      </span>
+                      <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
+                        {b.condition}
+                      </span>
+                      <span className="rounded bg-green-100 text-green-700 px-2 py-1">
+                        {b.exchangeType}
+                      </span>
+                      <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
+                        {b.genre}
+                      </span>
+                    </div>
+                    <span className="mt-4 inline-block text-sm text-blue-600 px-3 py-1 hover:text-white hover:bg-blue-600 border rounded-full">
+                      View Details →
                     </span>
-                    <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
-                      {b.condition}
-                    </span>
-                    <span className="rounded bg-green-100 text-green-700 px-2 py-1">
-                      {b.exchangeType}
-                    </span>
-                    <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
-                      {b.genre}
-                    </span>
-                  </div>
-                  <span className="mt-4 inline-block text-sm text-blue-600 hover:underline">View Details →</span>
-                </Link>
-              </article>
-            ))}
-            {results.length === 0 && (
-              <div className="col-span-full text-center text-gray-600">
-                No matches. Try different keywords or filters.
-              </div>
-            )}
-          </div>
+                  </Link>
+                </article>
+              ))}
+              {results.length === 0 && (
+                <div className="col-span-full text-center text-gray-600">
+                  No matches. Try different keywords or filters.
+                </div>
+              )}
+            </div>
+          )}
 
           {/* want to be seller section */}
-          <WantToBeSellerSection></WantToBeSellerSection>
+          <WantToBeSellerSection />
           {/* top seller section */}
-          <TopSellersSection></TopSellersSection>
+          <TopSellersSection />
           {/* View All Button */}
           <div className="text-center">
             <Link
