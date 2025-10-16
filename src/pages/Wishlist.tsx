@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Search } from "lucide-react";
-import { toast } from "react-toastify";
+import notify from "@/lib/notify";
 import { useFavorites } from "@/hooks/useFavorites";
+import UseAxiosSecure from "@/axios/UseAxiosSecure";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 type Book = {
   id: string;
@@ -18,45 +20,37 @@ type Book = {
   image?: string;
 };
 
-// This would normally come from a global state or API
-const DEMO_BOOKS: Book[] = [
-  {
-    id: "1",
-    title: "Atomic Habits",
-    author: "James Clear",
-    isbn: "9780735211292",
-    tags: ["self-help", "productivity"],
-    location: "Dhaka",
-    condition: "good",
-    exchangeType: "swap",
-    language: "English",
-    genre: "Non-fiction",
-  },
-  {
-    id: "2",
-    title: "To Kill a Mockingbird",
-    author: "Harper Lee",
-    isbn: "9780061120084",
-    tags: ["classic", "justice"],
-    location: "Chattogram",
-    condition: "fair",
-    exchangeType: "donate",
-    language: "English",
-    genre: "Fiction",
-  },
-  {
-    id: "3",
-    title: "The Alchemist",
-    author: "Paulo Coelho",
-    isbn: "9780062315007",
-    tags: ["philosophy", "journey"],
-    location: "Dhaka",
-    condition: "new",
-    exchangeType: "sell",
-    language: "English",
-    genre: "Adventure",
-  },
-];
+// API shape coming from your Mongoose model
+type ApiBook = {
+  _id: string;
+  title: string;
+  author: string;
+  ISBN?: string;
+  Location?: string;
+  Condition?: string;
+  Exchange?: string;
+  Language?: string;
+  category: string;
+  tags?: string[];
+  price: number;
+  description: string;
+  imageUrl: string;
+};
+
+// map DB → UI
+const normalize = (b: ApiBook): Book => ({
+  id: b._id,
+  title: b.title,
+  author: b.author,
+  isbn: b.ISBN ?? "N/A",
+  tags: b.tags ?? [],
+  location: (b.Location ?? "Dhaka").toString(),
+  condition: (b.Condition ?? "Good").toLowerCase() as Book["condition"],
+  exchangeType: (b.Exchange ?? "Swap").toLowerCase() as Book["exchangeType"],
+  language: b.Language ?? "English",
+  genre: b.category ?? "Fiction",
+  image: b.imageUrl,
+});
 
 export default function FavouriteBooks() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,12 +58,26 @@ export default function FavouriteBooks() {
   // Use the new favorites hook
   const { favorites, toggleFavorite, isFavorite, isAuthenticated, loading, error } = useFavorites();
 
+  const axiosSecure = UseAxiosSecure();
+  const { data: allBooks = [], isLoading: booksLoading, isError: booksError } = useQuery({
+    queryKey: ["wishlist-books"],
+    queryFn: async () => {
+      const res = await axiosSecure.get<ApiBook[]>("/api/books");
+      return res.data;
+    },
+    select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
   const handleToggleFavorite = async (bookId: string) => {
-    const book = DEMO_BOOKS.find(b => b.id === bookId);
+    const book = allBooks.find(b => b.id === bookId);
     const bookTitle = book?.title || "Unknown Book";
     
     if (!isAuthenticated) {
-      toast.error("Please log in to manage favorites");
+      notify.error("Please log in to manage favorites");
       return;
     }
     
@@ -78,20 +86,16 @@ export default function FavouriteBooks() {
     
     if (success) {
       if (wasFavorite) {
-        toast.success(`"${bookTitle}" removed from favourites`, {
-          toastId: `remove-${bookId}`
-        });
+        notify.success(`"${bookTitle}" removed from favourites`, { toastId: `remove-${bookId}` });
       } else {
-        toast.success(`"${bookTitle}" added to favourites`, {
-          toastId: `add-${bookId}`
-        });
+        notify.success(`"${bookTitle}" added to favourites`, { toastId: `add-${bookId}` });
       }
     } else {
-      toast.error("Failed to update favorites");
+      notify.error("Failed to update favorites");
     }
   };
 
-  const favoriteBooks = DEMO_BOOKS.filter(book => favorites.includes(book.id));
+  const favoriteBooks = useMemo(() => allBooks.filter(book => favorites.includes(book.id)), [allBooks, favorites]);
   
   const filteredBooks = favoriteBooks.filter(book => 
     book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -130,11 +134,11 @@ export default function FavouriteBooks() {
 
       {/* Book Count and Status */}
       <div className="mb-6">
-        {loading && (
+        {(loading || booksLoading) && (
           <p className="text-blue-600">Loading your favourites...</p>
         )}
-        {error && (
-          <p className="text-red-600">Error: {error}</p>
+        {(error || booksError) && (
+          <p className="text-red-600">Error loading favourites.</p>
         )}
         {!loading && !error && (
           <p className="text-gray-600">
@@ -163,6 +167,13 @@ export default function FavouriteBooks() {
               </button>
 
               <Link to={`/book/${book.id}`} className="block space-y-2">
+                <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
+                  <img
+                    src={book.image || ''}
+                    alt={book.title}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
                 <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
                   {book.title}
                 </h3>
