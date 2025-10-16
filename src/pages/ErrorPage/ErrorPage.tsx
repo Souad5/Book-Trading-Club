@@ -1,6 +1,9 @@
 import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import ErrorImg from '../../assests/photo/404 image.jpg';
+import { Button } from '@/components/ui/button';
+import { House } from 'lucide-react';
+import { Link } from 'react-router';
 const ErrorPage = () => {
   return (
     <div className="min-h-screen flex flex-col justify-between items-center gap-20 w-full">
@@ -11,7 +14,13 @@ const ErrorPage = () => {
       <h1 className="text-4xl  font-extrabold font-mono underline">
         Coming Soon....
       </h1>
-      <div className='w-full bg-white'>
+      <Link to={'/'}>
+        <Button className='flex items-center'>
+          {' '}
+          <House /> Back to Home
+        </Button>
+      </Link>
+      <div className="w-full bg-white">
         <Footer />
       </div>
     </div>
