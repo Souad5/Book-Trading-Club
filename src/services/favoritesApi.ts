@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
+=======
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
+>>>>>>> Stashed changes
 
 export interface FavoritesResponse {
   success: boolean;
@@ -10,6 +14,7 @@ export interface FavoritesResponse {
 
 class FavoritesApiService {
   private async makeRequest<T>(
+<<<<<<< Updated upstream
     endpoint: string, 
     options: RequestInit = {}
   ): Promise<T> {
@@ -28,6 +33,23 @@ class FavoritesApiService {
     }
 
     return response.json();
+=======
+    endpoint: string,
+    options: { method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; body?: any; headers?: Record<string, string> } = {}
+  ): Promise<T> {
+    const axiosSecure = UseAxiosSecure();
+    const path = `/api${endpoint}`;
+    const method = options.method || 'GET';
+    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+
+    const res = await axiosSecure.request<T>({
+      url: path,
+      method,
+      headers,
+      data: options.body,
+    });
+    return res.data as T;
+>>>>>>> Stashed changes
   }
 
   /**
@@ -60,6 +82,7 @@ class FavoritesApiService {
    */
   async addToFavorites(uid: string, bookId: string, email?: string): Promise<boolean> {
     try {
+<<<<<<< Updated upstream
       const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}`, {
         method: 'POST',
         body: JSON.stringify({ 
@@ -67,6 +90,10 @@ class FavoritesApiService {
           email 
         }),
       });
+=======
+      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}`,
+        { method: 'POST', body: { bookId, email } });
+>>>>>>> Stashed changes
 
       return response.success;
     } catch (error) {
@@ -80,9 +107,13 @@ class FavoritesApiService {
    */
   async removeFromFavorites(uid: string, bookId: string): Promise<boolean> {
     try {
+<<<<<<< Updated upstream
       const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/${bookId}`, {
         method: 'DELETE',
       });
+=======
+      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/${bookId}`, { method: 'DELETE' });
+>>>>>>> Stashed changes
 
       return response.success;
     } catch (error) {
@@ -96,6 +127,7 @@ class FavoritesApiService {
    */
   async toggleFavorite(uid: string, bookId: string, email?: string): Promise<{ success: boolean; action: 'added' | 'removed' | null }> {
     try {
+<<<<<<< Updated upstream
       const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/toggle`, {
         method: 'PUT',
         body: JSON.stringify({ 
@@ -103,6 +135,9 @@ class FavoritesApiService {
           email 
         }),
       });
+=======
+      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/toggle`, { method: 'PUT', body: { bookId, email } });
+>>>>>>> Stashed changes
 
       return {
         success: response.success,
@@ -122,7 +157,7 @@ class FavoritesApiService {
    */
   async checkHealth(): Promise<boolean> {
     try {
-      const response = await this.makeRequest<{ success: boolean }>('/health');
+      const response = await this.makeRequest<{ success: boolean }>(`/health`);
       return response.success;
     } catch (error) {
       console.error('Health check failed:', error);
