@@ -1,5 +1,3 @@
-
-
 import HomePageLayout from '@/components/layout/HomePageLayout';
 import AddNewBook from '@/pages/Add Book/AddNewBook';
 import Dashboard from '@/dashboard/DashBoard';
@@ -15,11 +13,13 @@ import Register from '@/pages/Register/Register';
 
 import FavouriteBooks from '@/pages/Wishlist/Wishlist';
 import { createBrowserRouter } from 'react-router';
+import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     Component: HomePageLayout,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
