@@ -229,7 +229,7 @@ export default function BookDetails() {
           <img
             src={book.imageUrl}
             alt={book.title}
-            className="w-full h-auto rounded-2xl shadow-xl object-cover ring-1 ring-black/5"
+            className="w-full h-auto lg:h-[820px] rounded-2xl shadow-xl object-cover ring-1 ring-black/5"
           />
         </div>
 
