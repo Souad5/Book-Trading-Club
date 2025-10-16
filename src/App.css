@@ -49,6 +49,9 @@ body {
   @apply bg-[#F5EFE6] text-soil-900 font-sans antialiased;
 }
 
+/* Dark mode base */
+/* (dark mode removed) */
+
 .btn-primary {
   @apply inline-flex items-center justify-center rounded-md bg-accent px-4 py-2 text-white font-medium shadow-subtle hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent/50 active:opacity-80 transition;
 }
