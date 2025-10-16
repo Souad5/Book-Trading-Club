@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { FaBook, FaEye, FaEyeSlash } from "react-icons/fa";
-import { useAuth } from "../firebase/AuthProvider"; // make sure path is correct
-import { useNavigate } from "react-router-dom";
+import { useAuth } from '@/firebase/AuthProvider';
+import React, { useState } from 'react';
+import { FaBook, FaEye, FaEyeSlash } from 'react-icons/fa';
+// make sure path is correct
+import { useNavigate } from 'react-router-dom';
 
 interface FormData {
   name: string;
@@ -13,11 +14,11 @@ interface FormData {
 
 const Register: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    genre: "",
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    genre: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
@@ -35,13 +36,13 @@ const Register: React.FC = () => {
 
   const validate = (): Partial<FormData> => {
     const newErrors: Partial<FormData> = {};
-    if (!formData.name) newErrors.name = "Name is required";
-    if (!formData.email.includes("@")) newErrors.email = "Enter a valid email";
+    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.email.includes('@')) newErrors.email = 'Enter a valid email';
     if (formData.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
+      newErrors.password = 'Password must be at least 6 characters';
     if (formData.password !== formData.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match";
-    if (!formData.genre) newErrors.genre = "Select a genre";
+      newErrors.confirmPassword = 'Passwords do not match';
+    if (!formData.genre) newErrors.genre = 'Select a genre';
     return newErrors;
   };
 
@@ -57,8 +58,8 @@ const Register: React.FC = () => {
 
     try {
       await signUpUser(formData.email, formData.password);
-      alert("🎉 Registration Successful!");
-      navigate("/login"); // redirect to login after registration
+      alert('🎉 Registration Successful!');
+      navigate('/login'); // redirect to login after registration
     } catch (error: any) {
       alert(`Registration Failed: ${error.message}`);
     } finally {
@@ -124,7 +125,7 @@ const Register: React.FC = () => {
               <label className="label font-semibold">Password</label>
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? 'text' : 'password'}
                   name="password"
                   className="input input-bordered w-full rounded-lg shadow-sm border-gray-300 pr-10"
                   value={formData.password}
@@ -146,7 +147,7 @@ const Register: React.FC = () => {
             <div>
               <label className="label font-semibold">Confirm Password</label>
               <input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 name="confirmPassword"
                 className="input input-bordered w-full rounded-lg shadow-sm border-gray-300"
                 value={formData.confirmPassword}
@@ -158,14 +159,14 @@ const Register: React.FC = () => {
             </div>
 
             {/* Genre */}
-            
+
             {/* Submit */}
             <button
               type="submit"
               disabled={loading}
               className="btn w-full rounded-lg text-lg font-semibold tracking-wide bg-emerald-600 hover:bg-emerald-700 border-none text-white shadow-md disabled:opacity-50"
             >
-              {loading ? "Registering..." : "Register"}
+              {loading ? 'Registering...' : 'Register'}
             </button>
           </form>
         </div>

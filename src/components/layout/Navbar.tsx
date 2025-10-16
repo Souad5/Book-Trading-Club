@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FiPlus, FiLogOut, FiSun, FiHeart } from "react-icons/fi";
-import NavLogo from "./NavLogo";
-import SearchBar from "./SearchBar";
-import UserMenu from "./UserMenu";
-import { useAuth } from "./../../firebase/AuthProvider";
-import { toast } from "react-toastify";
+import { useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { FiPlus, FiLogOut, FiSun, FiHeart } from 'react-icons/fi';
+import NavLogo from './NavLogo';
+import SearchBar from './SearchBar';
+import UserMenu from './UserMenu';
+import { useAuth } from './../../firebase/AuthProvider';
+import { toast } from 'react-toastify';
 
 export default function Navbar() {
   const { user, signOutUser } = useAuth();
@@ -16,8 +16,8 @@ export default function Navbar() {
   const handleLogout = async () => {
     try {
       await signOutUser();
-      toast.success("Logged out successfully");
-      navigate("/"); // redirect to homepage after logout
+      toast.success('Logged out successfully');
+      navigate('/'); // redirect to homepage after logout
     } catch (error: any) {
       toast.error(`Logout failed: ${error.message}`);
     }
@@ -29,8 +29,8 @@ export default function Navbar() {
   const linkClasses = ({ isActive }: { isActive: boolean }) =>
     `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
       isActive
-        ? "text-leaf-700 bg-leaf-100"
-        : "text-gray-700 hover:text-leaf-700 hover:bg-gray-100"
+        ? 'text-leaf-700 bg-leaf-100'
+        : 'text-gray-700 hover:text-leaf-700 hover:bg-gray-100'
     }`;
 
   return (
@@ -173,7 +173,7 @@ export default function Navbar() {
               </NavLink>
               <NavLink
                 to="/register"
-                className="btn-primary bg-leaf-600 text-white hover:bg-leaf-700"
+                className="bg-black text-white"
               >
                 Sign Up
               </NavLink>

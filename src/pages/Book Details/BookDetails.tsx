@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import ShareModal from '@/components/Modals/ShareModal';
-import Loader from '@/components/SharedComponents/Loader';
+import Loader from '@/components/Loaders/Loader';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useQuery } from '@tanstack/react-query';
 import { Heart, MoveLeft } from 'lucide-react';
@@ -9,6 +9,10 @@ import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/firebase/AuthProvider';
+import { AxiosError } from 'axios';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import { Separator } from '@/components/ui/separator';
 
 // -------- Types --------
 type ApiBook = {
@@ -64,11 +68,14 @@ export default function BookDetails() {
     };
     console.log(ReviewPayload);
     try {
-      const res = await axiosSecure.post('api/reviews', ReviewPayload);
+      const res = await axiosSecure.post('/api/reviews', ReviewPayload);
       console.log(res);
-    } catch (error: any) {
-      const errorMessage = error?.response?.data?.message;
-      toast.error(`Failed to Add the Review . ${errorMessage}`);
+      toast.success('Review Added Successfuly');
+      refetch();
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      const errorMessage = err.response?.data?.message || err.message;
+      toast.error(`Failed to add the review. ${errorMessage}`);
     }
   };
 
@@ -99,7 +106,9 @@ export default function BookDetails() {
   const {
     data: reviewsResp,
     isLoading: isReviewsLoading,
+    isFetching: ReviewsFetching,
     isError: isReviewsError,
+    refetch,
   } = useQuery<ReviewAPI>({
     queryKey: ['book-reviews', book?._id],
     queryFn: async () => {
@@ -224,7 +233,7 @@ export default function BookDetails() {
           <img
             src={book.imageUrl}
             alt={book.title}
-            className="w-full h-auto rounded-2xl shadow-xl object-cover ring-1 ring-black/5"
+            className="w-full h-auto lg:h-[820px] rounded-2xl shadow-xl object-cover ring-1 ring-black/5"
           />
         </div>
 
@@ -363,6 +372,7 @@ export default function BookDetails() {
       </motion.div>
 
       {/* -------- Reviews list -------- */}
+      <Separator className="mt-20 bg-black" />
       <div className="my-16">
         <h2 className="text-3xl font-extrabold font-mono text-center mb-8">
           What readers are saying
@@ -472,6 +482,13 @@ export default function BookDetails() {
           </ul>
         )}
       </div>
+      {/*  ------- Fetching Loader ------*/}
+      {ReviewsFetching && (
+        <Button className="flex justify-center mx-auto" disabled size="sm">
+          <Spinner />
+          Refreshing...
+        </Button>
+      )}
     </motion.section>
   );
 }
