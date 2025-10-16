@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useQuery } from '@tanstack/react-query';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
-import Loader2 from '@/components/SharedComponents/Loader2';
+import Loader2 from '@/components/Loaders/Loader2';
 
 type Book = {
   id: string;

@@ -1,5 +1,5 @@
 import { useAuth } from './firebase/AuthProvider';
-import Loader from './components/SharedComponents/Loader';
+import Loader from './components/Loaders/Loader';
 
 import { RouterProvider } from 'react-router';
 import router from './routes/Router';

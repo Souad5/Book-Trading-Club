@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import ShareModal from '@/components/Modals/ShareModal';
-import Loader from '@/components/SharedComponents/Loader';
+import Loader from '@/components/Loaders/Loader';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useQuery } from '@tanstack/react-query';
 import { Heart, MoveLeft } from 'lucide-react';
@@ -10,7 +10,6 @@ import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/firebase/AuthProvider';
 import { AxiosError } from 'axios';
-import { Button } from '@/components/ui/button';
 
 // -------- Types --------
 type ApiBook = {
