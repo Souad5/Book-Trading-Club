@@ -8,7 +8,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/firebase/AuthProvider';
-import { LogOut, Moon, Settings, User } from 'lucide-react';
+import { ModeToggle } from '@/pages/Theme/ModeToggle';
+import { LogOut, Settings, User } from 'lucide-react';
 import { Link } from 'react-router';
 
 const NavbarDashboard = () => {
@@ -23,7 +24,7 @@ const NavbarDashboard = () => {
       {/* Right */}
       <div className="flex items-center gap-4">
         <Link to={'/'}>Dashboard</Link>
-        <Moon />
+        <ModeToggle />
 
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -32,18 +33,18 @@ const NavbarDashboard = () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent sideOffset={10}>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <User />
+              <User className="h-[1.2rem] w-[1.2rem] mr-2" />
               Profile
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Settings /> Settings
+              <Settings className="h-[1.2rem] w-[1.2rem] mr-2" /> Settings
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <LogOut className="text-red-500" />
+            <DropdownMenuItem className="text-red-600 hover:bg-red-50 dark:hover:bg-red-900">
+              <LogOut className="h-[1.2rem] w-[1.2rem] mr-2" />
               Logout
             </DropdownMenuItem>
           </DropdownMenuContent>

@@ -4,11 +4,11 @@ import { Outlet } from 'react-router';
 
 const DashboardLayout = () => {
   return (
-    <div className="h-full bg-white flex">
+    <div className="h-full  flex bg-white dark:bg-black dark:text-white ">
       <AppSidebar />
-      <main className='w-full'>
+      <main className="w-full">
         <NavbarDashboard />
-        <div className='px-4'>
+        <div className="px-4">
           <Outlet />
         </div>
       </main>
