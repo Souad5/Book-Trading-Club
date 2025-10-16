@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import HeroSection from "@/components/Section/HeroSection";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -11,6 +12,19 @@ import WantToBeSellerSection from "@/components/Section/WantToBeSeller";
 import TopSellersSection from "@/components/Section/TopSeller";
 import { toast } from "react-toastify";
 import { useFavorites } from "@/hooks/useFavorites";
+=======
+// src/pages/Home.tsx
+import HeroSection from '@/components/Section/HeroSection';
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, Heart } from 'lucide-react';
+import WantToBeSellerSection from '@/components/Section/WantToBeSeller';
+import TopSellersSection from '@/components/Section/TopSeller';
+import notify from '@/lib/notify';
+import { useFavorites } from '@/hooks/useFavorites';
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+>>>>>>> Stashed changes
 
 type Book = {
   id: string;
@@ -29,6 +43,7 @@ type Book = {
 const DEMO_BOOKS: Book[] = BROWSE_BOOKS as unknown as Book[];
 
 export default function Home() {
+<<<<<<< Updated upstream
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [condition, setCondition] = useState("");
@@ -37,6 +52,16 @@ export default function Home() {
   const [genre, setGenre] = useState("");
   
   // Use the new favorites hook
+=======
+  const [query, setQuery] = useState('');
+  const [location, setLocation] = useState('');
+  const [condition, setCondition] = useState('');
+  const [exchangeType, setExchangeType] = useState('');
+  const [language, setLanguage] = useState('');
+  const [genre, setGenre] = useState('');
+  const [sorting, setSorting] = useState<'asc' | 'desc' | ''>('');
+
+>>>>>>> Stashed changes
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
 
   const handleToggleFavorite = async (bookId: string) => {
@@ -44,7 +69,11 @@ export default function Home() {
     const bookTitle = book?.title || "Unknown Book";
     
     if (!isAuthenticated) {
+<<<<<<< Updated upstream
       toast.error("Please log in to add books to favorites");
+=======
+      notify.error('Please log in to add books to favorites');
+>>>>>>> Stashed changes
       return;
     }
     
@@ -53,6 +82,7 @@ export default function Home() {
     
     if (success) {
       if (wasFavorite) {
+<<<<<<< Updated upstream
         toast.success(`"${bookTitle}" removed from favourites`, {
           toastId: `remove-${bookId}`
         });
@@ -63,12 +93,24 @@ export default function Home() {
       }
     } else {
       toast.error("Failed to update favorites");
+=======
+        notify.success(`"${bookTitle}" removed from favourites`, { toastId: `remove-${bookId}` });
+      } else {
+        notify.success(`"${bookTitle}" added to favourites`, { toastId: `add-${bookId}` });
+      }
+    } else {
+      notify.error('Failed to update favorites');
+>>>>>>> Stashed changes
     }
   };
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
+<<<<<<< Updated upstream
     return DEMO_BOOKS.filter((b) => {
+=======
+    const filtered = books.filter((b) => {
+>>>>>>> Stashed changes
       const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(
         " "
       )}`.toLowerCase();
@@ -90,7 +132,22 @@ export default function Home() {
         matchesGenre
       );
     });
+<<<<<<< Updated upstream
   }, [query, location, condition, exchangeType, language, genre]);
+=======
+
+    if (!sorting) return filtered;
+
+    const sorted = [...filtered].sort((a, b) => {
+      const at = a.title.toLowerCase();
+      const bt = b.title.toLowerCase();
+      if (at < bt) return sorting === 'asc' ? -1 : 1;
+      if (at > bt) return sorting === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [books, query, location, condition, exchangeType, language, genre, sorting]);
+>>>>>>> Stashed changes
 
   const locations = useMemo(
     () => Array.from(new Set(DEMO_BOOKS.map((b) => b.location))),
@@ -130,7 +187,7 @@ export default function Home() {
               Search Books
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
               <input
                 className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
                 placeholder="Search title, author, ISBN, or tag"
@@ -197,6 +254,17 @@ export default function Home() {
                     {g}
                   </option>
                 ))}
+              </select>
+
+              {/* Sorting */}
+              <select
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                value={sorting}
+                onChange={(e) => setSorting(e.target.value as 'asc' | 'desc' | '')}
+              >
+                <option value="">Sorting</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
               </select>
             </div>
           </div>
