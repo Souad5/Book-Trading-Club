@@ -10,6 +10,9 @@ import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/firebase/AuthProvider';
 import { AxiosError } from 'axios';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import { Separator } from '@/components/ui/separator';
 
 // -------- Types --------
 type ApiBook = {
@@ -103,6 +106,7 @@ export default function BookDetails() {
   const {
     data: reviewsResp,
     isLoading: isReviewsLoading,
+    isFetching: ReviewsFetching,
     isError: isReviewsError,
     refetch,
   } = useQuery<ReviewAPI>({
@@ -368,6 +372,7 @@ export default function BookDetails() {
       </motion.div>
 
       {/* -------- Reviews list -------- */}
+      <Separator className="mt-20 bg-black" />
       <div className="my-16">
         <h2 className="text-3xl font-extrabold font-mono text-center mb-8">
           What readers are saying
@@ -477,6 +482,13 @@ export default function BookDetails() {
           </ul>
         )}
       </div>
+      {/*  ------- Fetching Loader ------*/}
+      {ReviewsFetching && (
+        <Button className="flex justify-center mx-auto" disabled size="sm">
+          <Spinner />
+          Refreshing...
+        </Button>
+      )}
     </motion.section>
   );
 }
