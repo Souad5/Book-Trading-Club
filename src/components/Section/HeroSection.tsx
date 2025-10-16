@@ -50,7 +50,7 @@ export default function HeroSection() {
           <Button
             size="lg"
             variant="outline"
-            className="text-white border-white hover:bg-white/10"
+            className="text-white border-white bg-black hover:bg-white/10 hover:text-white hover:-translate-y-1 transition-all duration-300"
           >
             <Link to="/browse">Browse Books</Link>
           </Button>

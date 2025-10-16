@@ -9,6 +9,8 @@ import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useAuth } from '@/firebase/AuthProvider';
+import { AxiosError } from 'axios';
+import { Button } from '@/components/ui/button';
 
 // -------- Types --------
 type ApiBook = {
@@ -64,11 +66,14 @@ export default function BookDetails() {
     };
     console.log(ReviewPayload);
     try {
-      const res = await axiosSecure.post('api/reviews', ReviewPayload);
+      const res = await axiosSecure.post('/api/reviews', ReviewPayload);
       console.log(res);
-    } catch (error: any) {
-      const errorMessage = error?.response?.data?.message;
-      toast.error(`Failed to Add the Review . ${errorMessage}`);
+      toast.success('Review Added Successfuly');
+      refetch();
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      const errorMessage = err.response?.data?.message || err.message;
+      toast.error(`Failed to add the review. ${errorMessage}`);
     }
   };
 
@@ -100,6 +105,7 @@ export default function BookDetails() {
     data: reviewsResp,
     isLoading: isReviewsLoading,
     isError: isReviewsError,
+    refetch,
   } = useQuery<ReviewAPI>({
     queryKey: ['book-reviews', book?._id],
     queryFn: async () => {
