@@ -14,6 +14,7 @@ import FavouriteBooks from '@/pages/Wishlist/Wishlist';
 import { createBrowserRouter } from 'react-router';
 import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import DashboardLayout from '@/components/layout/DashboardLayout';
+import DashboardHomePage from '@/pages/Dashboards/Shared/DashboardHomePage';
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,12 @@ const router = createBrowserRouter([
   {
     path: '/dashboard',
     Component: () => <DashboardLayout />,
+    children: [
+      {
+        index: true,
+        Component: DashboardHomePage,
+      },
+    ],
   },
 ]);
 
