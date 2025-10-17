@@ -50,11 +50,12 @@
 
 html,
 body,
+
 #root {
   height: 100%;
 }
 .body {
-  @apply bg-[#F5EFE6] text-soil-900 font-sans antialiased;
+  @apply bg-white dark:bg-gray-100 text-soil-900 font-sans antialiased;
 }
 
 .btn-primary {
