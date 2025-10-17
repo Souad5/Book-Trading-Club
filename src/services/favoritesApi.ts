@@ -1,6 +1,5 @@
-const API_BASE_URL =
-  (import.meta as any).env?.VITE_API_URL ||
-  'https://book-trading-club-backend.vercel.app/api';
+// src/services/favoritesApi.ts
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
 
 export interface FavoritesResponse {
   success: boolean;
@@ -13,25 +12,32 @@ export interface FavoritesResponse {
 class FavoritesApiService {
   private async makeRequest<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: {
+      method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+      body?: any;
+      headers?: Record<string, string>;
+    } = {}
   ): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const axiosSecure = UseAxiosSecure();
 
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      ...options,
+    const method = options.method || 'GET';
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    };
+
+    // All frontend API routes are under /api on the backend
+    const url = `/api${endpoint}`;
+
+    const res = await axiosSecure.request<T>({
+      url,
+      method,
+      headers,
+      // Pass the raw object; axios will JSON-serialize it
+      data: options.body,
     });
 
-    if (!response.ok) {
-      throw new Error(
-        `API request failed: ${response.status} ${response.statusText}`
-      );
-    }
-
-    return response.json();
+    return res.data as T;
   }
 
   /**
@@ -74,14 +80,11 @@ class FavoritesApiService {
         `/favorites/${uid}`,
         {
           method: 'POST',
-          body: JSON.stringify({
-            bookId,
-            email,
-          }),
+          body: { bookId, email },
         }
       );
 
-      return response.success;
+      return !!response.success;
     } catch (error) {
       console.error('Error adding to favorites:', error);
       return false;
@@ -100,7 +103,7 @@ class FavoritesApiService {
         }
       );
 
-      return response.success;
+      return !!response.success;
     } catch (error) {
       console.error('Error removing from favorites:', error);
       return false;
@@ -120,23 +123,17 @@ class FavoritesApiService {
         `/favorites/${uid}/toggle`,
         {
           method: 'PUT',
-          body: JSON.stringify({
-            bookId,
-            email,
-          }),
+          body: { bookId, email },
         }
       );
 
       return {
-        success: response.success,
+        success: !!response.success,
         action: response.action || null,
       };
     } catch (error) {
       console.error('Error toggling favorite:', error);
-      return {
-        success: false,
-        action: null,
-      };
+      return { success: false, action: null };
     }
   }
 
@@ -145,8 +142,8 @@ class FavoritesApiService {
    */
   async checkHealth(): Promise<boolean> {
     try {
-      const response = await this.makeRequest<{ success: boolean }>('/health');
-      return response.success;
+      const response = await this.makeRequest<{ success: boolean }>(`/health`);
+      return !!response.success;
     } catch (error) {
       console.error('Health check failed:', error);
       return false;

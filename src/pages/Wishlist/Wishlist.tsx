@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Search } from 'lucide-react';
-import { toast } from 'react-toastify';
+import notify from '@/lib/notify';
 import { useFavorites } from '@/hooks/useFavorites';
-import { useQuery } from '@tanstack/react-query';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import Loader2 from '@/components/Loaders/Loader2';
 
 type Book = {
@@ -46,13 +46,12 @@ const normalize = (b: ApiBook): Book => ({
   author: b.author,
   isbn: b.ISBN ?? 'N/A',
   tags: b.tags ?? [],
-  location: b.Location ?? 'Dhaka',
-  condition: (b.Condition ?? 'Good').toLowerCase(),
-  exchangeType: (b.Exchange ?? 'Swap').toLowerCase(),
+  location: (b.Location ?? 'Dhaka').toString(),
+  condition: (b.Condition ?? 'Good').toLowerCase() as Book['condition'],
+  exchangeType: (b.Exchange ?? 'Swap').toLowerCase() as Book['exchangeType'],
   language: b.Language ?? 'English',
   genre: b.category ?? 'Fiction',
   image: b.imageUrl,
-  price: b.price,
 });
 
 export default function FavouriteBooks() {
@@ -61,18 +60,23 @@ export default function FavouriteBooks() {
   const axiosSecure = UseAxiosSecure();
 
   const {
-    data: books = [], // ✅ default to empty array
-    isLoading,
+    data: allBooks = [],
+    isLoading: booksLoading,
+    isError: booksError,
   } = useQuery({
-    queryKey: ['books'],
+    queryKey: ['wishlist-books'],
     queryFn: async () => {
       const res = await axiosSecure.get<ApiBook[]>('/api/books');
       return res.data;
     },
     select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
+    placeholderData: keepPreviousData,
+    staleTime: 30_000,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 
-  // Use the new favorites hook
+  // Favorites hook
   const {
     favorites,
     toggleFavorite,
@@ -82,7 +86,7 @@ export default function FavouriteBooks() {
     error,
   } = useFavorites();
 
-  if (isLoading || loading)
+  if (booksLoading || loading)
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 />
@@ -90,11 +94,11 @@ export default function FavouriteBooks() {
     );
 
   const handleToggleFavorite = async (bookId: string) => {
-    const book = books.find((b) => b.id === bookId);
+    const book = allBooks.find((b) => b.id === bookId);
     const bookTitle = book?.title || 'Unknown Book';
 
     if (!isAuthenticated) {
-      toast.error('Please log in to manage favorites');
+      notify.error('Please log in to manage favorites');
       return;
     }
 
@@ -103,22 +107,24 @@ export default function FavouriteBooks() {
 
     if (success) {
       if (wasFavorite) {
-        toast.success(`"${bookTitle}" removed from favourites`, {
+        notify.success(`"${bookTitle}" removed from favourites`, {
           toastId: `remove-${bookId}`,
         });
       } else {
-        toast.success(`"${bookTitle}" added to favourites`, {
+        notify.success(`"${bookTitle}" added to favourites`, {
           toastId: `add-${bookId}`,
         });
       }
     } else {
-      toast.error('Failed to update favorites');
+      notify.error('Failed to update favorites');
     }
   };
 
-  const favoriteBooks = books.filter((book) => favorites.includes(book.id));
+  const favoriteBooks = useMemo(
+    () => allBooks.filter((book) => favorites.includes(book.id)),
+    [allBooks, favorites]
+  );
 
-  console.log(favoriteBooks); // This is straight from the DB
   const filteredBooks = favoriteBooks.filter(
     (book) =>
       book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -157,8 +163,12 @@ export default function FavouriteBooks() {
 
       {/* Book Count and Status */}
       <div className="mb-6">
-        {loading && <p className="text-blue-600">Loading your favourites...</p>}
-        {error && <p className="text-red-600">Error: {error}</p>}
+        {(loading || booksLoading) && (
+          <p className="text-blue-600">Loading your favourites...</p>
+        )}
+        {(error || booksError) && (
+          <p className="text-red-600">Error loading favourites.</p>
+        )}
         {!loading && !error && (
           <p className="text-gray-600">
             {filteredBooks.length}{' '}
@@ -185,6 +195,13 @@ export default function FavouriteBooks() {
               </button>
 
               <Link to={`/book/${book.id}`} className="block space-y-2">
+                <div className="h-40 w-full overflow-hidden rounded-md bg-gray-100">
+                  <img
+                    src={book.image || ''}
+                    alt={book.title}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
                 <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
                   {book.title}
                 </h3>
@@ -196,7 +213,7 @@ export default function FavouriteBooks() {
                   <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
                     {book.location}
                   </span>
-                  <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
+                  <span className="rounded bg-yellow-100 text-yellow-700 px-2 py-1">
                     {book.condition}
                   </span>
                   <span className="rounded bg-green-100 text-green-700 px-2 py-1">
