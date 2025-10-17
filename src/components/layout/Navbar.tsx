@@ -139,7 +139,7 @@ export default function Navbar() {
               {theme === "light" ? (
                 <FiMoon className="h-5 w-5 text-gray-800" />
               ) : (
-                <FiSun className="h-5 w-5 text-yellow-400" />
+                <FiSun className="h-5 w-5 text-primary" />
               )}
             </button>
                         {!isAuthenticated ? (
