@@ -1,14 +1,5 @@
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:5000/api';
-=======
+// src/services/favoritesApi.ts
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
->>>>>>> Stashed changes
-=======
-const API_BASE_URL =
-  (import.meta as any).env?.VITE_API_URL ||
-  'https://book-trading-club-backend.vercel.app/api';
->>>>>>> development
 
 export interface FavoritesResponse {
   success: boolean;
@@ -21,19 +12,31 @@ export interface FavoritesResponse {
 class FavoritesApiService {
   private async makeRequest<T>(
     endpoint: string,
-    options: { method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; body?: any; headers?: Record<string, string> } = {}
+    options: {
+      method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+      body?: any;
+      headers?: Record<string, string>;
+    } = {}
   ): Promise<T> {
     const axiosSecure = UseAxiosSecure();
-    const path = `/api${endpoint}`;
+
     const method = options.method || 'GET';
-    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(options.headers || {}),
+    };
+
+    // All frontend API routes are under /api on the backend
+    const url = `/api${endpoint}`;
 
     const res = await axiosSecure.request<T>({
-      url: path,
+      url,
       method,
       headers,
+      // Pass the raw object; axios will JSON-serialize it
       data: options.body,
     });
+
     return res.data as T;
   }
 
@@ -73,10 +76,15 @@ class FavoritesApiService {
     email?: string
   ): Promise<boolean> {
     try {
-      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}`,
-        { method: 'POST', body: { bookId, email } });
+      const response = await this.makeRequest<FavoritesResponse>(
+        `/favorites/${uid}`,
+        {
+          method: 'POST',
+          body: { bookId, email },
+        }
+      );
 
-      return response.success;
+      return !!response.success;
     } catch (error) {
       console.error('Error adding to favorites:', error);
       return false;
@@ -88,9 +96,6 @@ class FavoritesApiService {
    */
   async removeFromFavorites(uid: string, bookId: string): Promise<boolean> {
     try {
-      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/${bookId}`, {
-        method: 'DELETE',
-      });
       const response = await this.makeRequest<FavoritesResponse>(
         `/favorites/${uid}/${bookId}`,
         {
@@ -98,7 +103,7 @@ class FavoritesApiService {
         }
       );
 
-      return response.success;
+      return !!response.success;
     } catch (error) {
       console.error('Error removing from favorites:', error);
       return false;
@@ -114,25 +119,21 @@ class FavoritesApiService {
     email?: string
   ): Promise<{ success: boolean; action: 'added' | 'removed' | null }> {
     try {
-
-      const response = await this.makeRequest<FavoritesResponse>(`/favorites/${uid}/toggle`, {
-        method: 'PUT',
-        body: JSON.stringify({ 
-          bookId,
-          email 
-        }),
-      });
+      const response = await this.makeRequest<FavoritesResponse>(
+        `/favorites/${uid}/toggle`,
+        {
+          method: 'PUT',
+          body: { bookId, email },
+        }
+      );
 
       return {
-        success: response.success,
+        success: !!response.success,
         action: response.action || null,
       };
     } catch (error) {
       console.error('Error toggling favorite:', error);
-      return {
-        success: false,
-        action: null,
-      };
+      return { success: false, action: null };
     }
   }
 
@@ -142,7 +143,7 @@ class FavoritesApiService {
   async checkHealth(): Promise<boolean> {
     try {
       const response = await this.makeRequest<{ success: boolean }>(`/health`);
-      return response.success;
+      return !!response.success;
     } catch (error) {
       console.error('Health check failed:', error);
       return false;

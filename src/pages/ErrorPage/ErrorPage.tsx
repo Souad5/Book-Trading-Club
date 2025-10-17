@@ -6,7 +6,7 @@ import { House } from 'lucide-react';
 import { Link } from 'react-router';
 const ErrorPage = () => {
   return (
-    <div className="min-h-screen flex flex-col justify-between items-center gap-20 w-full">
+    <div className="min-h-screen body flex flex-col justify-between items-center gap-20 w-full">
       <div className="bg-white w-full">
         <Navbar></Navbar>
       </div>

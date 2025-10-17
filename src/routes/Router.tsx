@@ -1,6 +1,5 @@
 import HomePageLayout from '@/components/layout/HomePageLayout';
 import AddNewBook from '@/pages/Add Book/AddNewBook';
-import Dashboard from '@/dashboard/DashBoard';
 import About from '@/pages/About/About';
 import BookDetails from '@/pages/Book Details/BookDetails';
 import Browse from '@/pages/Browse/Browse';
@@ -14,6 +13,7 @@ import Register from '@/pages/Register/Register';
 import FavouriteBooks from '@/pages/Wishlist/Wishlist';
 import { createBrowserRouter } from 'react-router';
 import ErrorPage from '@/pages/ErrorPage/ErrorPage';
+import DashboardLayout from '@/components/layout/DashboardLayout';
 
 const router = createBrowserRouter([
   {
@@ -58,10 +58,6 @@ const router = createBrowserRouter([
         Component: About,
       },
       {
-        path: '/dashboard',
-        Component: Dashboard,
-      },
-      {
         path: '/add-book',
         Component: AddNewBook,
       },
@@ -70,6 +66,10 @@ const router = createBrowserRouter([
         Component: Contact,
       },
     ],
+  },
+  {
+    path: '/dashboard',
+    Component: () => <DashboardLayout />,
   },
 ]);
 

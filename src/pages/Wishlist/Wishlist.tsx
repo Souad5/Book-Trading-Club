@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { Heart, Search } from "lucide-react";
-import notify from "@/lib/notify";
-import { useFavorites } from "@/hooks/useFavorites";
-import UseAxiosSecure from "@/axios/UseAxiosSecure";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Heart, Search } from 'lucide-react';
+import notify from '@/lib/notify';
+import { useFavorites } from '@/hooks/useFavorites';
+import UseAxiosSecure from '@/axios/UseAxiosSecure';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import Loader2 from '@/components/Loaders/Loader2';
 
 type Book = {
   id: string;
@@ -43,13 +44,13 @@ const normalize = (b: ApiBook): Book => ({
   id: b._id,
   title: b.title,
   author: b.author,
-  isbn: b.ISBN ?? "N/A",
+  isbn: b.ISBN ?? 'N/A',
   tags: b.tags ?? [],
-  location: (b.Location ?? "Dhaka").toString(),
-  condition: (b.Condition ?? "Good").toLowerCase() as Book["condition"],
-  exchangeType: (b.Exchange ?? "Swap").toLowerCase() as Book["exchangeType"],
-  language: b.Language ?? "English",
-  genre: b.category ?? "Fiction",
+  location: (b.Location ?? 'Dhaka').toString(),
+  condition: (b.Condition ?? 'Good').toLowerCase() as Book['condition'],
+  exchangeType: (b.Exchange ?? 'Swap').toLowerCase() as Book['exchangeType'],
+  language: b.Language ?? 'English',
+  genre: b.category ?? 'Fiction',
   image: b.imageUrl,
 });
 
@@ -59,39 +60,13 @@ export default function FavouriteBooks() {
   const axiosSecure = UseAxiosSecure();
 
   const {
-    data: books = [], // ✅ default to empty array
-    isLoading,
+    data: allBooks = [],
+    isLoading: booksLoading,
+    isError: booksError,
   } = useQuery({
-    queryKey: ['books'],
+    queryKey: ['wishlist-books'],
     queryFn: async () => {
       const res = await axiosSecure.get<ApiBook[]>('/api/books');
-      return res.data;
-    },
-    select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
-  });
-
-  // Use the new favorites hook
-  const {
-    favorites,
-    toggleFavorite,
-    isFavorite,
-    isAuthenticated,
-    loading,
-    error,
-  } = useFavorites();
-
-  if (isLoading || loading)
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 />
-      </div>
-    );
-
-  const axiosSecure = UseAxiosSecure();
-  const { data: allBooks = [], isLoading: booksLoading, isError: booksError } = useQuery({
-    queryKey: ["wishlist-books"],
-    queryFn: async () => {
-      const res = await axiosSecure.get<ApiBook[]>("/api/books");
       return res.data;
     },
     select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
@@ -101,12 +76,29 @@ export default function FavouriteBooks() {
     refetchOnWindowFocus: false,
   });
 
+  // Favorites hook
+  const {
+    favorites,
+    toggleFavorite,
+    isFavorite,
+    isAuthenticated,
+    loading,
+    error,
+  } = useFavorites();
+
+  if (booksLoading || loading)
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 />
+      </div>
+    );
+
   const handleToggleFavorite = async (bookId: string) => {
-    const book = allBooks.find(b => b.id === bookId);
-    const bookTitle = book?.title || "Unknown Book";
-    
+    const book = allBooks.find((b) => b.id === bookId);
+    const bookTitle = book?.title || 'Unknown Book';
+
     if (!isAuthenticated) {
-      notify.error("Please log in to manage favorites");
+      notify.error('Please log in to manage favorites');
       return;
     }
 
@@ -115,21 +107,29 @@ export default function FavouriteBooks() {
 
     if (success) {
       if (wasFavorite) {
-        notify.success(`"${bookTitle}" removed from favourites`, { toastId: `remove-${bookId}` });
+        notify.success(`"${bookTitle}" removed from favourites`, {
+          toastId: `remove-${bookId}`,
+        });
       } else {
-        notify.success(`"${bookTitle}" added to favourites`, { toastId: `add-${bookId}` });
+        notify.success(`"${bookTitle}" added to favourites`, {
+          toastId: `add-${bookId}`,
+        });
       }
     } else {
-      notify.error("Failed to update favorites");
+      notify.error('Failed to update favorites');
     }
   };
 
-  const favoriteBooks = useMemo(() => allBooks.filter(book => favorites.includes(book.id)), [allBooks, favorites]);
-  
-  const filteredBooks = favoriteBooks.filter(book => 
-    book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    book.genre.toLowerCase().includes(searchQuery.toLowerCase())
+  const favoriteBooks = useMemo(
+    () => allBooks.filter((book) => favorites.includes(book.id)),
+    [allBooks, favorites]
+  );
+
+  const filteredBooks = favoriteBooks.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      book.genre.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -213,12 +213,17 @@ export default function FavouriteBooks() {
                   <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
                     {book.location}
                   </span>
+                  <span className="rounded bg-yellow-100 text-yellow-700 px-2 py-1">
                     {book.condition}
                   </span>
                   <span className="rounded bg-green-100 text-green-700 px-2 py-1">
                     {book.exchangeType}
                   </span>
                   <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
+                    {book.genre}
+                  </span>
+                </div>
+              </Link>
 
               {/* Action Buttons */}
               <div className="mt-4 flex gap-2">
