@@ -11,9 +11,6 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
 import {
   Home,
@@ -25,6 +22,8 @@ import {
   User2,
   Plus,
   LibraryBig,
+  Mail,
+  Info,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -34,6 +33,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/firebase/AuthProvider';
 
 const items = [
   {
@@ -64,6 +64,12 @@ const items = [
 ];
 
 const AppSidebar = () => {
+  const { user, dbUser } = useAuth();
+  // console.log(user, dbUser);
+  const photourl = user?.photoURL;
+  const Name = dbUser?.displayName;
+  const role: string = dbUser?.role ? dbUser.role.toUpperCase() : '';
+  console.log(photourl, Name);
   return (
     <Sidebar collapsible="icon" className="z-20">
       <SidebarHeader className="py-4 ">
@@ -72,12 +78,12 @@ const AppSidebar = () => {
             <SidebarMenuButton asChild>
               <Link to="/">
                 <img
-                  src="https://github.com/shadcn.png"
+                  src={photourl ? photourl : ''}
                   alt="logo"
                   width={20}
                   height={20}
                 />
-                <span>Lama Dev</span>
+                <span>{role} Dashboard</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -139,21 +145,19 @@ const AppSidebar = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to={'/browse'}>
-                    <LibraryBig />
-                    See All Books
+                  <Link to={'/about'}>
+                    <Info />
+                    About
                   </Link>
                 </SidebarMenuButton>
-                <SidebarMenuSub>
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton asChild>
-                      <Link to={'#'}>
-                        <Plus />
-                        Add Project
-                      </Link>
-                    </SidebarMenuSubButton>
-                  </SidebarMenuSubItem>
-                </SidebarMenuSub>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/contact'}>
+                    <Mail />
+                    Contact
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
@@ -165,7 +169,8 @@ const AppSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> John Doe <ChevronUp className="ml-auto" />
+                  <User2 /> {Name?.slice(0, 19)}{' '}
+                  <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

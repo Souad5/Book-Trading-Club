@@ -8,12 +8,17 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useAuth } from '@/firebase/AuthProvider';
 
 import { ModeToggle } from '@/pages/Theme/ModeToggle';
 import { LogOut, Settings, User } from 'lucide-react';
 import { Link } from 'react-router';
 
 const NavbarDashboard = () => {
+  const { user } = useAuth();
+
+  const photourl: string | null = user && user.photoURL;
+  // console.log(photourl);
   return (
     <nav className="p-4 flex items-center justify-between">
       <SidebarTrigger />
@@ -24,7 +29,7 @@ const NavbarDashboard = () => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src={photourl ? photourl : ''} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
