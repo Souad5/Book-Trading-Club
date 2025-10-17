@@ -84,21 +84,23 @@ export default function FavouriteBooks() {
   } = useFavorites();
 
   // Hook order safe — everything declared before early returns
-  const favoriteBooks = useMemo(
-    () => allBooks.filter((book) => favorites.includes(book.id)),
-    [allBooks, favorites]
-  );
+ const favoriteBooks = useMemo(
+  () => books.filter((book) => favorites.includes(book.id)),
+  [books, favorites]
+);
 
-  const filteredBooks = useMemo(
-    () =>
-      favoriteBooks.filter(
-        (book : any) =>
-          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.genre.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
-    [favoriteBooks, searchQuery]
-  );
+const filteredBooks = useMemo(
+  () =>
+    favoriteBooks.filter(
+      (book) =>
+        book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        book.genre.toLowerCase().includes(searchQuery.toLowerCase())
+    ),
+  [favoriteBooks, searchQuery]
+);
+
+
 
   if (booksLoading || loading) {
     return (
