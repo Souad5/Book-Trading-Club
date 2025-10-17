@@ -4,11 +4,7 @@ import AppSidebar from '@/pages/Dashboards/Shared/AppSidebar';
 import NavbarDashboard from '@/pages/Dashboards/Shared/NavbarDashboard';
 import { Outlet } from 'react-router';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout() {
   return (
     <div className="flex">
       <SidebarProvider>
@@ -16,7 +12,6 @@ export default function DashboardLayout({
         <main className="w-full">
           <NavbarDashboard />
           <div className="px-4">
-            {children}
             <Outlet />
           </div>
         </main>
