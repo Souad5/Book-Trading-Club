@@ -164,32 +164,32 @@ export default function Home() {
       <div className="relative py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 space-y-12">
           <div className="text-center space-y-4">
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-white">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-800 ">
               Fresh on the Shelf
             </h2>
-            <p className="text-lg text-gray-600 dark:text-white max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600  max-w-2xl mx-auto">
               Discover the latest books shared by our community. Swap, donate,
               or buy — your next read is just a click away.
             </p>
           </div>
 
           {/* Search Filters */}
-          <div className="rounded-2xl bg-white p-6 md:p-8 shadow-xl border border-gray-100">
-            <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-900 mb-5">
-              <Search className="w-5 h-5 text-purple-600" />
+          <div className="rounded-2xl bg-white dark:bg-gray-600 p-6 md:p-8 shadow-xl border border-gray-100">
+            <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-900 dark:text-white mb-5">
+              <Search className="w-5 h-5 text-gray-600 dark:text-white" />
               Search Books
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <input
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-300"
+                className="w-full rounded-lg border border-gray-300 bg-gray-300 dark:bg-white px-3 py-2.5 text-sm  focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder:text-black"
                 placeholder="Search title, author, ISBN, or tag"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
 
               <select
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               >
@@ -202,7 +202,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
               >
@@ -213,7 +213,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
                 value={exchangeType}
                 onChange={(e) => setExchangeType(e.target.value)}
               >
@@ -224,7 +224,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
@@ -237,7 +237,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white px-3 py-2.5 text-sm"
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
               >
@@ -270,7 +270,7 @@ export default function Home() {
               {results.slice(0, 6).map((b) => (
                 <article
                   key={b.id}
-                  className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
+                  className="group rounded-xl border border-gray-200 bg-white dark:bg-gray-600  p-6 shadow-md hover:shadow-lg transition-shadow relative"
                 >
                   {/* Favorite Heart Icon */}
                   <button
@@ -303,28 +303,31 @@ export default function Home() {
                         className="h-full w-full object-cover"
                       />
                     </div>
-                    <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
+                    <h3 className="font-semibold text-lg text-gray-900 dark:text-white 
+                    group-hover:text-gray-600">
                       {b.title}
                     </h3>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-gray-600
+                    dark:text-white 
+                    ">
                       {b.author} · {b.language}
                     </p>
-                    <p className="text-xs text-gray-500">ISBN: {b.isbn}</p>
+                    <p className="text-xs text-gray-500 dark:text-white ">ISBN: {b.isbn}</p>
                     <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                      <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
+                      <span className="rounded bg-gray-100 text-black  dark:text-black px-2  py-1">
                         {b.location}
                       </span>
-                      <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
+                      <span className="rounded bg-gray-100 text-black dark:text-black px-2 py-1">
                         {b.condition}
                       </span>
-                      <span className="rounded bg-green-100 text-green-700 px-2 py-1">
+                      <span className="rounded bg-gray-100 text-black dark:text-black px-2 py-1">
                         {b.exchangeType}
                       </span>
-                      <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
+                      <span className="rounded bg-gray-100 text-black dark:text-black px-2 py-1">
                         {b.genre}
                       </span>
                     </div>
-                    <span className="mt-4 inline-block text-sm text-blue-600 px-3 py-1 hover:text-white hover:bg-blue-600 border rounded-full">
+                    <span className="mt-4 inline-block text-sm text-gray-600 dark:bg-gray-200 dark:text-black px-3 py-1  hover:bg-gray-600 hover:text-white border rounded-full">
                       View Details →
                     </span>
                   </Link>

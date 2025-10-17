@@ -27,7 +27,7 @@ export function TopSellersSection() {
       bg-bg-light dark:bg-bg-dark"
     >
       {/* Section Title */}
-      <h2 className="text-4xl font-extrabold mb-8 flex items-center gap-3 text-gray-800 dark:text-white transition-colors">
+      <h2 className="text-4xl font-extrabold mb-8 flex items-center gap-3 text-gray-800  transition-colors">
          Top Sellers
       </h2>
 

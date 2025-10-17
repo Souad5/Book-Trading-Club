@@ -10,7 +10,7 @@ export default function HeroSection() {
   
 
   return (
-    <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative w-full h-screen flex items-center justify-center overflow-hidden overla">
 
    
 
@@ -27,7 +27,9 @@ export default function HeroSection() {
       </video>
 
       {/* Overlay (dark mode aware) */}
-      <div className="absolute inset-0 bg-bg-light/30 dark:bg-bg-dark/70 backdrop-blur-[2px]" />
+      {/* Overlay (gray) */}
+<div className="absolute inset-0 bg-gray-700/20 dark:bg-gray-900/60 backdrop-blur-[2px]" />
+
 
       {/* Content */}
       <motion.div
