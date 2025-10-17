@@ -31,55 +31,52 @@ export default function UserMenu() {
       {/* Profile button */}
       <button
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-leaf-600 text-white"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white dark:bg-gold dark:text-black shadow-[0_0_8px_var(--ai-soft)]"
         aria-haspopup="menu"
         aria-expanded={open}
-      >
-        <span className="font-semibold">{user?.email?.[0].toUpperCase() || "U"}</span>
+      > <img src="../../assests/photo/user.png" alt="" />
+        <span className="font-semibold">{user?.email?.[0].toUpperCase() || ""}</span>
       </button>
 
       {/* Dropdown menu */}
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-64 rounded-md border border-sand-200 bg-white p-2 shadow-lg z-50"
+          className="absolute right-0 mt-2 w-64 rounded-md border border-gray-200 bg-white/70 dark:border-bg-card  dark:bg-gray-400/80 dark:text-white text-text-main  shadow-lg z-50"
         >
           {/* User info */}
-          <div className="px-4 py-2 text-sm text-sand-600 border-b border-sand-200">
+          <div className="px-4 py-2 text-sm text-gray-600 dark:text-white font-semibold border-b border-gray-200 dark:border-gray-700">
             {user?.email}
           </div>
 
           {/* Menu items */}
-          <div className="flex flex-col">
-            <Link to="/wishlist" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded">
-              <FiHeart /> Favourite Books
-            </Link>
-            <Link to="/messages" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded relative">
-              <FiMail /> Messages
-              <span className="absolute right-4 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-xs">
-                3
-              </span>
-            </Link>
-            <Link to="/notifications" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded relative">
-              <FiBell /> Notifications
-              <span className="absolute right-4 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-white text-xs">
-                5
-              </span>
-            </Link>
-            <Link to="/dashboard" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded">
-              <FiBook /> Dashboard
-            </Link>
-            <Link to="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded">
-              <FiUser /> My Profile
-            </Link>
-            <Link to="/settings" className="flex items-center gap-2 px-4 py-2 hover:bg-sand-100 rounded">
-              <FiSettings /> Settings
-            </Link>
+          <div className="flex flex-col ">
+            {[
+              { to: "/wishlist", label: "Favourite Books", icon: <FiHeart /> },
+              { to: "/messages", label: "Messages", icon: <FiMail />, badge: 3 },
+              { to: "/notifications", label: "Notifications", icon: <FiBell />, badge: 5 },
+              { to: "/dashboard", label: "Dashboard", icon: <FiBook /> },
+              { to: "/profile", label: "My Profile", icon: <FiUser /> },
+              { to: "/settings", label: "Settings", icon: <FiSettings /> },
+            ].map((item, idx) => (
+              <Link
+                key={idx}
+                to={item.to}
+                className="flex items-center gap-2  px-4 py-2 hover:bg-ai-soft/20 dark:hover:bg-primary-dark/40 transition rounded relative dark:text-white "
+              >
+                {item.icon} {item.label}
+                {item.badge && (
+                  <span className="absolute right-4 inline-flex h-4 w-4 items-center justify-center dark:text-white rounded-full bg-error text-white text-xs">
+                    {item.badge}
+                  </span>
+                )}
+              </Link>
+            ))}
 
             {/* Logout */}
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 text-left text-red-500 hover:bg-sand-100 rounded"
+              className="flex items-center gap-2 px-4 py-2 text-left text-error hover:bg-ai-soft/20 dark:hover:bg-primary-dark/40 dark:text-white transition rounded"
             >
               <FiLogOut /> Logout
             </button>

@@ -24,7 +24,7 @@ const steps = [
 
 export default function BookJourneyTimeline() {
   return (
-    <section className="py-20 bg-gradient-to-b from-[#f9f7f1] to-[#fff]">
+    <section className="py-20 ">
       <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
         Your Book Journey with Us 📖
       </h2>

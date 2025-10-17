@@ -60,20 +60,19 @@ export default function FavouriteBooks() {
 
   const axiosSecure = UseAxiosSecure();
 
-  // Fetch all books
+  // Fetch all books and normalize in the queryFn
   const {
-    data: books = [], // ✅ default to empty array
+    data: books = [],
     isLoading: booksLoading,
-  } = useQuery({
+  } = useQuery<Book[], Error>({
     queryKey: ['books'],
     queryFn: async () => {
       const res = await axiosSecure.get<ApiBook[]>('/api/books');
-      return res.data;
+      return (res.data ?? []).map(normalize);
     },
-    select: (apiBooks: ApiBook[]) => apiBooks.map(normalize),
   });
 
-  // Use the new favorites hook
+  // Use the favorites hook
   const {
     favorites,
     toggleFavorite,
@@ -83,20 +82,23 @@ export default function FavouriteBooks() {
     error,
   } = useFavorites();
 
-  // Hook order safe — everything declared before early returns
+  // Compute favourite books from fetched books
   const favoriteBooks = useMemo(
-    () => allBooks.filter((book) => favorites.includes(book.id)),
-    [allBooks, favorites]
+    () => books.filter((book) => favorites.includes(book.id)),
+    [books, favorites]
   );
 
   const filteredBooks = useMemo(
     () =>
-      favoriteBooks.filter(
-        (book : any) =>
-          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.genre.toLowerCase().includes(searchQuery.toLowerCase())
-      ),
+      favoriteBooks.filter((book) => {
+        const q = searchQuery.trim().toLowerCase();
+        if (!q) return true;
+        return (
+          book.title.toLowerCase().includes(q) ||
+          book.author.toLowerCase().includes(q) ||
+          book.genre.toLowerCase().includes(q)
+        );
+      }),
     [favoriteBooks, searchQuery]
   );
 
@@ -170,8 +172,7 @@ export default function FavouriteBooks() {
         {error && <p className="text-red-600">Error: {error}</p>}
         {!loading && !error && (
           <p className="text-gray-600">
-            {filteredBooks.length}{' '}
-            {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
+            {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
           </p>
         )}
       </div>
@@ -179,58 +180,63 @@ export default function FavouriteBooks() {
       {/* Books Grid */}
       {filteredBooks.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBooks.map((book) => (
-            <article
-              key={book.id}
-              className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
-            >
-              {/* Favorite Heart Icon */}
-              <button
-                onClick={() => handleToggleFavorite(book.id)}
-                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
-                aria-label="Remove from favorites"
+          {filteredBooks.map((book) => {
+            const fav = isFavorite(book.id);
+            return (
+              <article
+                key={book.id}
+                className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
               >
-                <Heart className="w-5 h-5 fill-red-500 text-red-500 transition-colors duration-200 hover:fill-red-600" />
-              </button>
-
-              <Link to={`/book/${book.id}`} className="block space-y-2">
-                <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
-                  {book.title}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {book.author} · {book.language}
-                </p>
-                <p className="text-xs text-gray-500">ISBN: {book.isbn}</p>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                  <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
-                    {book.location}
-                  </span>
-                  <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
-                    {book.condition}
-                  </span>
-                  <span className="rounded bg-green-100 text-green-700 px-2 py-1">
-                    {book.exchangeType}
-                  </span>
-                  <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
-                    {book.genre}
-                  </span>
-                </div>
-              </Link>
-
-              {/* Action Buttons */}
-              <div className="mt-4 flex gap-2">
-                <button className="flex-1 px-4 py-2 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg text-sm font-medium transition-colors">
-                  Trade Now
-                </button>
-                <Link
-                  to={`/book/${book.id}`}
-                  className="px-4 py-2 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                {/* Favorite Heart Icon */}
+                <button
+                  onClick={() => handleToggleFavorite(book.id)}
+                  className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
+                  aria-label={fav ? 'Remove from favorites' : 'Add to favorites'}
                 >
-                  View Details
+                  <Heart
+                    className={`w-5 h-5 transition-colors duration-200 ${fav ? 'text-red-500 fill-red-500' : 'text-gray-400'}`}
+                  />
+                </button>
+
+                <Link to={`/book/${book.id}`} className="block space-y-2">
+                  <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
+                    {book.title}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {book.author} · {book.language}
+                  </p>
+                  <p className="text-xs text-gray-500">ISBN: {book.isbn}</p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
+                      {book.location}
+                    </span>
+                    <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
+                      {book.condition}
+                    </span>
+                    <span className="rounded bg-green-100 text-green-700 px-2 py-1">
+                      {book.exchangeType}
+                    </span>
+                    <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
+                      {book.genre}
+                    </span>
+                  </div>
                 </Link>
-              </div>
-            </article>
-          ))}
+
+                {/* Action Buttons */}
+                <div className="mt-4 flex gap-2">
+                  <button className="flex-1 px-4 py-2 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg text-sm font-medium transition-colors">
+                    Trade Now
+                  </button>
+                  <Link
+                    to={`/book/${book.id}`}
+                    className="px-4 py-2 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </article>
+            );
+          })}
         </div>
       ) : (
         <div className="text-center py-12">
