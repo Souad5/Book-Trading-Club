@@ -22,7 +22,6 @@ type Book = {
   image: string;
 };
 
-// API shape coming from your Mongoose model
 type ApiBook = {
   _id: string;
   title: string;
@@ -39,7 +38,7 @@ type ApiBook = {
   imageUrl: string;
 };
 
-// map DB → UI
+// ✅ Normalize backend data into frontend-friendly format
 const normalize = (b: ApiBook): Book => ({
   id: b._id,
   title: b.title,
@@ -57,12 +56,11 @@ const normalize = (b: ApiBook): Book => ({
 
 export default function FavouriteBooks() {
   const [searchQuery, setSearchQuery] = useState('');
-
   const axiosSecure = UseAxiosSecure();
 
-  // Fetch all books and normalize in the queryFn
+  // ✅ Fetch all books
   const {
-    data: books = [],
+    data: allBooks = [],
     isLoading: booksLoading,
   } = useQuery<Book[], Error>({
     queryKey: ['books'],
@@ -72,7 +70,7 @@ export default function FavouriteBooks() {
     },
   });
 
-  // Use the favorites hook
+  // ✅ Favorites hook
   const {
     favorites,
     toggleFavorite,
@@ -82,26 +80,24 @@ export default function FavouriteBooks() {
     error,
   } = useFavorites();
 
-  // Compute favourite books from fetched books
+  // ✅ Safe Hook Order — useMemo after all hooks
   const favoriteBooks = useMemo(
-    () => books.filter((book) => favorites.includes(book.id)),
-    [books, favorites]
+    () => allBooks.filter((book) => favorites.includes(book.id)),
+    [allBooks, favorites]
   );
 
   const filteredBooks = useMemo(
     () =>
-      favoriteBooks.filter((book) => {
-        const q = searchQuery.trim().toLowerCase();
-        if (!q) return true;
-        return (
-          book.title.toLowerCase().includes(q) ||
-          book.author.toLowerCase().includes(q) ||
-          book.genre.toLowerCase().includes(q)
-        );
-      }),
+      favoriteBooks.filter(
+        (book) =>
+          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.genre.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
     [favoriteBooks, searchQuery]
   );
 
+  // ✅ Early Loading State
   if (booksLoading || loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -110,8 +106,9 @@ export default function FavouriteBooks() {
     );
   }
 
+  // ✅ Favorite Toggle Handler
   const handleToggleFavorite = async (bookId: string) => {
-    const book = books.find((b) => b.id === bookId);
+    const book = allBooks.find((b) => b.id === bookId);
     const bookTitle = book?.title || 'Unknown Book';
 
     if (!isAuthenticated) {
@@ -123,20 +120,18 @@ export default function FavouriteBooks() {
     const success = await toggleFavorite(bookId);
 
     if (success) {
-      if (wasFavorite) {
-        toast.success(`"${bookTitle}" removed from favourites`, {
-          toastId: `remove-${bookId}`,
-        });
-      } else {
-        toast.success(`"${bookTitle}" added to favourites`, {
-          toastId: `add-${bookId}`,
-        });
-      }
+      toast.success(
+        `"${bookTitle}" ${
+          wasFavorite ? 'removed from' : 'added to'
+        } favourites`,
+        { toastId: `${wasFavorite ? 'remove' : 'add'}-${bookId}` }
+      );
     } else {
       toast.error('Failed to update favorites');
     }
   };
 
+  // ✅ UI Section
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
       {/* Header */}
@@ -166,13 +161,14 @@ export default function FavouriteBooks() {
         </div>
       </div>
 
-      {/* Book Count and Status */}
+      {/* Book Count */}
       <div className="mb-6">
         {loading && <p className="text-blue-600">Loading your favourites...</p>}
         {error && <p className="text-red-600">Error: {error}</p>}
         {!loading && !error && (
           <p className="text-gray-600">
-            {filteredBooks.length} {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
+            {filteredBooks.length}{' '}
+            {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
           </p>
         )}
       </div>
@@ -187,25 +183,32 @@ export default function FavouriteBooks() {
                 key={book.id}
                 className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
               >
-                {/* Favorite Heart Icon */}
+                {/* Favorite Heart */}
                 <button
                   onClick={() => handleToggleFavorite(book.id)}
                   className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
-                  aria-label={fav ? 'Remove from favorites' : 'Add to favorites'}
+                  aria-label={
+                    fav ? 'Remove from favorites' : 'Add to favorites'
+                  }
                 >
                   <Heart
-                    className={`w-5 h-5 transition-colors duration-200 ${fav ? 'text-red-500 fill-red-500' : 'text-gray-400'}`}
+                    className={`w-5 h-5 transition-colors duration-200 ${
+                      fav
+                        ? 'text-red-500 fill-red-500'
+                        : 'text-gray-400 hover:text-red-400'
+                    }`}
                   />
                 </button>
 
                 <Link to={`/book/${book.id}`} className="block space-y-2">
-                  <h3 className="font-semibold text-lg text-gray-900 group-hover:text-purple-600">
+                  <h3 className="font-semibold text-lg text-gray-900 group-hover:text-leaf-600">
                     {book.title}
                   </h3>
                   <p className="text-sm text-gray-600">
                     {book.author} · {book.language}
                   </p>
                   <p className="text-xs text-gray-500">ISBN: {book.isbn}</p>
+
                   <div className="mt-3 flex flex-wrap gap-2 text-xs">
                     <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
                       {book.location}
@@ -222,7 +225,7 @@ export default function FavouriteBooks() {
                   </div>
                 </Link>
 
-                {/* Action Buttons */}
+                {/* Buttons */}
                 <div className="mt-4 flex gap-2">
                   <button className="flex-1 px-4 py-2 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg text-sm font-medium transition-colors">
                     Trade Now
