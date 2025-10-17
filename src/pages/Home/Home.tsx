@@ -164,10 +164,10 @@ export default function Home() {
       <div className="relative py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 space-y-12">
           <div className="text-center space-y-4">
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-[#1E1B4B]">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-white">
               Fresh on the Shelf
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-white max-w-2xl mx-auto">
               Discover the latest books shared by our community. Swap, donate,
               or buy — your next read is just a click away.
             </p>
@@ -346,7 +346,7 @@ export default function Home() {
           <div className="text-center">
             <Link
               to="/browse"
-              className="inline-block bg-[#1E1B4B] text-white font-semibold px-6 py-3 rounded-full hover:bg-purple-700 transition"
+             className="inline-block px-8 py-3 bg-gray-500 dark:bg-gray-100 dark:text-black dark:border-gray-300 dark:border-1 text-white font-bold rounded-full shadow-lg hover:bg-gray-600 transition"
             >
               View All Books
             </Link>

@@ -62,7 +62,8 @@ export default function HeroSection() {
   className=" bg-gray-100 dark:bg-gray-600 text-black border-white border-1  dark:text-white hover:bg-primary-dark shadow-[0_0_12px_var(--ai-soft)] hover:shadow-[0_0_18px_var(--ai-default)] transition-all duration-300
   "
 >
-  <Link to="/browse">Browse Books</Link>
+  <Link to="/browse"
+  >Browse Books</Link>
 </Button>
 
         </div>
