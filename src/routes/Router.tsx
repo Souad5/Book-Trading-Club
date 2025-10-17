@@ -52,6 +52,7 @@ const router = createBrowserRouter([
       {
         path: '/wishlist',
         Component: FavouriteBooks,
+        // element: <h1>Favoourite</h1>,
       },
       {
         path: '/about',
