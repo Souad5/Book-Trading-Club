@@ -52,6 +52,7 @@ const normalize = (b: ApiBook): Book => ({
   language: b.Language ?? 'English',
   genre: b.category ?? 'Fiction',
   image: b.imageUrl,
+  price: b.price,
 });
 
 export default function FavouriteBooks() {
@@ -59,6 +60,7 @@ export default function FavouriteBooks() {
 
   const axiosSecure = UseAxiosSecure();
 
+  // Fetch all books
   const {
     data: allBooks = [],
     isLoading: booksLoading,
@@ -86,12 +88,30 @@ export default function FavouriteBooks() {
     error,
   } = useFavorites();
 
-  if (booksLoading || loading)
+  // Hook order safe — everything declared before early returns
+  const favoriteBooks = useMemo(
+    () => allBooks.filter((book) => favorites.includes(book.id)),
+    [allBooks, favorites]
+  );
+
+  const filteredBooks = useMemo(
+    () =>
+      favoriteBooks.filter(
+        (book) =>
+          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.genre.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [favoriteBooks, searchQuery]
+  );
+
+  if (booksLoading || loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 />
       </div>
     );
+  }
 
   const handleToggleFavorite = async (bookId: string) => {
     const book = allBooks.find((b) => b.id === bookId);
@@ -119,18 +139,6 @@ export default function FavouriteBooks() {
       notify.error('Failed to update favorites');
     }
   };
-
-  const favoriteBooks = useMemo(
-    () => allBooks.filter((book) => favorites.includes(book.id)),
-    [allBooks, favorites]
-  );
-
-  const filteredBooks = favoriteBooks.filter(
-    (book) =>
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.genre.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
