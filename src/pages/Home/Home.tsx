@@ -11,6 +11,9 @@ import { useFavorites } from '@/hooks/useFavorites';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import Loader2 from '@/components/Loaders/Loader2';
+import BookJourneyTimeline from '@/components/homeSection/BookJourneyTimeline';
+import GlobalReaders from '@/components/homeSection/GlobalReaders';
+import InspirationalQuotes from '@/components/homeSection/InspirationalQuotes';
 
 type Book = {
   id: string;
@@ -369,6 +372,9 @@ export default function Home() {
           </div>
         </div>
       </div>
+        <BookJourneyTimeline />
+      <GlobalReaders />
+      <InspirationalQuotes />
     </section>
   );
 }
