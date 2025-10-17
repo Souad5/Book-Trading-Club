@@ -7,7 +7,7 @@ export default function NavLogo() {
         alt="ShelfShare logo"
         className="h-16 w-16 rounded"
       />
-      <span className="text-lg font-semibold text-soil-900">ShelfShare</span>
+      <span className="text-lg font-semibold text-black dark:text-white">ShelfShare</span>
     </Link>
   )
 }
