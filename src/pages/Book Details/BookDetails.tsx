@@ -8,6 +8,7 @@ import { Heart, MoveLeft } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import notify from '@/lib/notify';
 import { useAuth } from '@/firebase/AuthProvider';
 import { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
@@ -172,23 +173,22 @@ export default function BookDetails() {
 
   const handleWishlistClick = async () => {
     if (!isAuthenticated) {
-      toast.error('Please log in to add books to favorites');
+      notify.error('Please log in to add books to favorites');
       return;
     }
     const bookId = book?._id;
     if (!bookId) {
-      toast.error('Book ID is not available');
+      notify.error('Book ID is not available');
       return;
     }
     const wasFavorite = isFavorite(bookId);
     const ok = await toggleFavorite(bookId);
-    if (!ok) return toast.error('Failed to update favorites');
+    if (!ok) return notify.error('Failed to update favorites');
     const bookTitle = book?.title || 'Unknown Book';
-    toast.success(
+    notify.success(
       wasFavorite
         ? `"${bookTitle}" removed from favorites`
-        : `"${bookTitle}" added to favorites`,
-      { toastId: `${wasFavorite ? 'remove' : 'add'}-${bookId}` }
+        : `"${bookTitle}" added to favorites`
     );
   };
 
