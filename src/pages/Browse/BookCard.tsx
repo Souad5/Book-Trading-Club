@@ -1,4 +1,7 @@
 import { useNavigate, Link } from 'react-router-dom';
+import { Heart } from 'lucide-react';
+import { useFavorites } from '@/hooks/useFavorites';
+import notify from '@/lib/notify';
 
 type ApiBook = {
   _id?: string;
@@ -33,6 +36,26 @@ const BookCard = ({ book }: BookCardProps) => {
   const condition = book.condition ?? book.Condition;
   const exchangeType = book.exchangeType ?? book.Exchange;
   const language = book.language ?? book.Language;
+  const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
+
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!bookId) return;
+    if (!isAuthenticated) {
+      notify.error('Please log in to add books to favorites');
+      return;
+    }
+    const wasFavorite = isFavorite(String(bookId));
+    const ok = await toggleFavorite(String(bookId));
+    if (!ok) return notify.error('Failed to update favorites');
+    const title = book.title || 'Unknown Book';
+    notify.success(
+      wasFavorite
+        ? `"${title}" removed from favourites`
+        : `"${title}" added to favourites`
+    );
+  };
 
   const handleCardClick = () => {
     if (bookId) navigate(`/book/${bookId}`);
@@ -41,8 +64,24 @@ const BookCard = ({ book }: BookCardProps) => {
   return (
     <article
       onClick={handleCardClick}
-      className="cursor-pointer rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow"
+      className="cursor-pointer rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow relative"
     >
+      {/* Favorite Heart Icon */}
+      {bookId && (
+        <button
+          onClick={handleToggleFavorite}
+          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white hover:shadow-md transition-all duration-200"
+          aria-label={isFavorite(String(bookId)) ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <Heart
+            className={`w-5 h-5 transition-colors duration-200 ${
+              isFavorite(String(bookId))
+                ? 'fill-red-500 text-red-500'
+                : 'text-gray-400 hover:text-red-400'
+            }`}
+          />
+        </button>
+      )}
       {/* Book image */}
       <div className="h-40 w-full overflow-hidden rounded-md bg-sand-100/60">
         <img
