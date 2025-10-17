@@ -1,19 +1,26 @@
+// DashboardLayout.tsx (large project)
+import { SidebarProvider } from '@/components/ui/sidebar';
 import AppSidebar from '@/pages/Dashboards/Shared/AppSidebar';
 import NavbarDashboard from '@/pages/Dashboards/Shared/NavbarDashboard';
 import { Outlet } from 'react-router';
 
-const DashboardLayout = () => {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="h-full  flex bg-white dark:bg-black dark:text-white ">
-      <AppSidebar />
-      <main className="w-full">
-        <NavbarDashboard />
-        <div className="px-4">
-          <Outlet />
-        </div>
-      </main>
+    <div className="flex">
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="w-full">
+          <NavbarDashboard />
+          <div className="px-4">
+            {children}
+            <Outlet />
+          </div>
+        </main>
+      </SidebarProvider>
     </div>
   );
-};
-
-export default DashboardLayout;
+}

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { useAuth } from '@/firebase/AuthProvider';
 import { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
-import { Spinner } from '@/components/ui/spinner';
+// import { Spinner } from '@/components/ui/spinner';
 import { Separator } from '@/components/ui/separator';
 
 // -------- Types --------
@@ -485,7 +485,7 @@ export default function BookDetails() {
       {/*  ------- Fetching Loader ------*/}
       {ReviewsFetching && (
         <Button className="flex justify-center mx-auto" disabled size="sm">
-          <Spinner />
+          {/* <Spinner /> */}
           Refreshing...
         </Button>
       )}

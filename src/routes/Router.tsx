@@ -69,7 +69,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    Component: DashboardLayout,
+    Component: () => <DashboardLayout />,
   },
 ]);
 
