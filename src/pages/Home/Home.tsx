@@ -5,7 +5,8 @@ import { Link } from 'react-router-dom';
 import { Search, Heart } from 'lucide-react';
 import WantToBeSellerSection from '@/components/Section/WantToBeSeller';
 import TopSellersSection from '@/components/Section/TopSeller';
-import { toast } from 'react-toastify';
+// react-toastify imported via notify
+import notify from '@/lib/notify';
 import { useFavorites } from '@/hooks/useFavorites';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
@@ -64,6 +65,7 @@ export default function Home() {
   const [exchangeType, setExchangeType] = useState('');
   const [language, setLanguage] = useState('');
   const [genre, setGenre] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | ''>('');
 
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
 
@@ -92,7 +94,7 @@ export default function Home() {
     const bookTitle = book?.title || 'Unknown Book';
 
     if (!isAuthenticated) {
-      toast.error('Please log in to add books to favorites');
+      notify.error('Please log in to add books to favorites');
       return;
     }
 
@@ -101,23 +103,19 @@ export default function Home() {
 
     if (success) {
       if (wasFavorite) {
-        toast.success(`"${bookTitle}" removed from favourites`, {
-          toastId: `remove-${bookId}`,
-        });
+        notify.success(`"${bookTitle}" removed from favourites`);
       } else {
-        toast.success(`"${bookTitle}" added to favourites`, {
-          toastId: `add-${bookId}`,
-        });
+        notify.success(`"${bookTitle}" added to favourites`);
       }
     } else {
-      toast.error('Failed to update favorites');
+      notify.error('Failed to update favorites');
     }
   };
 
   // Filtered results (limit to 6 for the section)
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return books.filter((b) => {
+    const filtered = books.filter((b) => {
       const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(
         ' '
       )}`.toLowerCase();
@@ -139,7 +137,13 @@ export default function Home() {
         matchesGenre
       );
     });
-  }, [books, query, location, condition, exchangeType, language, genre]);
+    if (!sortOrder) return filtered;
+    const sorted = [...filtered].sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
+    if (sortOrder === 'desc') sorted.reverse();
+    return sorted;
+  }, [books, query, location, condition, exchangeType, language, genre, sortOrder]);
 
   // Unique filter options
   const locations = useMemo(
@@ -247,6 +251,15 @@ export default function Home() {
                     {g}
                   </option>
                 ))}
+              </select>
+              <select
+                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc' | '')}
+              >
+                <option value="">Sorting</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
               </select>
             </div>
           </div>

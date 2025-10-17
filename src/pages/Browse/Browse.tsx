@@ -1,8 +1,10 @@
 // src/pages/Browse.tsx
+import { useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import UseAxiosSecure from '@/axios/UseAxiosSecure.js';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import BookCard from '@/pages/Browse/BookCard';
+import { FiSearch } from 'react-icons/fi';
 
 type Book = {
   id: string;
@@ -55,6 +57,18 @@ const normalize = (b: ApiBook): Book => ({
 export default function Browse() {
   const [searchParams] = useSearchParams();
   const rawQuery = (searchParams.get('query') || '').trim().toLowerCase();
+  const [query, setQuery] = useState('');
+  const [location, setLocation] = useState('');
+  const [condition, setCondition] = useState('');
+  const [exchangeType, setExchangeType] = useState('');
+  const [language, setLanguage] = useState('');
+  const [genre, setGenre] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | ''>('');
+
+  // Initialize local query from URL param and keep in sync when it changes
+  useEffect(() => {
+    setQuery(rawQuery);
+  }, [rawQuery]);
 
   const axiosSecure = UseAxiosSecure();
 
@@ -75,6 +89,45 @@ export default function Browse() {
     retry: 1,
     refetchOnWindowFocus: false,
   });
+
+  // Unique filter options
+  const locations = useMemo(
+    () => Array.from(new Set(books.map((b) => b.location))).filter(Boolean),
+    [books]
+  );
+  const languages = useMemo(
+    () => Array.from(new Set(books.map((b) => b.language))).filter(Boolean),
+    [books]
+  );
+  const genres = useMemo(
+    () => Array.from(new Set(books.map((b) => b.genre))).filter(Boolean),
+    [books]
+  );
+
+  const results = useMemo(() => {
+    const q = (query || '').trim().toLowerCase();
+    const filtered = books.filter((b) => {
+      const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(' ')}`.toLowerCase();
+      const matchesText = q.length === 0 || haystack.includes(q);
+      const matchesLocation = !location || b.location === location;
+      const matchesCondition = !condition || b.condition === condition;
+      const matchesExchange = !exchangeType || b.exchangeType === exchangeType;
+      const matchesLanguage = !language || b.language === language;
+      const matchesGenre = !genre || b.genre === genre;
+      return (
+        matchesText &&
+        matchesLocation &&
+        matchesCondition &&
+        matchesExchange &&
+        matchesLanguage &&
+        matchesGenre
+      );
+    });
+    if (!sortOrder) return filtered;
+    const sorted = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortOrder === 'desc') sorted.reverse();
+    return sorted;
+  }, [books, query, location, condition, exchangeType, language, genre, sortOrder]);
 
   if (isLoading) {
     return (
@@ -115,17 +168,99 @@ export default function Browse() {
         </p>
       </div>
 
-      {rawQuery && (
-        <p className="mb-4 text-sm text-sand-700">
-          Showing results for: <span className="font-medium">{rawQuery}</span>
-        </p>
-      )}
+      {/* Search + Filters */}
+      <div className="rounded-2xl bg-white p-6 md:p-8 shadow-subtle border border-sand-200 mb-6">
+        <h3 className="text-lg font-semibold flex items-center gap-2 text-soil-900 mb-5">
+          <FiSearch className="w-5 h-5 text-leaf-600" />
+          Search & Filter
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <input
+            className="w-full rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm placeholder-sand-500 focus:outline-none focus:ring-2 focus:ring-leaf-300"
+            placeholder="Search title, author, ISBN, or tag"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+
+          <select
+            className="rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          >
+            <option value="">All locations</option>
+            {locations.map((loc) => (
+              <option key={loc} value={loc}>
+                {loc}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm"
+            value={condition}
+            onChange={(e) => setCondition(e.target.value)}
+          >
+            <option value="">Any condition</option>
+            <option value="new">New</option>
+            <option value="good">Good</option>
+            <option value="fair">Fair</option>
+          </select>
+
+          <select
+            className="rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm"
+            value={exchangeType}
+            onChange={(e) => setExchangeType(e.target.value)}
+          >
+            <option value="">All exchange types</option>
+            <option value="swap">Swap</option>
+            <option value="donate">Donate</option>
+            <option value="sell">Sell</option>
+          </select>
+
+          <select
+            className="rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+          >
+            <option value="">All languages</option>
+            {languages.map((lng) => (
+              <option key={lng} value={lng}>
+                {lng}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm"
+            value={genre}
+            onChange={(e) => setGenre(e.target.value)}
+          >
+            <option value="">All genres</option>
+            {genres.map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
+
+          <select
+            className="rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc' | '')}
+          >
+            <option value="">Sorting</option>
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {books.length === 0 ? (
+        {results.length === 0 ? (
           <div className="col-span-full text-sand-700">No books found.</div>
         ) : (
-          books.map((book) => <BookCard key={book.id} book={book} />)
+          results.map((book) => <BookCard key={book.id} book={book} />)
         )}
       </div>
     </section>

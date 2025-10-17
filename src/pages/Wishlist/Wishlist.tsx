@@ -60,9 +60,10 @@ export default function FavouriteBooks() {
 
   const axiosSecure = UseAxiosSecure();
 
+  // Fetch all books
   const {
     data: books = [], // ✅ default to empty array
-    isLoading,
+    isLoading: booksLoading,
   } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
@@ -82,12 +83,30 @@ export default function FavouriteBooks() {
     error,
   } = useFavorites();
 
-  if (isLoading || loading)
+  // Hook order safe — everything declared before early returns
+  const favoriteBooks = useMemo(
+    () => allBooks.filter((book) => favorites.includes(book.id)),
+    [allBooks, favorites]
+  );
+
+  const filteredBooks = useMemo(
+    () =>
+      favoriteBooks.filter(
+        (book : any) =>
+          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.genre.toLowerCase().includes(searchQuery.toLowerCase())
+      ),
+    [favoriteBooks, searchQuery]
+  );
+
+  if (booksLoading || loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 />
       </div>
     );
+  }
 
   const handleToggleFavorite = async (bookId: string) => {
     const book = books.find((b) => b.id === bookId);
@@ -115,16 +134,6 @@ export default function FavouriteBooks() {
       toast.error('Failed to update favorites');
     }
   };
-
-  const favoriteBooks = books.filter((book) => favorites.includes(book.id));
-
-  console.log(favoriteBooks); // This is straight from the DB
-  const filteredBooks = favoriteBooks.filter(
-    (book) =>
-      book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      book.genre.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
