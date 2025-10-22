@@ -19,9 +19,11 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import EditUser from './EditUser';
-const UserDetails = () => {
-  const { name } = useParams();
-  console.log(name);
+import { useAuth } from '@/firebase/AuthProvider';
+const UserProfile = () => {
+  const { dbUser } = useAuth();
+  console.log(dbUser);
+  const name = dbUser?.displayName || 'John Doe';
   return (
     <div>
       <Breadcrumb>
@@ -32,10 +34,6 @@ const UserDetails = () => {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard/users">Users</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -138,11 +136,11 @@ const UserDetails = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Username : </span>
-                <span>John Doe</span>
+                <span>{dbUser?.displayName || 'John Doe'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Email : </span>
-                <span>John Doe</span>
+                <span>{dbUser?.email || 'N/A'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">PhotoURL : </span>
@@ -150,7 +148,7 @@ const UserDetails = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Role : </span>
-                <Badge>Admin</Badge>
+                <Badge>{dbUser?.role || 'user'}</Badge>
               </div>
             </div>
             <p className="text-sm text-muted-foreground mt-4">
@@ -174,4 +172,4 @@ const UserDetails = () => {
   );
 };
 
-export default UserDetails;
+export default UserProfile;
