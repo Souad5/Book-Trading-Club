@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
+import UpdateBookModal from './UpdateBookModal';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,13 +18,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { MoreHorizontal, SquareArrowOutUpRight, Trash2 } from 'lucide-react';
+import {
+  MoreHorizontal,
+  Pen,
+  SquareArrowOutUpRight,
+  Trash2,
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { useAuth } from '@/firebase/AuthProvider';
 
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { useState } from 'react';
+
 const MyBooks = () => {
   const axiosSecure = UseAxiosSecure();
+  const [open, setOpen] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const {
@@ -89,29 +99,64 @@ const MyBooks = () => {
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
-                        variant={'outline'}
-                        className="my-2 border-none outline-none focus:outline-none"
+                        variant="outline"
+                        className="my-2 border-none outline-none"
                       >
                         <MoreHorizontal />
                       </Button>
                     </DropdownMenuTrigger>
+
                     <DropdownMenuContent>
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuSeparator />
+
                       <DropdownMenuItem
-                        className="text-red-500"
-                        onClick={() => handleDelete(book)}
+                        asChild
+                        onSelect={(e) => e.preventDefault()}
                       >
-                        <Trash2 className="text-red-500" />
-                        Delete Book
+                        <Button
+                          variant="ghost"
+                          className="h-8 px-2 gap-2"
+                          onClick={() => handleDelete(book)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete Book
+                        </Button>
                       </DropdownMenuItem>
+
                       <DropdownMenuItem
-                        onClick={() => {
-                          navigate(`/book/${book._id}`);
-                        }}
+                        asChild
+                        onSelect={(e) => e.preventDefault()}
                       >
-                        <SquareArrowOutUpRight />
-                        View Details
+                        <Dialog open={open} onOpenChange={setOpen}>
+                          <DialogTrigger asChild>
+                            <Button variant="ghost" className="h-8 px-2 gap-2">
+                              <Pen className="w-4 h-4" />
+                              Update Book
+                            </Button>
+                          </DialogTrigger>
+
+                          {/* Your modal. Spaces will now type fine inside inputs. */}
+                          <UpdateBookModal
+                            bookdata={book}
+                            GetBooks={GetBooks}
+                            setOpen={setOpen}
+                          />
+                        </Dialog>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        asChild
+                        onSelect={(e) => e.preventDefault()}
+                      >
+                        <Button
+                          variant="ghost"
+                          className="h-8 px-2 gap-2"
+                          onClick={() => navigate(`/book/${book._id}`)}
+                        >
+                          <SquareArrowOutUpRight className="w-4 h-4" />
+                          View Details
+                        </Button>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
