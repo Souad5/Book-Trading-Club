@@ -16,14 +16,7 @@ import CardList from './CardList';
 import { BadgeCheck, Candy, Citrus, Shield } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import EditUser from './EditUser';
 const UserDetails = () => {
