@@ -71,10 +71,10 @@ const MyBooks = () => {
                 <TableCell>{book.category}</TableCell>
                 <TableCell>{book.price} BDT</TableCell>
 
-                {/* Wrap the dropdown button inside a TableCell */}
+
                 <TableCell>
                   <DropdownMenu>
-                    <DropdownMenuTrigger>
+                    <DropdownMenuTrigger asChild>
                       <Button
                         variant={'outline'}
                         className="my-2 border-none outline-none focus:outline-none"
