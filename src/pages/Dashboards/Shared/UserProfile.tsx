@@ -11,7 +11,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
-import { useParams } from 'react-router';
 import CardList from './CardList';
 import { BadgeCheck, Candy, Citrus, Shield } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';

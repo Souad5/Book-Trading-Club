@@ -79,7 +79,7 @@ const MyBooks = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {books.map((book) => (
+            {books.map((book : any) => (
               <TableRow className="text-center" key={book._id}>
                 <TableCell className="flex flex-col items-center justify-center gap-3 mt-4">
                   <img
