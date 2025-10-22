@@ -15,7 +15,6 @@ import {
 import {
   Home,
   Inbox,
-  Calendar,
   Search,
   Settings,
   ChevronUp,
@@ -24,6 +23,7 @@ import {
   LibraryBig,
   Mail,
   Info,
+  BookType,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -47,11 +47,6 @@ const items = [
     icon: Inbox,
   },
   {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
-  {
     title: 'Search',
     url: '#',
     icon: Search,
@@ -69,7 +64,7 @@ const AppSidebar = () => {
   const photourl = user?.photoURL;
   const Name = dbUser?.displayName;
   const role: string = dbUser?.role ? dbUser.role.toUpperCase() : '';
-  console.log(photourl, Name);
+  // console.log(photourl, Name);
   return (
     <Sidebar collapsible="icon" className="z-20">
       <SidebarHeader className="py-4 ">
@@ -82,7 +77,7 @@ const AppSidebar = () => {
                   alt="logo"
                   width={30}
                   height={30}
-                  className='rounded-full min-h-[20px] min-w-[20px]' 
+                  className="rounded-full min-h-[20px] min-w-[20px]"
                 />
                 <span>{role} Dashboard</span>
               </Link>
@@ -124,6 +119,14 @@ const AppSidebar = () => {
                   <Link to={'/browse'}>
                     <LibraryBig />
                     See All Books
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/mybooks'}>
+                    <BookType />
+                    See My Books
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

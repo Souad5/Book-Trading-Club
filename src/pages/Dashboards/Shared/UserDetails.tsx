@@ -25,6 +25,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
+import EditUser from './EditUser';
 const UserDetails = () => {
   const { name } = useParams();
   console.log(name);
@@ -123,7 +124,7 @@ const UserDetails = () => {
                 <SheetTrigger asChild>
                   <Button variant="outline">Edit User</Button>
                 </SheetTrigger>
-                <SheetContent>
+                {/* <SheetContent>
                   <SheetHeader>
                     <SheetTitle>Are you absolutely sure?</SheetTitle>
                     <SheetDescription>
@@ -131,7 +132,8 @@ const UserDetails = () => {
                       your account and remove your data from our servers.
                     </SheetDescription>
                   </SheetHeader>
-                </SheetContent>
+                </SheetContent> */}
+                <EditUser />
               </Sheet>
             </div>
             <div className="space-y-4 mt-4">
