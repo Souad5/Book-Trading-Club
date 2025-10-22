@@ -15,6 +15,9 @@ import { createBrowserRouter } from 'react-router';
 import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import DashboardHomePage from '@/pages/Dashboards/Shared/DashboardHomePage';
+import Users from '@/pages/Dashboards/Shared/Users';
+import UserDetails from '@/pages/Dashboards/Shared/UserDetails';
+import Payment from '@/pages/Dashboards/Shared/MyBooks';
 
 const router = createBrowserRouter([
   {
@@ -76,6 +79,18 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: DashboardHomePage,
+      },
+      {
+        path: 'users',
+        Component: Users,
+      },
+      {
+        path: 'users/:name',
+        Component: UserDetails,
+      },
+      {
+        path: 'mybooks',
+        Component: Payment,
       },
     ],
   },
