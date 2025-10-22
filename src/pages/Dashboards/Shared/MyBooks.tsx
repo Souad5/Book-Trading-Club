@@ -20,9 +20,11 @@ import {
 import { MoreHorizontal, SquareArrowOutUpRight, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { useAuth } from '@/firebase/AuthProvider';
 
 const MyBooks = () => {
   const axiosSecure = UseAxiosSecure();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const {
     data: books = [],
@@ -31,7 +33,9 @@ const MyBooks = () => {
   } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
-      const res = await axiosSecure.get('/api/books');
+      const res = await axiosSecure.get(
+        `/api/books/get-user-books/${user?.uid}`
+      );
       return res.data;
     },
   });
@@ -47,12 +51,13 @@ const MyBooks = () => {
     return <div>Loading...</div>;
   }
 
+  console.log(user);
   return (
     <div>
       <h1 className="mb-5">This is the My Books Page</h1>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-md border">
+      <div className="overflow-hidden rounded-md border mb-20">
         <Table>
           <TableHeader>
             <TableRow className="text-center">
@@ -66,11 +71,19 @@ const MyBooks = () => {
           <TableBody>
             {books.map((book) => (
               <TableRow className="text-center" key={book._id}>
-                <TableCell>{book.title}</TableCell>
+                <TableCell className="flex flex-col items-center justify-center gap-3 mt-4">
+                  <img
+                    src={book.imageUrl}
+                    width={90}
+                    height={90}
+                    className="object-cover"
+                    alt=""
+                  />
+                  {book.title}
+                </TableCell>
                 <TableCell>{book.author}</TableCell>
                 <TableCell>{book.category}</TableCell>
                 <TableCell>{book.price} BDT</TableCell>
-
 
                 <TableCell>
                   <DropdownMenu>
