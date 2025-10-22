@@ -14,7 +14,15 @@ import { toast } from 'react-toastify';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { X } from 'lucide-react';
 
-const UpdateBookModal = ({ bookdata, GetBooks, setOpen }) => {
+const UpdateBookModal = ({
+  bookdata,
+  GetBooks,
+  setOpen,
+}: {
+  bookdata: any;
+  GetBooks: any;
+  setOpen: any;
+}) => {
   const axiosSecure = UseAxiosSecure();
 
   // Initial state set with bookdata
@@ -40,7 +48,7 @@ const UpdateBookModal = ({ bookdata, GetBooks, setOpen }) => {
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+    setTags(tags.filter((tag : any) => tag !== tagToRemove));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -293,7 +301,7 @@ const UpdateBookModal = ({ bookdata, GetBooks, setOpen }) => {
           />
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
-              {tags.map((t) => (
+              {tags.map((t : any) => (
                 <span
                   key={t}
                   className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
