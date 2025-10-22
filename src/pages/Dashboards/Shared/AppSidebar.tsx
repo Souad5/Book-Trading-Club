@@ -80,8 +80,9 @@ const AppSidebar = () => {
                 <img
                   src={photourl ? photourl : ''}
                   alt="logo"
-                  width={20}
-                  height={20}
+                  width={30}
+                  height={30}
+                  className='rounded-full min-h-[20px] min-w-[20px]' 
                 />
                 <span>{role} Dashboard</span>
               </Link>
