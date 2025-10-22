@@ -37,7 +37,7 @@ const NavbarDashboard = () => {
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link className='flex gap-2' to={'/dashboard/users/Farhan'}>
+              <Link className='flex gap-2' to={'/dashboard/myProfile'}>
                 <User className="h-[1.2rem] w-[1.2rem] mr-2" />
                 Profile
               </Link>

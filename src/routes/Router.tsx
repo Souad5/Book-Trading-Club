@@ -16,7 +16,7 @@ import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import DashboardHomePage from '@/pages/Dashboards/Shared/DashboardHomePage';
 import Users from '@/pages/Dashboards/Shared/Users';
-import UserDetails from '@/pages/Dashboards/Shared/UserDetails';
+import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
 import Payment from '@/pages/Dashboards/Shared/MyBooks';
 
 const router = createBrowserRouter([
@@ -85,8 +85,8 @@ const router = createBrowserRouter([
         Component: Users,
       },
       {
-        path: 'users/:name',
-        Component: UserDetails,
+        path: 'myprofile',
+        Component: UserProfile,
       },
       {
         path: 'mybooks',
