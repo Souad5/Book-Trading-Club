@@ -11,6 +11,7 @@ import Login from '@/pages/Login/Login';
 import Register from '@/pages/Register/Register';
 
 import FavouriteBooks from '@/pages/Wishlist/Wishlist';
+import AroundMe from '@/pages/Map/AroundMe';
 import { createBrowserRouter } from 'react-router';
 import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import DashboardLayout from '@/components/layout/DashboardLayout';
@@ -69,6 +70,10 @@ const router = createBrowserRouter([
       {
         path: '/contact',
         Component: Contact,
+      },
+      {
+        path: '/around-me',
+        Component: AroundMe,
       },
     ],
   },
