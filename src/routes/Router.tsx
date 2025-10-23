@@ -11,10 +11,14 @@ import Login from '@/pages/Login/Login';
 import Register from '@/pages/Register/Register';
 
 import FavouriteBooks from '@/pages/Wishlist/Wishlist';
+import AroundMe from '@/pages/Map/AroundMe';
 import { createBrowserRouter } from 'react-router';
 import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import DashboardHomePage from '@/pages/Dashboards/Shared/DashboardHomePage';
+import Users from '@/pages/Dashboards/Shared/Users';
+import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
+import Payment from '@/pages/Dashboards/Shared/MyBooks';
 
 const router = createBrowserRouter([
   {
@@ -67,6 +71,10 @@ const router = createBrowserRouter([
         path: '/contact',
         Component: Contact,
       },
+      {
+        path: '/around-me',
+        Component: AroundMe,
+      },
     ],
   },
   {
@@ -76,6 +84,18 @@ const router = createBrowserRouter([
       {
         index: true,
         Component: DashboardHomePage,
+      },
+      {
+        path: 'users',
+        Component: Users,
+      },
+      {
+        path: 'myprofile',
+        Component: UserProfile,
+      },
+      {
+        path: 'mybooks',
+        Component: Payment,
       },
     ],
   },
