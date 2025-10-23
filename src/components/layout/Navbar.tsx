@@ -107,6 +107,9 @@ export default function Navbar() {
               <NavLink to="/browse" className={linkClasses}>
                 Browse
               </NavLink>
+              <NavLink to="/around-me" className={linkClasses}>
+                AroundMe
+              </NavLink>
               {isAuthenticated && (
                 <NavLink to="/wishlist" className={linkClasses}>
                   <div className="flex items-center gap-1">
@@ -268,6 +271,9 @@ export default function Navbar() {
           </NavLink>
           <NavLink to="/browse" className={linkClasses}>
             Browse
+          </NavLink>
+          <NavLink to="/around-me" className={linkClasses}>
+            AroundMe
           </NavLink>
           {isAuthenticated && (
             <NavLink to="/wishlist" className={linkClasses}>
