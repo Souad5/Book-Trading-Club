@@ -14,6 +14,7 @@ export default function NavLinks({ isAuthenticated, orientation = 'horizontal' }
       <div className={wrap}>
         <NavLink to="/" className={base}>Home</NavLink>
         <NavLink to="/browse" className={base}>Browse Books</NavLink>
+        <NavLink to="/around-me" className={base}>AroundMe</NavLink>
         <NavLink to="/how-it-works" className={base}>How It Works</NavLink>
       </div>
     )
@@ -23,6 +24,7 @@ export default function NavLinks({ isAuthenticated, orientation = 'horizontal' }
     <div className={wrap}>
       <NavLink to="/" className={base}>Home</NavLink>
       <NavLink to="/browse" className={base}>Browse</NavLink>
+      <NavLink to="/around-me" className={base}>AroundMe</NavLink>
       <NavLink to="/dashboard" className={base}>Dashboard</NavLink>
     </div>
   )
