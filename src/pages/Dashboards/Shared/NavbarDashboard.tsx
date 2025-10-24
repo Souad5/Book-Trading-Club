@@ -19,7 +19,7 @@ const NavbarDashboard = () => {
   if (loading) return;
 
   const photourl: string | null = user && user.photoURL;
-  console.log(photourl);
+  // console.log(photourl);
   return (
     <nav className="p-4 flex items-center justify-between">
       <SidebarTrigger />
@@ -31,7 +31,7 @@ const NavbarDashboard = () => {
           <DropdownMenuTrigger>
             <Avatar>
               <AvatarImage
-                src={user?.photoURL ?? undefined}
+                src={photourl ?? undefined}
                 alt={user?.displayName ?? 'User avatar'}
                 referrerPolicy="no-referrer"
                 // optional: help when the URL updates after first render

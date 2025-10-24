@@ -22,6 +22,7 @@ import {
   Mail,
   Info,
   BookType,
+  Users,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -36,7 +37,7 @@ import { useAuth } from '@/firebase/AuthProvider';
 const items = [
   {
     title: 'Home',
-    url: '/',
+    url: '/dashboard',
     icon: Home,
   },
   {
@@ -75,6 +76,7 @@ const AdminSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* Application Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -95,6 +97,7 @@ const AdminSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {/* Books Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Books</SidebarGroupLabel>
           <SidebarGroupAction>
@@ -118,18 +121,29 @@ const AdminSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {/* Users Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Users</SidebarGroupLabel>
+          <SidebarGroupAction>
+            <Plus /> <span className="sr-only">Add User</span>
+          </SidebarGroupAction>
+          <SidebarGroupContent>
+            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to={'/add-book'}>
-                    <Plus />
-                    Add Book
+                  <Link to={'/dashboard/users'}>
+                    <Users />
+                    Manage Users
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* NESTED GROUP */}
+        {/* navigation Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
 

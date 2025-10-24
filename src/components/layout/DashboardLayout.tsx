@@ -4,15 +4,16 @@ import AppSidebar from '@/pages/Dashboards/User/AppSidebar';
 import NavbarDashboard from '@/pages/Dashboards/Shared/NavbarDashboard';
 import { Outlet } from 'react-router';
 import { useAuth } from '@/firebase/AuthProvider';
+import AdminSidebar from '@/pages/Dashboards/Admin/AdminSidebar';
 
 export default function DashboardLayout() {
-  const { user, dbUser } = useAuth();
-  console.log(user, dbUser);
+  const { dbUser } = useAuth();
+  // console.log(user, dbUser);
   return (
     <div className="flex">
       <SidebarProvider>
         {dbUser?.role == 'user' && <AppSidebar />}
-        {dbUser?.role == 'admin' && <AppSidebar />}
+        {dbUser?.role == 'admin' && <AdminSidebar />}
 
         <main className="w-full">
           <NavbarDashboard />
