@@ -15,10 +15,11 @@ import AroundMe from '@/pages/Map/AroundMe';
 import { createBrowserRouter } from 'react-router';
 import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-import DashboardHomePage from '@/pages/Dashboards/Shared/DashboardHomePage';
+
 import Users from '@/pages/Dashboards/Admin/Users';
 import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
-import Payment from '@/pages/Dashboards/Shared/MyBooks';
+import DashboardHomePage from '@/pages/Dashboards/User/DashboardHomePage';
+import MyBooks from '@/pages/Dashboards/User/MyBooks';
 
 const router = createBrowserRouter([
   {
@@ -95,7 +96,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'mybooks',
-        Component: Payment,
+        Component: MyBooks,
       },
     ],
   },
