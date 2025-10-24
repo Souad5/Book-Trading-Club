@@ -15,7 +15,8 @@ import { LogOut, Settings, User } from 'lucide-react';
 import { Link } from 'react-router';
 
 const NavbarDashboard = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return;
 
   const photourl: string | null = user && user.photoURL;
   // console.log(photourl);
@@ -29,16 +30,35 @@ const NavbarDashboard = () => {
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Avatar>
-              <AvatarImage src={photourl ? photourl : ''} />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage
+                src={photourl ?? undefined}
+                alt={user?.displayName ?? 'User avatar'}
+                referrerPolicy="no-referrer"
+                // optional: help when the URL updates after first render
+                key={user?.photoURL ?? 'no-photo'}
+                // optional: graceful fallback if it truly fails
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src =
+                    '/avatar-placeholder.png';
+                }}
+              />
+              <AvatarFallback>
+                {user?.displayName
+                  ?.split(' ')
+                  .map((s) => s[0])
+                  .join('')
+                  .slice(0, 2) || 'CN'}
+              </AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <User className="h-[1.2rem] w-[1.2rem] mr-2" />
-              Profile
+              <Link className="flex gap-2" to={'/dashboard/myProfile'}>
+                <User className="h-[1.2rem] w-[1.2rem] mr-2" />
+                Profile
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Settings className="h-[1.2rem] w-[1.2rem] mr-2" />

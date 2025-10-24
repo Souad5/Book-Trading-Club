@@ -15,15 +15,14 @@ import {
 import {
   Home,
   Inbox,
-  Calendar,
-  Search,
-  Settings,
   ChevronUp,
   User2,
   Plus,
   LibraryBig,
   Mail,
   Info,
+  BookType,
+  Users,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -38,7 +37,7 @@ import { useAuth } from '@/firebase/AuthProvider';
 const items = [
   {
     title: 'Home',
-    url: '/',
+    url: '/dashboard',
     icon: Home,
   },
   {
@@ -46,30 +45,15 @@ const items = [
     url: '#',
     icon: Inbox,
   },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
-  },
 ];
 
-const AppSidebar = () => {
+const AdminSidebar = () => {
   const { user, dbUser } = useAuth();
   // console.log(user, dbUser);
   const photourl = user?.photoURL;
   const Name = dbUser?.displayName;
   const role: string = dbUser?.role ? dbUser.role.toUpperCase() : '';
-  console.log(photourl, Name);
+  // console.log(photourl, Name);
   return (
     <Sidebar collapsible="icon" className="z-20">
       <SidebarHeader className="py-4 ">
@@ -80,8 +64,9 @@ const AppSidebar = () => {
                 <img
                   src={photourl ? photourl : ''}
                   alt="logo"
-                  width={20}
-                  height={20}
+                  width={30}
+                  height={30}
+                  className="rounded-full min-h-[20px] min-w-[20px]"
                 />
                 <span>{role} Dashboard</span>
               </Link>
@@ -91,6 +76,7 @@ const AppSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* Application Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -111,6 +97,7 @@ const AppSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {/* Books Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Books</SidebarGroupLabel>
           <SidebarGroupAction>
@@ -128,16 +115,35 @@ const AppSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to={'/add-book'}>
-                    <Plus />
-                    Add Book
+                  <Link to={'/dashboard/mybooks'}>
+                    <BookType />
+                    See My Books
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* NESTED GROUP */}
+        {/* Users Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Users</SidebarGroupLabel>
+          <SidebarGroupAction>
+            <Plus /> <span className="sr-only">Add User</span>
+          </SidebarGroupAction>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/users'}>
+                    <Users />
+                    Manage Users
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {/* navigation Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
 
@@ -186,4 +192,4 @@ const AppSidebar = () => {
   );
 };
 
-export default AppSidebar;
+export default AdminSidebar;

@@ -16,6 +16,7 @@ class FavoritesApiService {
       method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
       body?: any;
       headers?: Record<string, string>;
+      timeout?: number;
     } = {}
   ): Promise<T> {
     const axiosSecure = UseAxiosSecure();
@@ -33,6 +34,7 @@ class FavoritesApiService {
       url,
       method,
       headers,
+      timeout: options.timeout || 30000, // Default 30 seconds, can be overridden
       // Pass the raw object; axios will JSON-serialize it
       data: options.body,
     });
@@ -53,7 +55,9 @@ class FavoritesApiService {
         queryString ? `?${queryString}` : ''
       }`;
 
-      const response = await this.makeRequest<FavoritesResponse>(endpoint);
+      const response = await this.makeRequest<FavoritesResponse>(endpoint, {
+        timeout: 15000 // Shorter timeout for GET requests
+      });
 
       if (response.success) {
         return response.favoriteBooks || [];
@@ -62,6 +66,10 @@ class FavoritesApiService {
       }
     } catch (error) {
       console.error('Error fetching favorites:', error);
+      // Check if it's a timeout error
+      if (error instanceof Error && error.message.includes('timeout')) {
+        console.warn('Favorites API timeout - using fallback');
+      }
       // Fallback to empty array if API fails
       return [];
     }
@@ -124,6 +132,7 @@ class FavoritesApiService {
         {
           method: 'PUT',
           body: { bookId, email },
+          timeout: 20000 // 20 seconds for toggle operations
         }
       );
 
@@ -133,6 +142,10 @@ class FavoritesApiService {
       };
     } catch (error) {
       console.error('Error toggling favorite:', error);
+      // Check if it's a timeout error
+      if (error instanceof Error && error.message.includes('timeout')) {
+        console.warn('Favorites toggle timeout - operation may have failed');
+      }
       return { success: false, action: null };
     }
   }
