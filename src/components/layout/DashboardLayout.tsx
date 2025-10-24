@@ -1,6 +1,6 @@
 // DashboardLayout.tsx (large project)
 import { SidebarProvider } from '@/components/ui/sidebar';
-import AppSidebar from '@/pages/Dashboards/Shared/AppSidebar';
+import AppSidebar from '@/pages/Dashboards/User/AppSidebar';
 import NavbarDashboard from '@/pages/Dashboards/Shared/NavbarDashboard';
 import { Outlet } from 'react-router';
 
