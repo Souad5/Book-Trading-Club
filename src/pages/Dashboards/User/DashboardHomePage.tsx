@@ -1,7 +1,7 @@
-import AppAreaChart from './AppAreaChart';
-import AppBarChart from './AppBarChart';
-import AppPieChart from './AppPieChart';
-import CardList from './CardList';
+import AppBarChart from "../Shared/AppBarChart";
+import CardList from "../Shared/CardList";
+import AppPieChart from "../Shared/AppPieChart";
+import AppAreaChart from "../Shared/AppAreaChart";
 
 const DashboardHomePage = () => {
   return (

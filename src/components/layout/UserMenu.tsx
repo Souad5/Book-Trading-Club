@@ -1,7 +1,15 @@
-import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "./../../firebase/AuthProvider";
-import { FiHeart, FiMail, FiBell, FiLogOut, FiUser, FiSettings, FiBook } from "react-icons/fi";
+import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from './../../firebase/AuthProvider';
+import {
+  FiHeart,
+  FiMail,
+  FiBell,
+  FiLogOut,
+  FiUser,
+  FiSettings,
+  FiBook,
+} from 'react-icons/fi';
 
 export default function UserMenu() {
   const [open, setOpen] = useState(false);
@@ -13,14 +21,14 @@ export default function UserMenu() {
       if (!ref.current) return;
       if (!ref.current.contains(e.target as Node)) setOpen(false);
     }
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
+    document.addEventListener('click', onDocClick);
+    return () => document.removeEventListener('click', onDocClick);
   }, []);
 
   const handleLogout = async () => {
     try {
       await signOutUser();
-      alert("Logged out successfully");
+      alert('Logged out successfully');
     } catch (error: any) {
       alert(`Logout failed: ${error.message}`);
     }
@@ -34,8 +42,12 @@ export default function UserMenu() {
         className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white dark:bg-gold dark:text-black shadow-[0_0_8px_var(--ai-soft)]"
         aria-haspopup="menu"
         aria-expanded={open}
-      > <img src="../../assests/photo/user.png" alt="" />
-        <span className="font-semibold">{user?.email?.[0].toUpperCase() || ""}</span>
+      >
+        {' '}
+        <img src="../../assests/photo/user.png" alt="" />
+        <span className="font-semibold">
+          {user?.email?.[0].toUpperCase() || ''}
+        </span>
       </button>
 
       {/* Dropdown menu */}
@@ -52,12 +64,26 @@ export default function UserMenu() {
           {/* Menu items */}
           <div className="flex flex-col ">
             {[
-              { to: "/wishlist", label: "Favourite Books", icon: <FiHeart /> },
-              { to: "/messages", label: "Messages", icon: <FiMail />, badge: 3 },
-              { to: "/notifications", label: "Notifications", icon: <FiBell />, badge: 5 },
-              { to: "/dashboard", label: "Dashboard", icon: <FiBook /> },
-              { to: "/profile", label: "My Profile", icon: <FiUser /> },
-              { to: "/settings", label: "Settings", icon: <FiSettings /> },
+              { to: '/wishlist', label: 'Favourite Books', icon: <FiHeart /> },
+              {
+                to: '/messages',
+                label: 'Messages',
+                icon: <FiMail />,
+                badge: 3,
+              },
+              {
+                to: '/notifications',
+                label: 'Notifications',
+                icon: <FiBell />,
+                badge: 5,
+              },
+              { to: '/dashboard', label: 'Dashboard', icon: <FiBook /> },
+              {
+                to: '/dashboard/myProfile',
+                label: 'My Profile',
+                icon: <FiUser />,
+              },
+              { to: '/settings', label: 'Settings', icon: <FiSettings /> },
             ].map((item, idx) => (
               <Link
                 key={idx}
