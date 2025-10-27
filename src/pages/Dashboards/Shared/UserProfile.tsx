@@ -143,7 +143,7 @@ const UserProfile = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">PhotoURL : </span>
-                <span>N/A</span>
+                <span>{dbUser?.image.slice(0, 16)}...</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Role : </span>
