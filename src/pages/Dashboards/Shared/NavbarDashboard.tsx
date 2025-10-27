@@ -19,7 +19,7 @@ const NavbarDashboard = () => {
   if (loading) return;
 
   const photourl: string | null = user && user.photoURL;
-  // console.log(photourl);
+  console.log(photourl);
   return (
     <nav className="p-4 flex items-center justify-between">
       <SidebarTrigger />
