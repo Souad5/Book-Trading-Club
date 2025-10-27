@@ -19,10 +19,12 @@ import { Sheet, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import EditUser from './EditUser';
 import { useAuth } from '@/firebase/AuthProvider';
+import { useState } from 'react';
 const UserProfile = () => {
   const { dbUser } = useAuth();
   console.log(dbUser);
   const name = dbUser?.displayName || 'John Doe';
+  const [open, setOpen] = useState(false);
   return (
     <div>
       <Breadcrumb>
@@ -110,20 +112,11 @@ const UserProfile = () => {
           <div className="bg-primary-foreground p-4 rounded-lg">
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-semibold">User Information</h1>
-              <Sheet>
+              <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild>
                   <Button variant="outline">Edit User</Button>
                 </SheetTrigger>
-                {/* <SheetContent>
-                  <SheetHeader>
-                    <SheetTitle>Are you absolutely sure?</SheetTitle>
-                    <SheetDescription>
-                      This action cannot be undone. This will permanently delete
-                      your account and remove your data from our servers.
-                    </SheetDescription>
-                  </SheetHeader>
-                </SheetContent> */}
-                <EditUser />
+                <EditUser setOpen={setOpen} />
               </Sheet>
             </div>
             <div className="space-y-4 mt-4">
@@ -143,7 +136,7 @@ const UserProfile = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">PhotoURL : </span>
-                <span>{dbUser?.image.slice(0, 16)}...</span>
+                <span>{dbUser?.image.slice(0, 25)}...</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-bold">Role : </span>

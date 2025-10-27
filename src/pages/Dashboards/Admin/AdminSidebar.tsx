@@ -48,9 +48,9 @@ const items = [
 ];
 
 const AdminSidebar = () => {
-  const { user, dbUser } = useAuth();
+  const { dbUser } = useAuth();
   // console.log(user, dbUser);
-  const photourl = user?.photoURL;
+  const photourl = dbUser?.image;
   const Name = dbUser?.displayName;
   const role: string = dbUser?.role ? dbUser.role.toUpperCase() : '';
   // console.log(photourl, Name);
