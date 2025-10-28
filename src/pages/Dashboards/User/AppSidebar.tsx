@@ -126,7 +126,7 @@ const AppSidebar = () => {
                 <SidebarMenuButton asChild>
                   <Link to={'/dashboard/mybooks'}>
                     <BookType />
-                    See My Books
+                    See My Listings
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
