@@ -114,7 +114,7 @@ const UserProfile = () => {
               <h1 className="text-xl font-semibold">User Information</h1>
               <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild>
-                  <Button variant="outline">Edit User</Button>
+                  <Button variant="outline">Edit Profile</Button>
                 </SheetTrigger>
                 <EditUser setOpen={setOpen} />
               </Sheet>
