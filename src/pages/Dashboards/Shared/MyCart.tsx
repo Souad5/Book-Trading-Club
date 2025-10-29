@@ -43,6 +43,7 @@ const MyCart = () => {
   const { dbUser } = useAuth();
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const stripePromise = loadStripe('your-publishable-key-here');
 
   // Queriers Fetching
   const {
@@ -93,46 +94,42 @@ const MyCart = () => {
     // }
   };
 
-  const MakePayment = async (items: Order[]) => {
+  async function MakePayment(products: Order[]) {
     try {
-      const stripe = await loadStripe(
-        'pk_test_51SNTeK41M2bP7cF6cGrAzfl32pjeMC1qqOoFKQrZkUuj59417qlesOy9InHD3PMzvbvP1QvBZkIyL4pRj8p2k8Rc00Mce3AR27'
-      );
-
-      if (!stripe) {
-        toast.error('Stripe initialization failed.');
-        return;
-      }
-
-      const payload = { products: items };
-
-      const response = await axiosSecure.post(
-        '/create-checkout-session',
-        payload,
+      // 1. Call backend to create session
+      const response = await fetch(
+        'http://localhost:3000/create-checkout-session',
         {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ products }),
         }
       );
 
-      const session = response.data;
-
-      if (!session?.id) {
-        toast.error('Failed to create checkout session.');
+      if (!response.ok) {
+        const errData = await response.json();
+        console.error('Backend error creating session:', errData);
+        toast.error('Failed to start checkout session');
         return;
       }
 
-      const result = await stripe.redirectToCheckout({
-        sessionId: session.id,
-      });
+      const data = await response.json();
 
-      if (result.error) {
-        toast.error(result.error.message);
+      // 2. Expect backend to return { url: session.url }
+      const checkoutUrl = data.url;
+      if (!checkoutUrl) {
+        console.error('No checkout URL returned from backend:', data);
+        toast.error('Checkout setup failed');
+        return;
       }
-    } catch (error: any) {
-      console.error('Payment error:', error);
-      toast.error('Something went wrong while processing payment.');
+
+      // 3. Redirect user to Stripe hosted checkout
+      window.location.assign(checkoutUrl);
+    } catch (err) {
+      console.error('Payment error:', err);
+      toast.error('Something went wrong during payment');
     }
-  };
+  }
 
   if (isPending || isLoading) {
     return (
@@ -297,7 +294,7 @@ const MyCart = () => {
             <Button
               className="w-full mt-6"
               onClick={() => {
-                HandleMovetoOrders(items);
+                MakePayment(items);
               }}
             >
               Proceed to Checkout
