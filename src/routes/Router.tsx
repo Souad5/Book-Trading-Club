@@ -24,6 +24,9 @@ import MyCart from '@/pages/Dashboards/Shared/MyCart';
 import MyOrders from '@/pages/Dashboards/Shared/MyOrders';
 import PaymentSuccess from '@/pages/Dashboards/Shared/PaymentSuccess';
 import PaymentFailure from '@/pages/Dashboards/Shared/PymentFailure';
+import RequestedTrades from '@/pages/Dashboards/Shared/RequestedTrades';
+import TradeRequests from '@/pages/Dashboards/Shared/TradeRequests';
+import AcceptedTrades from '@/pages/Dashboards/Shared/AcceptedTrades';
 
 const router = createBrowserRouter([
   {
@@ -109,6 +112,18 @@ const router = createBrowserRouter([
       {
         path: 'my-orders',
         Component: MyOrders,
+      },
+      {
+        path: 'requested-trades',
+        Component: RequestedTrades,
+      },
+      {
+        path: 'trade-requests',
+        Component: TradeRequests,
+      },
+      {
+        path: 'accepted-trades',
+        Component: AcceptedTrades,
       },
       {
         path: 'payment-success',
