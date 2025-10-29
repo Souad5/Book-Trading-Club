@@ -148,7 +148,7 @@ const MyCart = () => {
 
       // 2. Then create Stripe checkout session
       const response = await fetch(
-        'http://localhost:3000/create-checkout-session',
+        'https://book-trading-club-backend.vercel.app/create-checkout-session',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
