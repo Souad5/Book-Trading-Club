@@ -66,11 +66,11 @@ const MyOrders = () => {
 
       {orders?.data && orders.data.length > 0 ? (
         orders.data.map((order) => (
-          <Card key={order._id} className="shadow-sm border">
+          <Card key={order._id} className="shadow-sm border mb-10">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg font-semibold">
-                  {order.book.title}
+                  {order?.book.title}
                 </CardTitle>
                 <Badge
                   variant={

@@ -48,6 +48,7 @@ const MyCart = () => {
   const {
     data: cartitems,
     isPending,
+    isLoading,
     refetch: GetCart,
     isFetching,
   } = useQuery<OrderAPI>({
@@ -73,7 +74,25 @@ const MyCart = () => {
     }
   };
 
-  if (isPending) {
+  const HandleMovetoOrders = async (items: Order[]) => {
+    const cartitems = items.map((item) => ({
+      _id: item._id,
+      user: dbUser?._id,
+      book: item.book._id,
+    }));
+
+    try {
+      const response = await axiosSecure.post('/api/orders', { cartitems });
+      console.log(response);
+      GetCart();
+      toast.success('You have successfully bought the books');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to move items to orders');
+    }
+  };
+
+  if (isPending || isLoading) {
     return (
       <div className="flex justify-center items-center h-[70vh] text-muted-foreground text-lg">
         Loading your cart...
@@ -224,12 +243,24 @@ const MyCart = () => {
             )}
           </div>
 
-          <Button
-            className="w-full mt-6"
-            onClick={() => console.log('Checkout')}
-          >
-            Proceed to Checkout
-          </Button>
+          {items.length === 0 ? (
+            <Button
+              variant={'destructive'}
+              className="w-full mt-6"
+              onClick={() => {}}
+            >
+              Your Cart Is empty
+            </Button>
+          ) : (
+            <Button
+              className="w-full mt-6"
+              onClick={() => {
+                HandleMovetoOrders(items);
+              }}
+            >
+              Proceed to Checkout
+            </Button>
+          )}
 
           <Button
             variant="outline"
