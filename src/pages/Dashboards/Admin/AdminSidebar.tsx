@@ -23,6 +23,8 @@ import {
   Info,
   BookType,
   Users,
+  ShoppingCart,
+  ClipboardList,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -48,9 +50,9 @@ const items = [
 ];
 
 const AdminSidebar = () => {
-  const { user, dbUser } = useAuth();
+  const { dbUser } = useAuth();
   // console.log(user, dbUser);
-  const photourl = user?.photoURL;
+  const photourl = dbUser?.image;
   const Name = dbUser?.displayName;
   const role: string = dbUser?.role ? dbUser.role.toUpperCase() : '';
   // console.log(photourl, Name);
@@ -117,7 +119,7 @@ const AdminSidebar = () => {
                 <SidebarMenuButton asChild>
                   <Link to={'/dashboard/mybooks'}>
                     <BookType />
-                    See My Books
+                    See My Listings
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -137,6 +139,30 @@ const AdminSidebar = () => {
                   <Link to={'/dashboard/users'}>
                     <Users />
                     Manage Users
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {/* Cart + Orders Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Cart + Orders</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/my-cart'}>
+                    <ShoppingCart />
+                    My Cart
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/users'}>
+                    <ClipboardList />
+                    My Orders
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

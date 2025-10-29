@@ -15,11 +15,11 @@ import { LogOut, Settings, User } from 'lucide-react';
 import { Link } from 'react-router';
 
 const NavbarDashboard = () => {
-  const { user, loading } = useAuth();
+  const { dbUser, loading } = useAuth();
   if (loading) return;
 
-  const photourl: string | null = user && user.photoURL;
-  // console.log(photourl);
+  const photourl: string | null = dbUser && dbUser?.image;
+  console.log(photourl);
   return (
     <nav className="p-4 flex items-center justify-between">
       <SidebarTrigger />
@@ -32,10 +32,10 @@ const NavbarDashboard = () => {
             <Avatar>
               <AvatarImage
                 src={photourl ?? undefined}
-                alt={user?.displayName ?? 'User avatar'}
+                alt={dbUser?.image ?? 'User avatar'}
                 referrerPolicy="no-referrer"
                 // optional: help when the URL updates after first render
-                key={user?.photoURL ?? 'no-photo'}
+                key={dbUser?.image ?? 'no-photo'}
                 // optional: graceful fallback if it truly fails
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).src =
@@ -43,7 +43,7 @@ const NavbarDashboard = () => {
                 }}
               />
               <AvatarFallback>
-                {user?.displayName
+                {dbUser?.displayName
                   ?.split(' ')
                   .map((s) => s[0])
                   .join('')

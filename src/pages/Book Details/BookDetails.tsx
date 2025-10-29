@@ -14,6 +14,7 @@ import { AxiosError } from 'axios';
 import { Button } from '@/components/ui/button';
 // import { Spinner } from '@/components/ui/spinner';
 import { Separator } from '@/components/ui/separator';
+import { FaSpinner } from 'react-icons/fa';
 
 // -------- Types --------
 type ApiBook = {
@@ -55,6 +56,7 @@ export default function BookDetails() {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
   const [title, setTitle] = useState<string>('');
+  const [addingtocart, setaddingtocart] = useState<boolean>(false);
 
   const HandleAddReview = async () => {
     if (rating == 0 || review == '' || title == '') {
@@ -71,12 +73,37 @@ export default function BookDetails() {
     try {
       const res = await axiosSecure.post('/api/reviews', ReviewPayload);
       console.log(res);
-      toast.success('Review Added Successfuly');
+      toast.success('Review Added Successfully');
       refetch();
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
       const errorMessage = err.response?.data?.message || err.message;
-      toast.error(`Failed to add the review. ${errorMessage}`);
+      // toast.error(`Failed to add the review. ${errorMessage}`);
+      console.log(errorMessage);
+    }
+  };
+
+  const HandleAddToCart = async () => {
+    const CartItemPayload = {
+      user: dbUser?._id,
+      book: book?._id,
+    };
+    console.log(CartItemPayload);
+    setaddingtocart(true);
+    try {
+      const response = await axiosSecure.post(
+        '/api/cart/add-to-cart',
+        CartItemPayload
+      );
+      console.log(response);
+      toast.success('Book Added To the Cart Successfully');
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      const errorMessage = err.response?.data?.message || err.message;
+      // toast.error(`Failed to add the Book to the Cart. ${errorMessage}`);
+      console.log(errorMessage);
+    } finally {
+      setaddingtocart(false);
     }
   };
 
@@ -285,9 +312,24 @@ export default function BookDetails() {
 
           {/* Actions */}
           <div className="flex items-center gap-4 pt-2">
-            <button className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-xl shadow transition">
-              Trade Now
-            </button>
+            {!addingtocart && (
+              <button
+                onClick={HandleAddToCart}
+                className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-xl shadow transition"
+              >
+                Add to Cart
+              </button>
+            )}
+            {addingtocart && (
+              <button
+                disabled
+                className="px-5 py-2.5 bg-gray-400 text-white flex gap-2 items-center rounded-xl shadow-sm 
+               opacity-60 cursor-not-allowed select-none transition"
+              >
+                Adding Book to Cart
+                <FaSpinner className="animate-spin" />
+              </button>
+            )}
 
             {isFavorite(book?._id) ? (
               <motion.button

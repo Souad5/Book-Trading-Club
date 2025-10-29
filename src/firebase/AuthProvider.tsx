@@ -14,6 +14,7 @@ export type DBUser = {
   _id: string;
   uid: string;
   email: string;
+  image: string;
   role: string;
   displayName: string;
   favoriteBooks: string[];

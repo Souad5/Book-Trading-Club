@@ -20,6 +20,7 @@ import Users from '@/pages/Dashboards/Admin/Users';
 import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
 import DashboardHomePage from '@/pages/Dashboards/User/DashboardHomePage';
 import MyBooks from '@/pages/Dashboards/User/MyBooks';
+import MyCart from '@/pages/Dashboards/Shared/MyCart';
 
 const router = createBrowserRouter([
   {
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
       {
         path: 'mybooks',
         Component: MyBooks,
+      },
+      {
+        path: 'my-cart',
+        Component: MyCart,
       },
     ],
   },
