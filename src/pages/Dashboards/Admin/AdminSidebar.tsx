@@ -160,7 +160,7 @@ const AdminSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to={'/dashboard/users'}>
+                  <Link to={'/dashboard/my-orders'}>
                     <ClipboardList />
                     My Orders
                   </Link>

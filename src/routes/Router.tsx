@@ -21,6 +21,7 @@ import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
 import DashboardHomePage from '@/pages/Dashboards/User/DashboardHomePage';
 import MyBooks from '@/pages/Dashboards/User/MyBooks';
 import MyCart from '@/pages/Dashboards/Shared/MyCart';
+import MyOrders from '@/pages/Dashboards/Shared/MyOrders';
 
 const router = createBrowserRouter([
   {
@@ -102,6 +103,10 @@ const router = createBrowserRouter([
       {
         path: 'my-cart',
         Component: MyCart,
+      },
+      {
+        path: 'my-orders',
+        Component: MyOrders,
       },
     ],
   },
