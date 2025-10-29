@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @plugin 'tailwindcss-animate';
+/* @plugin "daisyui"; */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -50,7 +51,6 @@
 
 html,
 body,
-
 #root {
   height: 100%;
 }

@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { Spinner } from '@/components/ui/spinner';
 import { useState } from 'react';
-
+// import { loadStripe } from '@stripe/stripe-js';
 type Order = {
   _id: string;
   user: {
@@ -43,6 +43,7 @@ const MyCart = () => {
   const { dbUser } = useAuth();
   const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  // const stripePromise = loadStripe('your-publishable-key-here');
 
   // Queriers Fetching
   const {
@@ -80,6 +81,7 @@ const MyCart = () => {
       user: dbUser?._id,
       book: item.book._id,
     }));
+    console.log(cartitems);
 
     try {
       const response = await axiosSecure.post('/api/orders', { cartitems });
@@ -89,6 +91,83 @@ const MyCart = () => {
     } catch (error) {
       console.error(error);
       toast.error('Failed to move items to orders');
+    }
+  };
+
+  // async function MakePayment(products: Order[]) {
+  //   try {
+  //     // 1. Call backend to create session
+  //     const response = await fetch(
+  //       'http://localhost:3000/create-checkout-session',
+  //       {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ products }),
+  //       }
+  //     );
+
+  //     if (!response.ok) {
+  //       const errData = await response.json();
+  //       console.error('Backend error creating session:', errData);
+  //       toast.error('Failed to start checkout session');
+  //       return;
+  //     }
+
+  //     const data = await response.json();
+
+  //     // 2. Expect backend to return { url: session.url }
+  //     const checkoutUrl = data.url;
+  //     if (!checkoutUrl) {
+  //       console.error('No checkout URL returned from backend:', data);
+  //       toast.error('Checkout setup failed');
+  //       return;
+  //     }
+
+  //     // 3. Redirect user to Stripe hosted checkout
+  //     window.location.assign(checkoutUrl);
+  //   } catch (err) {
+  //     console.error('Payment error:', err);
+  //     toast.error('Something went wrong during payment');
+  //   }
+  // }
+
+  const HandleCheckout = async (items: Order[]) => {
+    if (items.length === 0) return;
+
+    try {
+      // 1. Move items to orders first
+      const cartItemsPayload = items.map((item) => ({
+        _id: item._id,
+        user: dbUser?._id,
+        book: item.book._id,
+      }));
+
+      await axiosSecure.post('/api/orders', { cartitems: cartItemsPayload });
+      GetCart(); // refresh cart
+      toast.success('Items moved to your orders');
+
+      // 2. Then create Stripe checkout session
+      const response = await fetch(
+        'https://book-trading-club-backend.vercel.app/create-checkout-session',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ products: items }),
+        }
+      );
+
+      if (!response.ok) {
+        const errData = await response.json();
+        console.error('Backend error creating session:', errData);
+        toast.error('Failed to start checkout session');
+        return;
+      }
+
+      const data = await response.json();
+      window.location.assign(data.url); // redirect to Stripe checkout
+    } catch (err) {
+      console.error(err);
+      toast.error('Something went wrong during checkout');
     }
   };
 
@@ -251,11 +330,20 @@ const MyCart = () => {
             >
               Your Cart Is empty
             </Button>
-          ) : (
+          ) : subtotal == 0 ? (
             <Button
               className="w-full mt-6"
               onClick={() => {
                 HandleMovetoOrders(items);
+              }}
+            >
+              Get the Books
+            </Button>
+          ) : (
+            <Button
+              className="w-full mt-6"
+              onClick={() => {
+                HandleCheckout(items);
               }}
             >
               Proceed to Checkout

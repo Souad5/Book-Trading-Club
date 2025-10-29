@@ -15,6 +15,17 @@ import { Button } from '@/components/ui/button';
 // import { Spinner } from '@/components/ui/spinner';
 import { Separator } from '@/components/ui/separator';
 import { FaSpinner } from 'react-icons/fa';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 // -------- Types --------
 type ApiBook = {
@@ -31,6 +42,7 @@ type ApiBook = {
   price: number;
   description: string;
   imageUrl: string;
+  uid: string;
 };
 
 type Review = {
@@ -52,10 +64,13 @@ type ReviewAPI = {
 
 export default function BookDetails() {
   const { dbUser } = useAuth();
+  // console.log(dbUser);
   // const axiosSecure = UseAxiosSecure();
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
   const [title, setTitle] = useState<string>('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [books, setBooks] = useState<ApiBook[]>([]);
   const [addingtocart, setaddingtocart] = useState<boolean>(false);
 
   const HandleAddReview = async () => {
@@ -104,6 +119,42 @@ export default function BookDetails() {
       console.log(errorMessage);
     } finally {
       setaddingtocart(false);
+    }
+  };
+
+  const HandleTradeDialogTrigger = async (book: ApiBook) => {
+    if (book.uid === dbUser?.uid) {
+      return toast.error('You already own this book');
+    }
+    const res = await axiosSecure.get(
+      `/api/books/get-books-by-location/${book.Location}`
+    );
+    const resbooks: any = res.data.data;
+    const filteredbooks = resbooks.filter(
+      (book: any) => book?.uid === dbUser?.uid
+    );
+    setBooks(filteredbooks);
+    console.log(filteredbooks);
+    setOpen(true);
+  };
+  const HandleTrade = async (selectedbook: ApiBook) => {
+    // console.log('Selected Book For Trade: ', book);
+    try {
+      const res = await axiosSecure.get(`/api/users/${book?.uid}`);
+      console.log(res.data);
+      const payload = {
+        sender: dbUser?._id,
+        receiver: res?.data?._id,
+        senderbook: selectedbook._id,
+        receiverbook: book?._id,
+      };
+      console.log(payload);
+      const res2 = await axiosSecure.post('/api/trades', payload);
+      console.log(res2);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setOpen(false);
     }
   };
 
@@ -312,7 +363,7 @@ export default function BookDetails() {
 
           {/* Actions */}
           <div className="flex items-center gap-4 pt-2">
-            {!addingtocart && (
+            {!addingtocart && book.Exchange !== 'Swap' && (
               <button
                 onClick={HandleAddToCart}
                 className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-xl shadow transition"
@@ -320,13 +371,111 @@ export default function BookDetails() {
                 Add to Cart
               </button>
             )}
-            {addingtocart && (
+            {!addingtocart && book.Exchange === 'Swap' && (
+              <div>
+                <button
+                  onClick={() => {
+                    HandleTradeDialogTrigger(book);
+                  }}
+                  className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-xl shadow transition"
+                >
+                  Trade Now
+                </button>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogContent className="sm:max-w-[650px] max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-semibold">
+                        Available Books for Trade
+                      </DialogTitle>
+                      <DialogDescription>
+                        Choose one of your books below to propose a trade.
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="mt-4 space-y-4">
+                      {books.length === 0 ? (
+                        <p className="text-center text-muted-foreground py-8">
+                          You don't have any books available for trade at this
+                          location.
+                        </p>
+                      ) : (
+                        <div className="overflow-x-auto rounded-md border border-border">
+                          <table className="w-full text-sm">
+                            <thead className="bg-muted/50 text-left">
+                              <tr>
+                                <th className="p-3 font-medium">Image</th>
+                                <th className="p-3 font-medium">Title</th>
+                                <th className="p-3 font-medium">Author</th>
+                                <th className="p-3 font-medium text-center">
+                                  Action
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {books.map((b) => (
+                                <tr
+                                  key={b._id}
+                                  className="border-t border-border hover:bg-muted/40 transition-colors"
+                                >
+                                  <td className="p-3">
+                                    <img
+                                      src={b.imageUrl}
+                                      alt={b.title}
+                                      className="w-14 h-20 object-cover rounded-md shadow-sm"
+                                    />
+                                  </td>
+                                  <td className="p-3 font-semibold">
+                                    {b.title}
+                                  </td>
+                                  <td className="p-3 text-muted-foreground">
+                                    {b.author}
+                                  </td>
+                                  <td className="p-3 text-center">
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      onClick={() => {
+                                        HandleTrade(b);
+                                      }}
+                                      className="rounded-md"
+                                    >
+                                      Trade Now
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+
+                    <DialogFooter className="mt-4">
+                      <DialogClose asChild>
+                        <Button variant="outline">Close</Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
+            )}
+            {addingtocart && book.Exchange !== 'Swap' && (
               <button
                 disabled
                 className="px-5 py-2.5 bg-gray-400 text-white flex gap-2 items-center rounded-xl shadow-sm 
                opacity-60 cursor-not-allowed select-none transition"
               >
                 Adding Book to Cart
+                <FaSpinner className="animate-spin" />
+              </button>
+            )}
+            {addingtocart && book.Exchange === 'Swap' && (
+              <button
+                disabled
+                className="px-5 py-2.5 bg-gray-400 text-white flex gap-2 items-center rounded-xl shadow-sm 
+               opacity-60 cursor-not-allowed select-none transition"
+              >
+                Trading...
                 <FaSpinner className="animate-spin" />
               </button>
             )}
