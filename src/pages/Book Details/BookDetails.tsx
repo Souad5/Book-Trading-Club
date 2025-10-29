@@ -137,6 +137,26 @@ export default function BookDetails() {
     console.log(filteredbooks);
     setOpen(true);
   };
+  const HandleTrade = async (selectedbook: ApiBook) => {
+    // console.log('Selected Book For Trade: ', book);
+    try {
+      const res = await axiosSecure.get(`/api/users/${book?.uid}`);
+      console.log(res.data);
+      const payload = {
+        sender: dbUser?._id,
+        receiver: res?.data?._id,
+        senderbook: selectedbook._id,
+        receiverbook: book?._id,
+      };
+      console.log(payload);
+      const res2 = await axiosSecure.post('/api/trades', payload);
+      console.log(res2);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setOpen(false);
+    }
+  };
 
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
 
@@ -362,41 +382,80 @@ export default function BookDetails() {
                   Trade Now
                 </button>
                 <Dialog open={open} onOpenChange={setOpen}>
-                  <form>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Edit profile</DialogTitle>
-                        <DialogDescription>
-                          Make changes to your profile here. Click save when
-                          you&apos;re done.
-                        </DialogDescription>
-                      </DialogHeader>
-                      <div className="grid gap-4">
-                        <div className="grid gap-3">
-                          <Label htmlFor="name-1">Name</Label>
-                          <Input
-                            id="name-1"
-                            name="name"
-                            defaultValue="Pedro Duarte"
-                          />
+                  <DialogContent className="sm:max-w-[650px] max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="text-xl font-semibold">
+                        Available Books for Trade
+                      </DialogTitle>
+                      <DialogDescription>
+                        Choose one of your books below to propose a trade.
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="mt-4 space-y-4">
+                      {books.length === 0 ? (
+                        <p className="text-center text-muted-foreground py-8">
+                          You don't have any books available for trade at this
+                          location.
+                        </p>
+                      ) : (
+                        <div className="overflow-x-auto rounded-md border border-border">
+                          <table className="w-full text-sm">
+                            <thead className="bg-muted/50 text-left">
+                              <tr>
+                                <th className="p-3 font-medium">Image</th>
+                                <th className="p-3 font-medium">Title</th>
+                                <th className="p-3 font-medium">Author</th>
+                                <th className="p-3 font-medium text-center">
+                                  Action
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {books.map((b) => (
+                                <tr
+                                  key={b._id}
+                                  className="border-t border-border hover:bg-muted/40 transition-colors"
+                                >
+                                  <td className="p-3">
+                                    <img
+                                      src={b.imageUrl}
+                                      alt={b.title}
+                                      className="w-14 h-20 object-cover rounded-md shadow-sm"
+                                    />
+                                  </td>
+                                  <td className="p-3 font-semibold">
+                                    {b.title}
+                                  </td>
+                                  <td className="p-3 text-muted-foreground">
+                                    {b.author}
+                                  </td>
+                                  <td className="p-3 text-center">
+                                    <Button
+                                      size="sm"
+                                      variant="default"
+                                      onClick={() => {
+                                        HandleTrade(b);
+                                      }}
+                                      className="rounded-md"
+                                    >
+                                      Trade Now
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
                         </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor="username-1">Username</Label>
-                          <Input
-                            id="username-1"
-                            name="username"
-                            defaultValue="@peduarte"
-                          />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <DialogClose asChild>
-                          <Button variant="outline">Cancel</Button>
-                        </DialogClose>
-                        <Button type="submit">Save changes</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </form>
+                      )}
+                    </div>
+
+                    <DialogFooter className="mt-4">
+                      <DialogClose asChild>
+                        <Button variant="outline">Close</Button>
+                      </DialogClose>
+                    </DialogFooter>
+                  </DialogContent>
                 </Dialog>
               </div>
             )}

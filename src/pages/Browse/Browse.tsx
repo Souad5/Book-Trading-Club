@@ -68,6 +68,7 @@ export default function Browse() {
   // Initialize local query from URL param and keep in sync when it changes
   useEffect(() => {
     setQuery(rawQuery);
+    refetch();
   }, [rawQuery]);
 
   const axiosSecure = UseAxiosSecure();
@@ -75,8 +76,10 @@ export default function Browse() {
   const {
     data: books = [], // ✅ default to empty array
     isLoading,
+    isFetching,
     isError,
     error,
+    refetch,
   } = useQuery({
     queryKey: ['books'],
     queryFn: async () => {
@@ -107,7 +110,9 @@ export default function Browse() {
   const results = useMemo(() => {
     const q = (query || '').trim().toLowerCase();
     const filtered = books.filter((b) => {
-      const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(' ')}`.toLowerCase();
+      const haystack = `${b.title} ${b.author} ${b.isbn} ${b.tags.join(
+        ' '
+      )}`.toLowerCase();
       const matchesText = q.length === 0 || haystack.includes(q);
       const matchesLocation = !location || b.location === location;
       const matchesCondition = !condition || b.condition === condition;
@@ -127,9 +132,18 @@ export default function Browse() {
     const sorted = [...filtered].sort((a, b) => a.title.localeCompare(b.title));
     if (sortOrder === 'desc') sorted.reverse();
     return sorted;
-  }, [books, query, location, condition, exchangeType, language, genre, sortOrder]);
+  }, [
+    books,
+    query,
+    location,
+    condition,
+    exchangeType,
+    language,
+    genre,
+    sortOrder,
+  ]);
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <div className="gap-5 rounded-2xl border border-sand-200 bg-gradient-to-br from-sand-50 via-white to-leaf-50 p-8 mb-6">
@@ -247,7 +261,9 @@ export default function Browse() {
           <select
             className="rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm"
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc' | '')}
+            onChange={(e) =>
+              setSortOrder(e.target.value as 'asc' | 'desc' | '')
+            }
           >
             <option value="">Sorting</option>
             <option value="asc">Ascending</option>

@@ -42,7 +42,7 @@ const MyBooks = () => {
     isPending,
     refetch: GetBooks,
   } = useQuery({
-    queryKey: ['books'],
+    queryKey: ['userbooks'],
     queryFn: async () => {
       const res = await axiosSecure.get(
         `/api/books/get-user-books/${user?.uid}`
@@ -80,7 +80,7 @@ const MyBooks = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {books.map((book : any) => (
+            {books.map((book: any) => (
               <TableRow className="text-center" key={book._id}>
                 <TableCell className="flex flex-col items-center justify-center gap-3 mt-4">
                   <img
