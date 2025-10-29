@@ -26,7 +26,6 @@ import {
   ShoppingCart,
   ClipboardList,
   Send,
-  Bell,
   Handshake,
 } from 'lucide-react';
 
