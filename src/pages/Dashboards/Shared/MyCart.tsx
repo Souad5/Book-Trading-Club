@@ -7,6 +7,10 @@ import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'react-toastify';
+import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { Spinner } from '@/components/ui/spinner';
+import { useState } from 'react';
 
 type Order = {
   _id: string;
@@ -38,14 +42,36 @@ const MyCart = () => {
   const axiosSecure = UseAxiosSecure();
   const { dbUser } = useAuth();
   const navigate = useNavigate();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const { data: cartitems, isPending } = useQuery<OrderAPI>({
+  // Queriers Fetching
+  const {
+    data: cartitems,
+    isPending,
+    refetch: GetCart,
+    isFetching,
+  } = useQuery<OrderAPI>({
     queryKey: ['myCart', dbUser?._id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/api/cart/${dbUser?._id}`);
       return res.data;
     },
   });
+
+  //   Handle Functions
+  const HandleDeleteCartItem = async (item: Order) => {
+    setDeletingId(item._id);
+    try {
+      await axiosSecure.delete(`/api/cart/${item._id}`);
+      GetCart();
+      toast.success('Item Deleted Successfully');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to delete item');
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   if (isPending) {
     return (
@@ -123,18 +149,43 @@ const MyCart = () => {
                 </div>
 
                 {/* Remove Button */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="text-destructive hover:text-destructive/80 mt-4 md:mt-0"
-                  onClick={() => console.log('Remove:', item._id)}
-                >
-                  <Trash2 className="w-4 h-4 mr-1" />
-                  Remove
-                </Button>
+                {deletingId === item._id ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-gray-500 mt-4 md:mt-0"
+                  >
+                    <Spinner />
+                    Removing...
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive/80 mt-4 md:mt-0"
+                    onClick={() => HandleDeleteCartItem(item)}
+                  >
+                    <Trash2 className="w-4 h-4 mr-1" />
+                    Remove
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))
+        )}
+        {isFetching && (
+          <div className="flex w-full max-w-xs mx-auto flex-col gap-4 [--radius:1rem]">
+            <Item variant="muted" className="w-full">
+              <ItemMedia>
+                <Spinner />
+              </ItemMedia>
+              <ItemContent>
+                <ItemTitle className="line-clamp-1">
+                  Refreshing your Cart...
+                </ItemTitle>
+              </ItemContent>
+            </Item>
+          </div>
         )}
       </div>
 
