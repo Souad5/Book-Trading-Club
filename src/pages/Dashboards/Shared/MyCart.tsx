@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { Spinner } from '@/components/ui/spinner';
 import { useState } from 'react';
-
+import { loadStripe } from '@stripe/stripe-js';
 type Order = {
   _id: string;
   user: {
@@ -80,15 +80,57 @@ const MyCart = () => {
       user: dbUser?._id,
       book: item.book._id,
     }));
+    console.log(cartitems);
 
+    // try {
+    //   const response = await axiosSecure.post('/api/orders', { cartitems });
+    //   console.log(response);
+    //   GetCart();
+    //   toast.success('You have successfully bought the books');
+    // } catch (error) {
+    //   console.error(error);
+    //   toast.error('Failed to move items to orders');
+    // }
+  };
+
+  const MakePayment = async (items: Order[]) => {
     try {
-      const response = await axiosSecure.post('/api/orders', { cartitems });
-      console.log(response);
-      GetCart();
-      toast.success('You have successfully bought the books');
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to move items to orders');
+      const stripe = await loadStripe(
+        'pk_test_51SNTeK41M2bP7cF6cGrAzfl32pjeMC1qqOoFKQrZkUuj59417qlesOy9InHD3PMzvbvP1QvBZkIyL4pRj8p2k8Rc00Mce3AR27'
+      );
+
+      if (!stripe) {
+        toast.error('Stripe initialization failed.');
+        return;
+      }
+
+      const payload = { products: items };
+
+      const response = await axiosSecure.post(
+        '/create-checkout-session',
+        payload,
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      const session = response.data;
+
+      if (!session?.id) {
+        toast.error('Failed to create checkout session.');
+        return;
+      }
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (result.error) {
+        toast.error(result.error.message);
+      }
+    } catch (error: any) {
+      console.error('Payment error:', error);
+      toast.error('Something went wrong while processing payment.');
     }
   };
 

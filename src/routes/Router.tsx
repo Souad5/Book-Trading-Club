@@ -22,6 +22,8 @@ import DashboardHomePage from '@/pages/Dashboards/User/DashboardHomePage';
 import MyBooks from '@/pages/Dashboards/User/MyBooks';
 import MyCart from '@/pages/Dashboards/Shared/MyCart';
 import MyOrders from '@/pages/Dashboards/Shared/MyOrders';
+import PaymentSuccess from '@/pages/Dashboards/Shared/PaymentSuccess';
+import PaymentFailure from '@/pages/Dashboards/Shared/PymentFailure';
 
 const router = createBrowserRouter([
   {
@@ -107,6 +109,14 @@ const router = createBrowserRouter([
       {
         path: 'my-orders',
         Component: MyOrders,
+      },
+      {
+        path: 'payment-success',
+        Component: PaymentSuccess,
+      },
+      {
+        path: 'payment-failure',
+        Component: PaymentFailure,
       },
     ],
   },
