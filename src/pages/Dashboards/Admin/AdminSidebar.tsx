@@ -25,8 +25,8 @@ import {
   Users,
   ShoppingCart,
   ClipboardList,
-  Send,
   Handshake,
+  GitPullRequest,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -180,7 +180,7 @@ const AdminSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to={'/dashboard/requested-trades'}>
-                    <Send />
+                    <GitPullRequest />
                     Requested Trades
                   </Link>
                 </SidebarMenuButton>
