@@ -15,6 +15,17 @@ import { Button } from '@/components/ui/button';
 // import { Spinner } from '@/components/ui/spinner';
 import { Separator } from '@/components/ui/separator';
 import { FaSpinner } from 'react-icons/fa';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 // -------- Types --------
 type ApiBook = {
@@ -31,6 +42,7 @@ type ApiBook = {
   price: number;
   description: string;
   imageUrl: string;
+  uid: string;
 };
 
 type Review = {
@@ -52,10 +64,13 @@ type ReviewAPI = {
 
 export default function BookDetails() {
   const { dbUser } = useAuth();
+  // console.log(dbUser);
   // const axiosSecure = UseAxiosSecure();
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>('');
   const [title, setTitle] = useState<string>('');
+  const [open, setOpen] = useState<boolean>(false);
+  const [books, setBooks] = useState<ApiBook[]>([]);
   const [addingtocart, setaddingtocart] = useState<boolean>(false);
 
   const HandleAddReview = async () => {
@@ -105,6 +120,22 @@ export default function BookDetails() {
     } finally {
       setaddingtocart(false);
     }
+  };
+
+  const HandleTradeDialogTrigger = async (book: ApiBook) => {
+    if (book.uid === dbUser?.uid) {
+      return toast.error('You already own this book');
+    }
+    const res = await axiosSecure.get(
+      `/api/books/get-books-by-location/${book.Location}`
+    );
+    const resbooks: any = res.data.data;
+    const filteredbooks = resbooks.filter(
+      (book: any) => book?.uid === dbUser?.uid
+    );
+    setBooks(filteredbooks);
+    console.log(filteredbooks);
+    setOpen(true);
   };
 
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
@@ -312,7 +343,7 @@ export default function BookDetails() {
 
           {/* Actions */}
           <div className="flex items-center gap-4 pt-2">
-            {!addingtocart && (
+            {!addingtocart && book.Exchange !== 'Swap' && (
               <button
                 onClick={HandleAddToCart}
                 className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-xl shadow transition"
@@ -320,13 +351,72 @@ export default function BookDetails() {
                 Add to Cart
               </button>
             )}
-            {addingtocart && (
+            {!addingtocart && book.Exchange === 'Swap' && (
+              <div>
+                <button
+                  onClick={() => {
+                    HandleTradeDialogTrigger(book);
+                  }}
+                  className="px-5 py-2.5 bg-leaf-500 hover:bg-leaf-600 text-white rounded-xl shadow transition"
+                >
+                  Trade Now
+                </button>
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <form>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Edit profile</DialogTitle>
+                        <DialogDescription>
+                          Make changes to your profile here. Click save when
+                          you&apos;re done.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4">
+                        <div className="grid gap-3">
+                          <Label htmlFor="name-1">Name</Label>
+                          <Input
+                            id="name-1"
+                            name="name"
+                            defaultValue="Pedro Duarte"
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor="username-1">Username</Label>
+                          <Input
+                            id="username-1"
+                            name="username"
+                            defaultValue="@peduarte"
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button type="submit">Save changes</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </form>
+                </Dialog>
+              </div>
+            )}
+            {addingtocart && book.Exchange !== 'Swap' && (
               <button
                 disabled
                 className="px-5 py-2.5 bg-gray-400 text-white flex gap-2 items-center rounded-xl shadow-sm 
                opacity-60 cursor-not-allowed select-none transition"
               >
                 Adding Book to Cart
+                <FaSpinner className="animate-spin" />
+              </button>
+            )}
+            {addingtocart && book.Exchange === 'Swap' && (
+              <button
+                disabled
+                className="px-5 py-2.5 bg-gray-400 text-white flex gap-2 items-center rounded-xl shadow-sm 
+               opacity-60 cursor-not-allowed select-none transition"
+              >
+                Trading...
                 <FaSpinner className="animate-spin" />
               </button>
             )}
