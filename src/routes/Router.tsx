@@ -9,6 +9,7 @@ import Home from '@/pages/Home/Home';
 import HowItWorks from '@/pages/How It Works/HowItWorks';
 import Login from '@/pages/Login/Login';
 import Register from '@/pages/Register/Register';
+import PreOrderPage from '@/pages/PreOrder/PreOrder';
 
 import FavouriteBooks from '@/pages/Wishlist/Wishlist';
 import AroundMe from '@/pages/Map/AroundMe';
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
       {
         path: '/around-me',
         Component: AroundMe,
+      },
+      {
+        path: '/pre-order',
+        Component: PreOrderPage,
       },
     ],
   },
