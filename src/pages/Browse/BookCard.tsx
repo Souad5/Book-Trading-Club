@@ -24,6 +24,7 @@ type ApiBook = {
   description?: string;
   image?: string;
   imageUrl?: string;
+  age?: string;
 };
 
 type BookCardProps = { book: ApiBook };
@@ -95,6 +96,9 @@ const BookCard = ({ book }: BookCardProps) => {
       <h3 className="mt-3 font-semibold text-soil-900">{book.title}</h3>
       <p className="text-sm text-sand-700">
         {book.author} · {language}
+        <span className="ml-1 rounded bg-sand-200 px-2 py-0.5 text-xs text-sand-700 align-middle">
+          {(book as any).age ?? (Math.random() < 0.5 ? 'Children' : 'Adult')}
+        </span>
       </p>
 
       {/* Tags */}
