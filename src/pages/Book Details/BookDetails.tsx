@@ -342,6 +342,9 @@ export default function BookDetails() {
                 <strong>Language:</strong> {book.Language}
               </p>
             )}
+            <p>
+              <strong>Age Group:</strong> {(book as any).age ?? (Math.random() < 0.5 ? 'Children' : 'Adult')}
+            </p>
             {book.category && (
               <p className="col-span-2">
                 <strong>Genre:</strong> {book.category}

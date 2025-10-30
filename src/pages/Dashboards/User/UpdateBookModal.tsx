@@ -38,6 +38,7 @@ const UpdateBookModal = ({
   const [Exchange, setExchange] = useState(bookdata?.Exchange || 'Swap');
   const [Language, setLanguage] = useState(bookdata?.Language || 'English');
   const [tags, setTags] = useState(bookdata?.tags || []);
+  const [Age, setAge] = useState<string>(bookdata?.age || 'All Ages');
 
   const handleTagInput = (val: string) => {
     const parts = val
@@ -76,6 +77,7 @@ const UpdateBookModal = ({
         Condition,
         Exchange,
         Language,
+        age: Age,
         category,
         tags,
         price: numericPrice,
@@ -284,6 +286,25 @@ const UpdateBookModal = ({
               ))}
             </select>
           </div>
+        </div>
+
+        {/* Age Group */}
+        <div className="space-y-2">
+          <Label htmlFor="age" className="text-sm font-medium">
+            Age Group
+          </Label>
+          <select
+            id="age"
+            value={Age}
+            onChange={(e) => setAge(e.target.value)}
+            className="w-full h-10 border border-input bg-background rounded-md px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            {['Children', 'Teen', 'Young Adult', 'Adult', 'All Ages'].map((g) => (
+              <option key={g} value={g}>
+                {g}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Tags */}

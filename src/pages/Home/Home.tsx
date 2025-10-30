@@ -26,6 +26,7 @@ type Book = {
   exchangeType: 'swap' | 'donate' | 'sell';
   language: string;
   genre: string;
+  age?: 'Children' | 'Teen' | 'Young Adult' | 'Adult' | 'All Ages';
   image: string;
 };
 
@@ -40,6 +41,7 @@ type ApiBook = {
   Exchange?: string;
   Language?: string;
   category: string;
+  age?: 'Children' | 'Teen' | 'Young Adult' | 'Adult' | 'All Ages';
   tags?: string[];
   price: number;
   description: string;
@@ -58,6 +60,7 @@ const normalize = (b: ApiBook): Book => ({
   exchangeType: (b.Exchange ?? 'Swap').toLowerCase() as Book['exchangeType'],
   language: b.Language ?? 'English',
   genre: b.category ?? 'Fiction',
+  age: b.age ?? (Math.random() < 0.5 ? 'Children' : 'Adult'),
   image: b.imageUrl,
 });
 
@@ -68,7 +71,8 @@ export default function Home() {
   const [exchangeType, setExchangeType] = useState('');
   const [language, setLanguage] = useState('');
   const [genre, setGenre] = useState('');
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | ''>('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | 'ageAsc' | 'ageDesc' | ''>('');
+  const [ageFilter, setAgeFilter] = useState('');
 
   const { toggleFavorite, isFavorite, isAuthenticated } = useFavorites();
 
@@ -131,22 +135,35 @@ export default function Home() {
         b.exchangeType === (exchangeType as Book['exchangeType']);
       const matchesLanguage = !language || b.language === language;
       const matchesGenre = !genre || b.genre === genre;
+      const matchesAge = !ageFilter || (b.age || 'All Ages') === ageFilter;
       return (
         matchesText &&
         matchesLocation &&
         matchesCondition &&
         matchesExchange &&
         matchesLanguage &&
-        matchesGenre
+        matchesGenre &&
+        matchesAge
       );
     });
     if (!sortOrder) return filtered;
-    const sorted = [...filtered].sort((a, b) =>
-      a.title.localeCompare(b.title)
-    );
-    if (sortOrder === 'desc') sorted.reverse();
+    let sorted = [...filtered];
+    if (sortOrder === 'asc' || sortOrder === 'desc') {
+      sorted.sort((a, b) => a.title.localeCompare(b.title));
+      if (sortOrder === 'desc') sorted.reverse();
+    } else if (sortOrder === 'ageAsc' || sortOrder === 'ageDesc') {
+      const rank: Record<string, number> = {
+        'Children': 1,
+        'Teen': 2,
+        'Young Adult': 3,
+        'Adult': 4,
+        'All Ages': 5,
+      };
+      sorted.sort((a, b) => (rank[a.age || 'All Ages'] - rank[b.age || 'All Ages']));
+      if (sortOrder === 'ageDesc') sorted.reverse();
+    }
     return sorted;
-  }, [books, query, location, condition, exchangeType, language, genre, sortOrder]);
+  }, [books, query, location, condition, exchangeType, language, genre, ageFilter, sortOrder]);
 
   // Unique filter options
   const locations = useMemo(
@@ -159,6 +176,10 @@ export default function Home() {
   );
   const genres = useMemo(
     () => Array.from(new Set(books.map((b) => b.genre))).filter(Boolean),
+    [books]
+  );
+  const ages = useMemo(
+    () => Array.from(new Set(books.map((b) => b.age || 'All Ages'))).filter(Boolean),
     [books]
   );
 
@@ -258,11 +279,25 @@ export default function Home() {
               <select
                 className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
                 value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc' | '')}
+                onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc' | 'ageAsc' | 'ageDesc' | '')}
               >
                 <option value="">Sorting</option>
                 <option value="asc">Ascending</option>
                 <option value="desc">Descending</option>
+                <option value="ageAsc">Age: Children → Adult</option>
+                <option value="ageDesc">Age: Adult → Children</option>
+              </select>
+              <select
+                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
+                value={ageFilter}
+                onChange={(e) => setAgeFilter(e.target.value)}
+              >
+                <option value="">All ages</option>
+                {ages.map((a) => (
+                  <option key={a as string} value={a as string}>
+                    {a as string}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
