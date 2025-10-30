@@ -1,6 +1,6 @@
 // src/pages/Browse.tsx
 import { useMemo, useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import UseAxiosSecure from '@/axios/UseAxiosSecure.js';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import BookCard from '@/pages/Browse/BookCard';
@@ -166,6 +166,14 @@ export default function Browse() {
         <p className="mt-2 text-sand-700">
           Discover books available for exchange.
         </p>
+        <div className="mt-4">
+          <Link
+            to="/preorder"
+            className="inline-flex items-center rounded-lg bg-leaf-600 hover:bg-leaf-700 text-white px-4 py-2.5 text-sm font-medium transition"
+          >
+            Pre-Order Book
+          </Link>
+        </div>
       </div>
 
       {/* Search + Filters */}

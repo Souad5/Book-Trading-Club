@@ -20,22 +20,25 @@ interface NearbyBooksResponse {
 }
 
 // Helper function to get user's city from coordinates
-const getCityFromCoordinates = (latitude: number, longitude: number): string => {
+const getCityFromCoordinates = (
+  latitude: number,
+  longitude: number
+): string => {
   // Simple city detection based on coordinates
   // Dhaka: 23.8103, 90.4125
   // Sylhet: 24.8949, 91.8687
   // Rajshahi: 24.3745, 88.6042
   // Chittagong: 22.3569, 91.7832
-  
+
   const cities = [
     { name: 'Dhaka', lat: 23.8103, lon: 90.4125, threshold: 0.5 },
     { name: 'Sylhet', lat: 24.8949, lon: 91.8687, threshold: 0.5 },
     { name: 'Rajshahi', lat: 24.3745, lon: 88.6042, threshold: 0.5 },
     { name: 'Chittagong', lat: 22.3569, lon: 91.7832, threshold: 0.5 },
     { name: 'Khulna', lat: 22.8098, lon: 89.5642, threshold: 0.5 },
-    { name: 'Barisal', lat: 22.7010, lon: 90.3535, threshold: 0.5 },
+    { name: 'Barisal', lat: 22.701, lon: 90.3535, threshold: 0.5 },
   ];
-  
+
   for (const city of cities) {
     const distance = Math.sqrt(
       Math.pow(latitude - city.lat, 2) + Math.pow(longitude - city.lon, 2)
@@ -44,7 +47,7 @@ const getCityFromCoordinates = (latitude: number, longitude: number): string => 
       return city.name;
     }
   }
-  
+
   return 'Dhaka'; // Default fallback
 };
 
@@ -56,7 +59,7 @@ const isSameCity = (city1: string, city2: string): boolean => {
 // Generate sample books for demonstration
 const generateSampleBooks = (userLat: number, userLon: number): Book[] => {
   const userCity = getCityFromCoordinates(userLat, userLon);
-  
+
   const sampleBooks: Book[] = [
     {
       id: 'sample-1',
@@ -69,12 +72,13 @@ const generateSampleBooks = (userLat: number, userLon: number): Book[] => {
       exchangeType: 'swap',
       language: 'english',
       genre: 'fiction',
-      image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop',
+      image:
+        'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop',
       price: 0,
       coordinates: {
         latitude: userLat + (Math.random() - 0.5) * 0.01,
-        longitude: userLon + (Math.random() - 0.5) * 0.01
-      }
+        longitude: userLon + (Math.random() - 0.5) * 0.01,
+      },
     },
     {
       id: 'sample-2',
@@ -87,12 +91,13 @@ const generateSampleBooks = (userLat: number, userLon: number): Book[] => {
       exchangeType: 'sell',
       language: 'english',
       genre: 'fiction',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
+      image:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop',
       price: 500,
       coordinates: {
         latitude: userLat + (Math.random() - 0.5) * 0.01,
-        longitude: userLon + (Math.random() - 0.5) * 0.01
-      }
+        longitude: userLon + (Math.random() - 0.5) * 0.01,
+      },
     },
     {
       id: 'sample-3',
@@ -105,20 +110,23 @@ const generateSampleBooks = (userLat: number, userLon: number): Book[] => {
       exchangeType: 'swap',
       language: 'english',
       genre: 'fiction',
-      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop',
+      image:
+        'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop',
       price: 0,
       coordinates: {
         latitude: userLat + (Math.random() - 0.5) * 0.01,
-        longitude: userLon + (Math.random() - 0.5) * 0.01
-      }
-    }
+        longitude: userLon + (Math.random() - 0.5) * 0.01,
+      },
+    },
   ];
-  
+
   return sampleBooks;
 };
 
 const AroundMe: React.FC = () => {
-  const [userLocation, setUserLocation] = useState<GeolocationPosition | null>(null);
+  const [userLocation, setUserLocation] = useState<GeolocationPosition | null>(
+    null
+  );
   const [radius, setRadius] = useState<number>(5);
   const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
   const [, setSelectedBook] = useState<Book | null>(null);
@@ -151,7 +159,12 @@ const AroundMe: React.FC = () => {
     isError: isBooksError,
     refetch: refetchBooks,
   } = useQuery<NearbyBooksResponse>({
-    queryKey: ['nearby-books', userLocation?.latitude, userLocation?.longitude, radius],
+    queryKey: [
+      'nearby-books',
+      userLocation?.latitude,
+      userLocation?.longitude,
+      radius,
+    ],
     queryFn: async () => {
       if (!userLocation) {
         throw new Error('User location not available');
@@ -161,7 +174,7 @@ const AroundMe: React.FC = () => {
         // Get all books and filter by city
         const response = await axiosSecure.get('/api/books');
         console.log('API response:', response.data);
-        
+
         // Handle different response formats
         let booksData = response.data;
         if (Array.isArray(response.data)) {
@@ -171,61 +184,79 @@ const AroundMe: React.FC = () => {
         } else if (response.data.data) {
           booksData = response.data.data;
         }
-        
-        const allBooks = booksData.map(book => {
-          try {
-            return normalizeBook(book);
-          } catch (error) {
-            console.error('Error normalizing book:', book, error);
-            return null;
-          }
-        }).filter(book => book); // Filter out any null/undefined books
-        
+
+        const allBooks = booksData
+          .map((book: any) => {
+            try {
+              return normalizeBook(book);
+            } catch (error) {
+              console.error('Error normalizing book:', book, error);
+              return null;
+            }
+          })
+          .filter((book: any) => book); // Filter out any null/undefined books
+
         // Get user's city from coordinates
-        const userCity = getCityFromCoordinates(userLocation.latitude, userLocation.longitude);
+        const userCity = getCityFromCoordinates(
+          userLocation.latitude,
+          userLocation.longitude
+        );
         console.log(`User is in: ${userCity}`);
-        
+
         // Filter books by city instead of coordinates
-        const booksInSameCity = allBooks.filter(book => {
+        const booksInSameCity = allBooks.filter((book: any) => {
           if (!book.location) return false;
-          
+
           // Check if book location matches user's city
           return isSameCity(book.location, userCity);
         });
-        
+
         let booksToFilter = allBooks;
         if (booksInSameCity.length === 0) {
           console.log(`No books found in ${userCity}, adding demo books`);
           // Add some sample books for the user's city
-          const sampleBooks = generateSampleBooks(userLocation.latitude, userLocation.longitude);
+          const sampleBooks = generateSampleBooks(
+            userLocation.latitude,
+            userLocation.longitude
+          );
           booksToFilter = [...allBooks, ...sampleBooks];
         } else {
           console.log(`Found ${booksInSameCity.length} books in ${userCity}`);
           booksToFilter = booksInSameCity;
         }
-        
+        void setRadius;
+
         // Return all books in the same city
         const nearbyBooks = booksToFilter;
-        
+
         console.log(`Found ${nearbyBooks.length} books in ${userCity}`);
         console.log('Books data:', nearbyBooks);
-        
+
         return {
           books: nearbyBooks,
           count: nearbyBooks.length,
-          userLocation: { latitude: userLocation.latitude, longitude: userLocation.longitude },
-          radius: radius
+          userLocation: {
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+          },
+          radius: radius,
         };
       } catch (error) {
         console.error('Error fetching books:', error);
         console.log('Using demo books as fallback');
         // Return sample books as final fallback
-        const sampleBooks = generateSampleBooks(userLocation.latitude, userLocation.longitude);
+        const sampleBooks = generateSampleBooks(
+          userLocation.latitude,
+          userLocation.longitude
+        );
         return {
           books: sampleBooks,
           count: sampleBooks.length,
-          userLocation: { latitude: userLocation.latitude, longitude: userLocation.longitude },
-          radius: radius
+          userLocation: {
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+          },
+          radius: radius,
         };
       }
     },
@@ -248,12 +279,15 @@ const AroundMe: React.FC = () => {
     }
   }, []);
 
-  const handleBookClick = useCallback((book: Book) => {
-    setSelectedBook(book);
-    if (viewMode === 'list') {
-      setViewMode('map');
-    }
-  }, [viewMode]);
+  const handleBookClick = useCallback(
+    (book: Book) => {
+      setSelectedBook(book);
+      if (viewMode === 'list') {
+        setViewMode('map');
+      }
+    },
+    [viewMode]
+  );
 
   const handleViewDetails = useCallback((book: Book) => {
     // Navigate to book details page
@@ -270,9 +304,9 @@ const AroundMe: React.FC = () => {
     toast.info(`Contacting owner of "${book.title}"...`);
   }, []);
 
-  const handleRadiusChange = useCallback((newRadius: number) => {
-    setRadius(newRadius);
-  }, []);
+  // const handleRadiusChange = useCallback((newRadius: number) => {
+  //   setRadius(newRadius);
+  // }, []);
 
   const books = nearbyBooksData?.books || [];
 
@@ -288,7 +322,7 @@ const AroundMe: React.FC = () => {
                 Discover books available for trade in your city
               </p>
             </div>
-            
+
             <div className="flex items-center space-x-4">
               {/* Location Status */}
               <div className="flex items-center space-x-2">
@@ -304,7 +338,9 @@ const AroundMe: React.FC = () => {
                 disabled={isLoadingLocation}
                 className="flex items-center space-x-2 px-3 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 disabled:opacity-50"
               >
-                <FiRefreshCw className={`${isLoadingLocation ? 'animate-spin' : ''}`} />
+                <FiRefreshCw
+                  className={`${isLoadingLocation ? 'animate-spin' : ''}`}
+                />
                 <span>Refresh</span>
               </button>
             </div>
@@ -323,7 +359,12 @@ const AroundMe: React.FC = () => {
               </label>
               <div className="flex items-center space-x-2">
                 <span className="px-3 py-1 text-sm bg-blue-500 text-white rounded-lg">
-                  {userLocation ? getCityFromCoordinates(userLocation.latitude, userLocation.longitude) : 'Loading...'}
+                  {userLocation
+                    ? getCityFromCoordinates(
+                        userLocation.latitude,
+                        userLocation.longitude
+                      )
+                    : 'Loading...'}
                 </span>
               </div>
             </div>
@@ -380,7 +421,8 @@ const AroundMe: React.FC = () => {
               Unable to load nearby books
             </h3>
             <p className="text-gray-600 mb-4">
-              There was an error loading books from the server. Using demo books for demonstration.
+              There was an error loading books from the server. Using demo books
+              for demonstration.
             </p>
             <button
               onClick={() => refetchBooks()}
@@ -421,7 +463,11 @@ const AroundMe: React.FC = () => {
             )}
 
             {/* Books List */}
-            <div className={`${viewMode === 'map' ? 'lg:col-span-1' : 'lg:col-span-3'}`}>
+            <div
+              className={`${
+                viewMode === 'map' ? 'lg:col-span-1' : 'lg:col-span-3'
+              }`}
+            >
               <div className="bg-white rounded-lg shadow-sm border">
                 <div className="p-4 border-b">
                   <div className="flex items-center justify-between">
@@ -429,11 +475,12 @@ const AroundMe: React.FC = () => {
                       <h3 className="text-lg font-semibold text-gray-900">
                         Books Found ({books.length})
                       </h3>
-                      {books.length > 0 && books[0].id.startsWith('sample-') && (
-                        <p className="text-xs text-blue-600 mt-1">
-                          📍 Showing demo books for demonstration
-                        </p>
-                      )}
+                      {books.length > 0 &&
+                        books[0].id.startsWith('sample-') && (
+                          <p className="text-xs text-blue-600 mt-1">
+                            📍 Showing demo books for demonstration
+                          </p>
+                        )}
                     </div>
                     {viewMode === 'list' && (
                       <button
@@ -470,12 +517,13 @@ const AroundMe: React.FC = () => {
                         No books found
                       </h3>
                       <p className="text-gray-600 mb-4">
-                        No books are available for trade in your city.
-                        Demo books are shown for demonstration purposes.
+                        No books are available for trade in your city. Demo
+                        books are shown for demonstration purposes.
                       </p>
                       <p className="text-sm text-gray-500">
-                        Note: Books are filtered by city location (Dhaka, Sylhet, Rajshahi, etc.).
-                        Currently showing demo books for demonstration purposes.
+                        Note: Books are filtered by city location (Dhaka,
+                        Sylhet, Rajshahi, etc.). Currently showing demo books
+                        for demonstration purposes.
                       </p>
                     </div>
                   ) : (
