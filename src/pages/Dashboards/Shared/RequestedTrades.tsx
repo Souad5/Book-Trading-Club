@@ -38,7 +38,7 @@ const RequestedTrades = () => {
   const axiosSecure = UseAxiosSecure();
   const { dbUser } = useAuth();
 
-  const { data: requestedtrades, isLoading } = useQuery<TradeAPI>({
+  const { data: requestedtrades, isLoading, isFetching } = useQuery<TradeAPI>({
     queryKey: ['requestedtrades', dbUser?._id],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -49,7 +49,7 @@ const RequestedTrades = () => {
     enabled: !!dbUser?._id,
   });
 
-  if (isLoading)
+  if (isLoading || isFetching)
     return (
       <div className="p-6 space-y-6">
         <div className="flex items-center gap-2">

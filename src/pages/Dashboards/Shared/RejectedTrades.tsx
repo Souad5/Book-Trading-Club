@@ -11,6 +11,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
+import { Ban } from 'lucide-react';
 
 type Trade = {
   _id: string;
@@ -37,25 +38,26 @@ type Trade = {
 
 type TradeAPI = { error: string; data: Trade[]; message: string };
 
-const AcceptedTrades = () => {
+const RejectedTrades = () => {
   const { dbUser } = useAuth();
   const axiosSecure = UseAxiosSecure();
 
   const {
-    data: acceptedtrades,
+    data: rejectedtrades,
     isLoading,
     isFetching,
   } = useQuery<TradeAPI>({
-    queryKey: ['acceptedtrades', dbUser?._id],
+    queryKey: ['rejectedtrades', dbUser?._id],
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/api/trades/accepted-trades/${dbUser?._id}`
+        `/api/trades/rejected-trades/${dbUser?._id}`
       );
       return res.data;
     },
     enabled: !!dbUser?._id,
   });
 
+  // ---- Loading skeleton ----
   if (isLoading || isFetching) {
     return (
       <div className="p-6 grid gap-4">
@@ -87,37 +89,46 @@ const AcceptedTrades = () => {
     );
   }
 
+  // ---- Empty state ----
+  if (!rejectedtrades?.data?.length) {
+    return (
+      <div className="p-6 text-center text-muted-foreground">
+        <Ban className="mx-auto mb-3 h-10 w-10 text-destructive" />
+        <p>No rejected trades found.</p>
+      </div>
+    );
+  }
+
+  // ---- Main content ----
   return (
     <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-semibold mb-4">Accepted Trades</h1>
-
-      {acceptedtrades?.data?.length === 0 && (
-        <p className="text-muted-foreground text-center">
-          No accepted trades found.
-        </p>
-      )}
+      <h1 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+        <Ban className="text-destructive h-6 w-6" />
+        Rejected Trades
+      </h1>
 
       <div className="grid gap-6">
-        {acceptedtrades?.data?.map((trade) => (
-          <Card key={trade._id} className="overflow-hidden">
+        {rejectedtrades.data.map((trade) => (
+          <Card
+            key={trade._id}
+            className="overflow-hidden border-destructive/30 hover:border-destructive/50 transition-colors"
+          >
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 <span>Trade ID: {trade._id}</span>
-                <span className="text-sm text-muted-foreground capitalize">
-                  Status: {trade.status}
+                <span className="text-sm font-medium text-destructive capitalize">
+                  {trade.status}
                 </span>
               </CardTitle>
               <CardDescription>
-                Accepted on {format(new Date(trade.updatedAt), 'PPpp')}
+                Rejected on {format(new Date(trade.updatedAt), 'PPpp')}
               </CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-6">
               {/* Sender Info */}
               <div>
-                <h2 className="text-lg font-semibold mb-2">
-                  Sender Information
-                </h2>
+                <h2 className="text-lg font-semibold mb-2">Sender</h2>
                 <div className="flex items-center gap-4">
                   <img
                     src={trade.sender.image}
@@ -129,9 +140,6 @@ const AcceptedTrades = () => {
                     <p className="text-sm text-muted-foreground">
                       {trade.sender.email}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      User ID: {trade.sender._id}
-                    </p>
                   </div>
                 </div>
               </div>
@@ -140,9 +148,7 @@ const AcceptedTrades = () => {
 
               {/* Receiver Info */}
               <div>
-                <h2 className="text-lg font-semibold mb-2">
-                  Receiver Information
-                </h2>
+                <h2 className="text-lg font-semibold mb-2">Receiver</h2>
                 <div className="flex items-center gap-4">
                   <img
                     src={trade.receiver.image}
@@ -154,16 +160,13 @@ const AcceptedTrades = () => {
                     <p className="text-sm text-muted-foreground">
                       {trade.receiver.email}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      User ID: {trade.receiver._id}
-                    </p>
                   </div>
                 </div>
               </div>
 
               <Separator />
 
-              {/* Books Section */}
+              {/* Books Info */}
               <div className="grid md:grid-cols-2 gap-6">
                 {/* Sender Book */}
                 <div className="border rounded-xl p-4 flex flex-col md:flex-row gap-4">
@@ -182,9 +185,6 @@ const AcceptedTrades = () => {
                     </p>
                     <p className="text-xs mt-1 text-muted-foreground">
                       Offered by Sender
-                    </p>
-                    <p className="text-xs mt-1 text-muted-foreground">
-                      Book ID: {trade.senderbook._id}
                     </p>
                   </div>
                 </div>
@@ -209,9 +209,6 @@ const AcceptedTrades = () => {
                     <p className="text-xs mt-1 text-muted-foreground">
                       Owned by Receiver
                     </p>
-                    <p className="text-xs mt-1 text-muted-foreground">
-                      Book ID: {trade.receiverbook._id}
-                    </p>
                   </div>
                 </div>
               </div>
@@ -229,4 +226,4 @@ const AcceptedTrades = () => {
   );
 };
 
-export default AcceptedTrades;
+export default RejectedTrades;

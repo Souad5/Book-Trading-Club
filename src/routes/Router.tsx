@@ -19,7 +19,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import Users from '@/pages/Dashboards/Admin/Users';
 import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
 import DashboardHomePage from '@/pages/Dashboards/User/DashboardHomePage';
-import MyBooks from '@/pages/Dashboards/User/MyBooks';
+import MyBooks from '@/pages/Dashboards/Shared/MyBooks';
 import MyCart from '@/pages/Dashboards/Shared/MyCart';
 import MyOrders from '@/pages/Dashboards/Shared/MyOrders';
 import PaymentSuccess from '@/pages/Dashboards/Shared/PaymentSuccess';
@@ -27,6 +27,7 @@ import PaymentFailure from '@/pages/Dashboards/Shared/PymentFailure';
 import RequestedTrades from '@/pages/Dashboards/Shared/RequestedTrades';
 import TradeRequests from '@/pages/Dashboards/Shared/TradeRequests';
 import AcceptedTrades from '@/pages/Dashboards/Shared/AcceptedTrades';
+import RejectedTrades from '@/pages/Dashboards/Shared/RejectedTrades';
 
 const router = createBrowserRouter([
   {
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
       {
         path: 'accepted-trades',
         Component: AcceptedTrades,
+      },
+      {
+        path: 'rejected-trades',
+        Component: RejectedTrades,
       },
       {
         path: 'payment-success',

@@ -15,8 +15,6 @@ import {
 import {
   Home,
   Inbox,
-  Search,
-  Settings,
   ChevronUp,
   User2,
   Plus,
@@ -24,6 +22,11 @@ import {
   Mail,
   Info,
   BookType,
+  ShoppingCart,
+  ClipboardList,
+  Handshake,
+  GitPullRequest,
+  X,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -34,11 +37,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/firebase/AuthProvider';
+import { FaExchangeAlt } from 'react-icons/fa';
 
 const items = [
   {
     title: 'Home',
-    url: '/',
+    url: '/dashboard',
     icon: Home,
   },
   {
@@ -46,22 +50,12 @@ const items = [
     url: '#',
     icon: Inbox,
   },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
-  },
-  {
-    title: 'Settings',
-    url: '#',
-    icon: Settings,
-  },
 ];
 
 const AppSidebar = () => {
-  const { user, dbUser } = useAuth();
+  const { dbUser } = useAuth();
   // console.log(user, dbUser);
-  const photourl = user?.photoURL;
+  const photourl = dbUser?.image;
   const Name = dbUser?.displayName;
   const role: string = dbUser?.role ? dbUser.role.toUpperCase() : '';
   // console.log(photourl, Name);
@@ -87,6 +81,7 @@ const AppSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
+        {/* Application Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
@@ -107,6 +102,7 @@ const AppSidebar = () => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        {/* Books Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Books</SidebarGroupLabel>
           <SidebarGroupAction>
@@ -130,18 +126,75 @@ const AppSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Cart + Orders Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Cart + Orders</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to={'/add-book'}>
-                    <Plus />
-                    Add Book
+                  <Link to={'/dashboard/my-cart'}>
+                    <ShoppingCart />
+                    My Cart
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/my-orders'}>
+                    <ClipboardList />
+                    My Orders
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        {/* NESTED GROUP */}
+        {/* Trades Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Trades</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/requested-trades'}>
+                    <GitPullRequest />
+                    Requested Trades
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/trade-requests'}>
+                    <FaExchangeAlt />
+                    Trade Requests
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/accepted-trades'}>
+                    <Handshake />
+                    Accepted Trades
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/rejected-trades'}>
+                    <X />
+                    Rejected Trades
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {/* navigation Group */}
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
 
