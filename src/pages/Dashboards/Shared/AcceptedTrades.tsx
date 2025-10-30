@@ -41,7 +41,11 @@ const AcceptedTrades = () => {
   const { dbUser } = useAuth();
   const axiosSecure = UseAxiosSecure();
 
-  const { data: acceptedtrades, isLoading } = useQuery<TradeAPI>({
+  const {
+    data: acceptedtrades,
+    isLoading,
+    isFetching,
+  } = useQuery<TradeAPI>({
     queryKey: ['acceptedtrades', dbUser?._id],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -52,7 +56,7 @@ const AcceptedTrades = () => {
     enabled: !!dbUser?._id,
   });
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="p-6 grid gap-4">
         {[1, 2].map((i) => (

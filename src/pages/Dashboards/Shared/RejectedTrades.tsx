@@ -42,7 +42,11 @@ const RejectedTrades = () => {
   const { dbUser } = useAuth();
   const axiosSecure = UseAxiosSecure();
 
-  const { data: rejectedtrades, isLoading } = useQuery<TradeAPI>({
+  const {
+    data: rejectedtrades,
+    isLoading,
+    isFetching,
+  } = useQuery<TradeAPI>({
     queryKey: ['rejectedtrades', dbUser?._id],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -54,7 +58,7 @@ const RejectedTrades = () => {
   });
 
   // ---- Loading skeleton ----
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="p-6 grid gap-4">
         {[1, 2].map((i) => (
