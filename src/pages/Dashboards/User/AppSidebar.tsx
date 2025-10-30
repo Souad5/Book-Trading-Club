@@ -22,7 +22,6 @@ import {
   Mail,
   Info,
   BookType,
-  Users,
   ShoppingCart,
   ClipboardList,
   Handshake,
