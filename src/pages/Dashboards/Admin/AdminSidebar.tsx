@@ -25,6 +25,8 @@ import {
   Users,
   ShoppingCart,
   ClipboardList,
+  Handshake,
+  GitPullRequest,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -35,6 +37,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/firebase/AuthProvider';
+import { FaExchangeAlt } from 'react-icons/fa';
 
 const items = [
   {
@@ -163,6 +166,38 @@ const AdminSidebar = () => {
                   <Link to={'/dashboard/my-orders'}>
                     <ClipboardList />
                     My Orders
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        {/* Trades Group */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Trades</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/requested-trades'}>
+                    <GitPullRequest />
+                    Requested Trades
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/trade-requests'}>
+                    <FaExchangeAlt />
+                    Trade Requests
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/accepted-trades'}>
+                    <Handshake />
+                    Accepted Trades
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
