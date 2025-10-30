@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
+import { CircleCheckBig, CircleX } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 type Trade = {
   _id: string;
@@ -33,10 +35,53 @@ type Trade = {
 type TradeAPI = { error: string; data: Trade[]; message: string };
 
 const TradeRequests = () => {
+  // Handle Function
+  const HandleRejectTrade = async (item: Trade) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, reject trade!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axiosSecure.put(
+          `/api/trades/reject-trade/${item._id}`
+        );
+
+        console.log(response);
+
+        await Swal.fire({
+          title: 'Rejected!',
+          text: 'Trade has been rejected successfully.',
+          icon: 'success',
+        });
+        refetch();
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong while rejecting the trade.',
+          icon: 'error',
+        });
+      }
+    }
+  };
+
+  /////////////////////////////////////////////////////////
   const { dbUser } = useAuth();
   const axiosSecure = UseAxiosSecure();
 
-  const { data: traderequests, isLoading } = useQuery<TradeAPI>({
+  const {
+    data: traderequests,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useQuery<TradeAPI>({
     queryKey: ['traderequests', dbUser?._id],
     queryFn: async () => {
       const res = await axiosSecure.get(
@@ -47,7 +92,7 @@ const TradeRequests = () => {
     enabled: !!dbUser?._id,
   });
 
-  if (isLoading) {
+  if (isLoading || isFetching) {
     return (
       <div className="p-6 grid gap-4">
         {[1, 2, 3].map((i) => (
@@ -149,8 +194,21 @@ const TradeRequests = () => {
               </div>
             </CardContent>
 
-            <div className="flex justify-end px-6 pb-4">
-              <Button variant="default">Confirm Trade</Button>
+            <div className="flex justify-end px-6 pb-4 gap-10">
+              <Button variant="default" className="items-center">
+                <CircleCheckBig className="mt-1" />
+                Accept Trade
+              </Button>
+              <Button
+                onClick={() => {
+                  HandleRejectTrade(trade);
+                }}
+                variant="outline"
+                className="items-center"
+              >
+                <CircleX className="mt-1" />
+                Reject Trade
+              </Button>
             </div>
           </Card>
         ))}
