@@ -27,6 +27,7 @@ import PaymentFailure from '@/pages/Dashboards/Shared/PymentFailure';
 import RequestedTrades from '@/pages/Dashboards/Shared/RequestedTrades';
 import TradeRequests from '@/pages/Dashboards/Shared/TradeRequests';
 import AcceptedTrades from '@/pages/Dashboards/Shared/AcceptedTrades';
+import RejectedTrades from '@/pages/Dashboards/Shared/RejectedTrades';
 
 const router = createBrowserRouter([
   {
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
       {
         path: 'accepted-trades',
         Component: AcceptedTrades,
+      },
+      {
+        path: 'rejected-trades',
+        Component: RejectedTrades,
       },
       {
         path: 'payment-success',

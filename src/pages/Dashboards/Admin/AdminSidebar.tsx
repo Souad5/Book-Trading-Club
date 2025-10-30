@@ -27,6 +27,7 @@ import {
   ClipboardList,
   Handshake,
   GitPullRequest,
+  X,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -198,6 +199,14 @@ const AdminSidebar = () => {
                   <Link to={'/dashboard/accepted-trades'}>
                     <Handshake />
                     Accepted Trades
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to={'/dashboard/rejected-trades'}>
+                    <X />
+                    Rejected Trades
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
