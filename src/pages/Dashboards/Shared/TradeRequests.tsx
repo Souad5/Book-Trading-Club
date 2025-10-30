@@ -71,6 +71,41 @@ const TradeRequests = () => {
       }
     }
   };
+  const HandleAcceptTrade = async (item: Trade) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#22c55e',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, Accept trade!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axiosSecure.put(
+          `/api/trades/accept-trade/${item._id}`
+        );
+
+        console.log(response);
+
+        await Swal.fire({
+          title: 'Accepted!',
+          text: 'Trade has been accepted successfully.',
+          icon: 'success',
+        });
+        refetch();
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          title: 'Error!',
+          text: 'Something went wrong while accepting the trade.',
+          icon: 'error',
+        });
+      }
+    }
+  };
 
   /////////////////////////////////////////////////////////
   const { dbUser } = useAuth();
@@ -195,7 +230,13 @@ const TradeRequests = () => {
             </CardContent>
 
             <div className="flex justify-end px-6 pb-4 gap-10">
-              <Button variant="default" className="items-center">
+              <Button
+                onClick={() => {
+                  HandleAcceptTrade(trade);
+                }}
+                variant="default"
+                className="items-center"
+              >
                 <CircleCheckBig className="mt-1" />
                 Accept Trade
               </Button>
