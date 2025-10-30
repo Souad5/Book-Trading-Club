@@ -19,7 +19,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout';
 import Users from '@/pages/Dashboards/Admin/Users';
 import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
 import DashboardHomePage from '@/pages/Dashboards/User/DashboardHomePage';
-import MyBooks from '@/pages/Dashboards/User/MyBooks';
+import MyBooks from '@/pages/Dashboards/Shared/MyBooks';
 import MyCart from '@/pages/Dashboards/Shared/MyCart';
 import MyOrders from '@/pages/Dashboards/Shared/MyOrders';
 import PaymentSuccess from '@/pages/Dashboards/Shared/PaymentSuccess';
