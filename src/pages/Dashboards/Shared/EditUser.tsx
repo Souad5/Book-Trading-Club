@@ -15,78 +15,80 @@ import { useAuth } from '@/firebase/AuthProvider';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-const EditUser = ({ setOpen }) => {
+// ✅ Define props interface
+interface EditUserProps {
+  setOpen: (open: boolean) => void;
+}
+
+const EditUser = ({ setOpen }: EditUserProps) => {
   const { dbUser } = useAuth();
   const axiosSecure = UseAxiosSecure();
-  const [name, setname] = useState(dbUser?.displayName || '');
+  const [name, setName] = useState(dbUser?.displayName || '');
   const [image, setImage] = useState(dbUser?.image || '');
   const [updating, setUpdating] = useState(false);
 
-  const HandleUpdate = async () => {
-    console.log(name);
+  const handleUpdate = async () => {
+    if (!dbUser?.uid) return;
+
     const body = {
       displayName: name,
       image: image,
     };
+
     setUpdating(true);
     try {
-      const response = await axiosSecure.put(`/api/users/${dbUser?.uid}`, body);
+      const response = await axiosSecure.put(`/api/users/${dbUser.uid}`, body);
       console.log(response);
-      toast.success('User info Updated Successfully');
+      toast.success('User info updated successfully');
       setOpen(false);
     } catch (error) {
-      console.log(error);
+      console.error('Error updating user:', error);
+      toast.error('Failed to update user info');
     } finally {
       setUpdating(false);
     }
   };
+
   return (
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>Edit profile</SheetTitle>
+        <SheetTitle>Edit Profile</SheetTitle>
         <SheetDescription>
           Make changes to your profile here. Click save when you&apos;re done.
         </SheetDescription>
       </SheetHeader>
-      <div className="grid flex-1 auto-rows-min gap-6  my-5">
+
+      <div className="grid flex-1 auto-rows-min gap-6 my-5">
         <div className="grid gap-3">
-          <Label htmlFor="sheet-demo-name">Name</Label>
+          <Label htmlFor="edit-name">Name</Label>
           <Input
-            id="sheet-demo-name"
+            id="edit-name"
             value={name}
-            onChange={(e) => {
-              setname(e.target.value);
-            }}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
+
         <div className="grid gap-3">
-          <Label htmlFor="sheet-demo-name">Image URL</Label>
+          <Label htmlFor="edit-image">Image URL</Label>
           <Input
-            id="sheet-demo-name"
+            id="edit-image"
             value={image}
-            onChange={(e) => {
-              setImage(e.target.value);
-            }}
+            onChange={(e) => setImage(e.target.value)}
           />
         </div>
+
         <div className="grid gap-3">
-          <Label htmlFor="sheet-demo-username">Email</Label>
-          <Input
-            disabled
-            id="sheet-demo-username"
-            defaultValue={dbUser?.email || ''}
-          />
+          <Label htmlFor="edit-email">Email</Label>
+          <Input disabled id="edit-email" value={dbUser?.email || ''} />
         </div>
       </div>
+
       <SheetFooter>
-        {!updating && (
-          <Button type="submit" onClick={HandleUpdate}>
-            Save changes
-          </Button>
-        )}
-        {updating && (
-          <Button type="submit" disabled onClick={HandleUpdate}>
-            <Spinner /> Updating
+        {!updating ? (
+          <Button onClick={handleUpdate}>Save changes</Button>
+        ) : (
+          <Button disabled>
+            <Spinner /> Updating...
           </Button>
         )}
         <SheetClose asChild>

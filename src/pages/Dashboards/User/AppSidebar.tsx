@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/sidebar';
 import {
   Home,
-  Inbox,
   ChevronUp,
   User2,
   Plus,
@@ -27,6 +26,7 @@ import {
   Handshake,
   GitPullRequest,
   X,
+  MessageCircle,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -46,9 +46,9 @@ const items = [
     icon: Home,
   },
   {
-    title: 'Inbox',
-    url: '#',
-    icon: Inbox,
+    title: 'Chats',
+    url: '/dashboard/chat',
+    icon: MessageCircle,
   },
 ];
 

@@ -29,6 +29,9 @@ import RequestedTrades from '@/pages/Dashboards/Shared/RequestedTrades';
 import TradeRequests from '@/pages/Dashboards/Shared/TradeRequests';
 import AcceptedTrades from '@/pages/Dashboards/Shared/AcceptedTrades';
 import RejectedTrades from '@/pages/Dashboards/Shared/RejectedTrades';
+import ChatUsersSidebar from '@/pages/Dashboards/Shared/ChatUsersSidebar';
+import Chat from '@/pages/Dashboards/Shared/Chat';
+import NoChatSelected from '@/pages/Dashboards/Shared/NoChatSelected';
 
 const router = createBrowserRouter([
   {
@@ -102,6 +105,14 @@ const router = createBrowserRouter([
       {
         path: 'users',
         Component: Users,
+      },
+      {
+        path: 'chat',
+        Component: ChatUsersSidebar,
+        children: [
+          { index: true, Component: NoChatSelected },
+          { path: 'user-chats/:id', Component: Chat },
+        ],
       },
       {
         path: 'myprofile',
