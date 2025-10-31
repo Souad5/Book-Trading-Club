@@ -5,14 +5,23 @@ import { useAuth } from '@/firebase/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
 import { Outlet, useNavigate } from 'react-router-dom';
 
+// ✅ Define the user type
+interface ChatUser {
+  _id: string;
+  displayName: string;
+  email: string;
+  image?: string;
+}
+
 const ChatUsersSidebar = () => {
   const axiosSecure = UseAxiosSecure();
   const { dbUser } = useAuth();
   const navigate = useNavigate();
 
-  const [selectedUser, setSelectedUser] = useState(null);
+  // ✅ Explicitly type the state
+  const [selectedUser, setSelectedUser] = useState<ChatUser | null>(null);
 
-  // ✅ Fetch all chat users (already filtered by backend)
+  // ✅ Fetch all chat users
   const { data: usersResponse, isLoading } = useQuery({
     queryKey: ['chatUsers', dbUser?._id],
     queryFn: async () => {
@@ -24,11 +33,11 @@ const ChatUsersSidebar = () => {
     enabled: !!dbUser?._id,
   });
 
-  const users = usersResponse?.data || [];
+  const users: ChatUser[] = usersResponse?.data || [];
 
-  const handleUserClick = (user: any) => {
+  const handleUserClick = (user: ChatUser) => {
     setSelectedUser(user);
-    navigate(`user-chats/${user?._id}`);
+    navigate(`user-chats/${user._id}`);
   };
 
   if (isLoading) {
@@ -36,7 +45,7 @@ const ChatUsersSidebar = () => {
   }
 
   return (
-    <div className="grid grid-cols-3  gap-2 h-[calc(100vh-5rem)]">
+    <div className="grid grid-cols-3 gap-2 h-[calc(100vh-5rem)]">
       {/* ===== Sidebar ===== */}
       <aside className="col-span-1 h-full border-r border-zinc-200 dark:border-zinc-700 flex flex-col">
         {/* === Header === */}
@@ -49,7 +58,7 @@ const ChatUsersSidebar = () => {
 
         {/* === Users List === */}
         <div className="overflow-y-auto py-3 flex-1">
-          {users.map((user: any) => (
+          {users.map((user) => (
             <button
               key={user._id}
               onClick={() => handleUserClick(user)}

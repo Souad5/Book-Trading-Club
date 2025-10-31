@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/sidebar';
 import {
   Home,
-  Inbox,
   ChevronUp,
   User2,
   Plus,

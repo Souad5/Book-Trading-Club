@@ -29,7 +29,6 @@ import TradeRequests from '@/pages/Dashboards/Shared/TradeRequests';
 import AcceptedTrades from '@/pages/Dashboards/Shared/AcceptedTrades';
 import RejectedTrades from '@/pages/Dashboards/Shared/RejectedTrades';
 import ChatUsersSidebar from '@/pages/Dashboards/Shared/ChatUsersSidebar';
-import path from 'path';
 import Chat from '@/pages/Dashboards/Shared/Chat';
 import NoChatSelected from '@/pages/Dashboards/Shared/NoChatSelected';
 

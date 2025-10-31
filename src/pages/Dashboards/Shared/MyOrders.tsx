@@ -123,13 +123,7 @@ const MyOrders = () => {
                   <Separator className="my-3" />
                   <div className="flex justify-between text-sm">
                     <span>Status</span>
-                    <Badge
-                      variant={
-                        order.book.Exchange === 'Donate' ? 'success' : 'outline'
-                      }
-                    >
-                      Delivered
-                    </Badge>
+                    <Badge>Delivered</Badge>
                   </div>
                 </div>
               </div>
