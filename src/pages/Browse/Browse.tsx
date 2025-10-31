@@ -159,25 +159,25 @@ export default function Browse() {
 
   return (
     <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-      <div className="rounded-2xl border border-sand-200 bg-gradient-to-br from-sand-50 via-white to-leaf-50 p-8 mb-6">
-        <h1 className="text-3xl font-semibold text-soil-900 tracking-tight">
+      <div className="rounded-2xl border border-sand-200 dark:bg-white bg-gray-500  p-8 mb-6">
+        <h1 className="text-3xl font-semibold text-white dark:text-black tracking-tight">
           Browse Books
         </h1>
-        <p className="mt-2 text-sand-700">
+        <p className="mt-2 text-white dark:text-black">
           Discover books available for exchange.
         </p>
       </div>
 
       {/* Search + Filters */}
-      <div className="rounded-2xl bg-white p-6 md:p-8 shadow-subtle border border-sand-200 mb-6">
-        <h3 className="text-lg font-semibold flex items-center gap-2 text-soil-900 mb-5">
-          <FiSearch className="w-5 h-5 text-leaf-600" />
+      <div className="rounded-2xl bg-gray-500 dark:bg-white p-6 md:p-8 shadow-subtle border border-sand-200 mb-6">
+        <h3 className="text-lg font-semibold flex items-center gap-2 text-white dark:text-black mb-5">
+          <FiSearch className="w-5 h-5 text-white dark:text-black" />
           Search & Filter
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <input
-            className="w-full rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm placeholder-sand-500 focus:outline-none focus:ring-2 focus:ring-leaf-300"
+            className="w-full rounded-lg border border-sand-300 bg-white px-3 py-2.5 text-sm placeholder-black focus:outline-none focus:ring-2 focus:ring-leaf-300"
             placeholder="Search title, author, ISBN, or tag"
             value={query}
             onChange={(e) => setQuery(e.target.value)}

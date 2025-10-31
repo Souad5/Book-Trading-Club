@@ -216,7 +216,7 @@ export default function BookDetails() {
     >
       <Link
         to="/browse"
-        className="text-black text-sm flex gap-2 items-center rounded-full px-4 border border-black/70 transition-all duration-200 hover:bg-gray-700 hover:text-white w-[11rem] py-2"
+        className="dark:text-black text-white text-sm flex gap-2 items-center rounded-full px-4 border border-black dark:border-white bg-gray-500 dark:bg-white transition-all duration-200 hover:bg-gray-700 hover:text-white w-[11rem] py-2"
       >
         <MoveLeft className="pt-[2px]" />
         Back to Browse
@@ -239,12 +239,12 @@ export default function BookDetails() {
 
         {/* Right column */}
         <div className="space-y-5">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-soil-900 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-black dark:text-white tracking-tight">
             {book.title}
           </h1>
-          <p className="text-lg text-sand-700">by {book.author}</p>
+          <p className="text-lg text-black dark:text-white">by {book.author}</p>
 
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-2 gap-3 text-sm text-black dark:text-white">
             {book.Location && (
               <p>
                 <strong>Location:</strong> {book.Location}
@@ -372,15 +372,15 @@ export default function BookDetails() {
       </motion.div>
 
       {/* -------- Reviews list -------- */}
-      <Separator className="mt-20 bg-black" />
+      <Separator className="mt-20 bg-black dark:bg-white" />
       <div className="my-16">
-        <h2 className="text-3xl font-extrabold font-mono text-center mb-8">
+        <h2 className="text-3xl font-extrabold font-mono text-center mb-8 text-black dark:text-white">
           What readers are saying
         </h2>
 
         {/* ================ CUSTOMER REVIEWS SUMMARY ================ */}
-        <div className="rounded-2xl border border-sand-200 bg-white/70 backdrop-blur-sm shadow-sm p-5 my-5">
-          <h3 className="text-xl font-semibold text-soil-900 mb-3 text-center md:text-left">
+        <div className="rounded-2xl border border-sand-200 bg-gray-500 dark:bg-white backdrop-blur-sm shadow-sm p-5 my-5">
+          <h3 className="text-xl font-semibold dark:text-black text-white mb-3 text-center md:text-left">
             Customer reviews
           </h3>
 
@@ -393,7 +393,7 @@ export default function BookDetails() {
               <div className="text-2xl leading-none">
                 {renderStars(avgRating)}
               </div>
-              <div className="text-sm text-sand-600">
+              <div className="text-sm dark:text-black text-white">
                 <span className="font-medium">{avgRating.toFixed(1)}</span> out
                 of 5
                 <div className="text-xs">
@@ -409,7 +409,7 @@ export default function BookDetails() {
                 <div key={stars} className="flex items-center gap-3">
                   <button
                     type="button"
-                    className="w-12 text-left text-sm text-sand-700 hover:underline"
+                    className="w-12 text-left text-sm dark:text-black text-white hover:underline"
                   >
                     {stars} star
                   </button>
@@ -428,7 +428,7 @@ export default function BookDetails() {
                       style={{ right: `calc(${100 - pct}% - 4px)` }}
                     />
                   </div>
-                  <div className="w-16 text-right text-sm text-sand-700">
+                  <div className="w-16 text-right text-sm dark:text-black text-white">
                     {pct}%
                   </div>
                 </div>
@@ -436,7 +436,7 @@ export default function BookDetails() {
             </div>
           </div>
 
-          <div className="mt-3 text-xs text-center md:text-left text-sand-500 underline underline-offset-2 cursor-pointer">
+          <div className="mt-3 text-xs text-center md:text-left dark:text-black text-white underline underline-offset-2 cursor-pointer">
             How do we calculate ratings?
           </div>
         </div>
@@ -447,7 +447,7 @@ export default function BookDetails() {
         )}
 
         {!isReviewsError && totalReviews === 0 && (
-          <p className="text-center text-sand-600">
+          <p className="text-center text-black dark:text-white">
             No reviews yet. Be the first!
           </p>
         )}

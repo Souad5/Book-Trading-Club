@@ -8,16 +8,16 @@ export default function GlobalReaders() {
   }));
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-[#fff] to-[#f0fdf4] py-24">
-      <div className="absolute top-0 left-0 w-72 h-72 bg-gradient-to-br from-green-300/40 to-blue-300/40 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-gradient-to-br from-amber-200/40 to-pink-200/40 blur-3xl translate-x-1/2 translate-y-1/2" />
+    <section className="relative overflow-hidden bg-gradient-to-b dark:bg-gray-600 bg-white py-24">
+      <div className="absolute top-0 left-0 w-72 h-72  blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-64 h-64  blur-3xl translate-x-1/2 translate-y-1/2" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 text-center">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
-          className="text-4xl md:text-5xl font-extrabold mb-6 text-gray-800"
+          className="text-4xl md:text-5xl font-extrabold mb-6 text-black dark:text-white"
         >
           🌎 Global Book Lovers Community
         </motion.h2>
@@ -26,7 +26,7 @@ export default function GlobalReaders() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7 }}
-          className="text-gray-600 text-lg mb-12 max-w-2xl mx-auto"
+          className="text-black dark:text-white text-lg mb-12 max-w-2xl mx-auto"
         >
           Meet passionate readers from all around the world — exchanging stories,
           books, and knowledge every single day.
@@ -56,7 +56,7 @@ export default function GlobalReaders() {
               <img
                 src={r.img}
                 alt="reader"
-                className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-white shadow-lg object-cover"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 dark:border-white border-black shadow-lg object-cover"
               />
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border border-white"></span>
             </motion.div>
@@ -67,7 +67,7 @@ export default function GlobalReaders() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
-          className="italic text-gray-700 text-lg font-medium"
+          className="italic text-black dark:text-white text-lg font-medium"
         >
           “10,000+ readers connected — let’s make the world smarter, one book at a time.”
         </motion.p>

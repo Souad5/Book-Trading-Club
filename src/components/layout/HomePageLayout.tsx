@@ -6,7 +6,7 @@ const HomePageLayout = () => {
   return (
     <div className="body min-h-full flex flex-col">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 dark:bg-gray-600 bg-white border-y-1 border-black dark:border-white">
         <Outlet />
       </main>
       <Footer />

@@ -25,25 +25,25 @@ const steps = [
 export default function BookJourneyTimeline() {
   return (
     <section className="py-20 ">
-      <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+      <h2 className="text-3xl font-bold text-center mb-12 text-black dark:text-white">
         Your Book Journey with Us 📖
       </h2>
-      <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 px-6">
+      <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 px-6 ">
         {steps.map((item, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.2, duration: 0.6 }}
-            className="relative text-center p-8 bg-white rounded-2xl shadow-md hover:shadow-xl"
+            className="relative text-center p-8 bg-gray-500 dark:bg-white rounded-2xl shadow-md hover:shadow-xl"
           >
             <div
-              className={`w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-r ${item.color} text-white flex items-center justify-center text-xl font-bold`}
+              className={`w-12 h-12 mx-auto mb-4 rounded-full bg-gradient-to-r ${item.color} text-white flex items-center justify-center text-xl font-bold `}
             >
               {item.step}
             </div>
-            <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
-            <p className="text-gray-600 text-sm">{item.desc}</p>
+            <h3 className="text-lg font-semibold mb-2 dark:text-black text-white">{item.title}</h3>
+            <p className="dark:text-black text-white text-sm">{item.desc}</p>
           </motion.div>
         ))}
       </div>

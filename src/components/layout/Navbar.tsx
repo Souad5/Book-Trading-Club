@@ -113,7 +113,6 @@ export default function Navbar() {
               {isAuthenticated && (
                 <NavLink to="/wishlist" className={linkClasses}>
                   <div className="flex items-center gap-1">
-                    <FiHeart className="w-4 h-4" />
                     <span>Favourite</span>
                   </div>
                 </NavLink>

@@ -133,40 +133,40 @@ export default function FavouriteBooks() {
 
   // ✅ UI Section
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+    <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 ">
       {/* Header */}
-      <div className="rounded-2xl border border-sand-200 bg-gradient-to-br from-sand-50 via-white to-leaf-50 p-8 mb-6">
-        <div className="flex items-center gap-3 mb-4">
-          <Heart className="w-8 h-8 text-red-500" />
-          <h1 className="text-3xl font-semibold text-soil-900 tracking-tight">
+      <div className="rounded-2xl border border-sand-200  p-8 mb-6 bg-gray-500 dark:bg-white">
+        <div className="flex items-center gap-3 mb-4 ">
+          <Heart className="w-8 h-8 text-white dark:text-black" />
+          <h1 className="text-3xl font-semibold dark:text-black text-white tracking-tight">
             My Favourite Books
           </h1>
         </div>
-        <p className="text-sand-700">
+        <p className="dark:text-black text-white">
           Your favorite books saved for future reading or trading.
         </p>
       </div>
 
       {/* Search Bar */}
       <div className="mb-8">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <div className="relative max-w-md ">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white dark:text-black w-5 h-5" />
           <input
             type="text"
             placeholder="Search your favourite books..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-transparent"
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-transparent bg-gray-300 dark:bg-white"
           />
         </div>
       </div>
 
       {/* Book Count */}
       <div className="mb-6">
-        {loading && <p className="text-blue-600">Loading your favourites...</p>}
+        {loading && <p className="text-black dark:text-white ">Loading your favourites...</p>}
         {error && <p className="text-red-600">Error: {error}</p>}
         {!loading && !error && (
-          <p className="text-gray-600">
+          <p className="text-black dark:text-white">
             {filteredBooks.length}{' '}
             {filteredBooks.length === 1 ? 'book' : 'books'} in your favourites
           </p>
@@ -181,7 +181,7 @@ export default function FavouriteBooks() {
             return (
               <article
                 key={book.id}
-                className="group rounded-xl border border-gray-200 bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
+                className="group rounded-xl border border-gray-200 bg-gray-500 dark:bg-white p-6 shadow-md hover:shadow-lg transition-shadow relative"
               >
                 {/* Favorite Heart */}
                 <button
@@ -201,25 +201,25 @@ export default function FavouriteBooks() {
                 </button>
 
                 <Link to={`/book/${book.id}`} className="block space-y-2">
-                  <h3 className="font-semibold text-lg text-gray-900 group-hover:text-leaf-600">
+                  <h3 className="font-semibold text-lg text-white dark:text-black ">
                     {book.title}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-white dark:text-black">
                     {book.author} · {book.language}
                   </p>
                   <p className="text-xs text-gray-500">ISBN: {book.isbn}</p>
 
                   <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                    <span className="rounded bg-purple-100 text-purple-700 px-2 py-1">
+                    <span className="rounded bg-gray-200 text-black px-2 py-1">
                       {book.location}
                     </span>
-                    <span className="rounded bg-blue-100 text-blue-700 px-2 py-1">
+                    <span className="rounded bg-gray-200 text-black px-2 py-1">
                       {book.condition}
                     </span>
-                    <span className="rounded bg-green-100 text-green-700 px-2 py-1">
+                    <span className="rounded bg-gray-200 text-black px-2 py-1">
                       {book.exchangeType}
                     </span>
-                    <span className="rounded bg-pink-100 text-pink-700 px-2 py-1">
+                    <span className="rounded bg-gray-200 text-black px-2 py-1">
                       {book.genre}
                     </span>
                   </div>
@@ -227,12 +227,14 @@ export default function FavouriteBooks() {
 
                 {/* Buttons */}
                 <div className="mt-4 flex gap-2">
-                  <button className="flex-1 px-4 py-2 bg-leaf-500 hover:bg-leaf-600 text-white rounded-lg text-sm font-medium transition-colors">
+                  <button className="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-500 text-black dark:text-white
+                  border border-white  rounded-lg text-sm font-medium transition-colors">
                     Trade Now
                   </button>
                   <Link
                     to={`/book/${book.id}`}
-                    className="px-4 py-2 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg text-sm font-medium transition-colors"
+                    className="px-4 py-2 bg-gray-200 dark:bg-gray-500 text-black dark:text-white
+                  border border-white  rounded-lg text-sm font-medium transition-colors"
                   >
                     View Details
                   </Link>

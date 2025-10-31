@@ -14,31 +14,50 @@ import { toast } from 'react-toastify';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
 import { X } from 'lucide-react';
 
-const UpdateBookModal = ({
+// ✅ Define the Book interface (matches your DB)
+export interface Book {
+  _id: string;
+  title: string;
+  author: string;
+  ISBN?: string;
+  category: string;
+  price: number;
+  description: string;
+  Location?: string;
+  Condition?: string;
+  Exchange?: string;
+  Language?: string;
+  tags?: string[];
+}
+
+// ✅ Define props interface for UpdateBookModal
+interface UpdateBookModalProps {
+  bookdata: Book;
+  GetBooks: () => void;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>> | (() => void);
+}
+
+const UpdateBookModal: React.FC<UpdateBookModalProps> = ({
   bookdata,
   GetBooks,
   setOpen,
-}: {
-  bookdata: any;
-  GetBooks: any;
-  setOpen: any;
 }) => {
   const axiosSecure = UseAxiosSecure();
 
-  // Initial state set with bookdata
-  const [title, setTitle] = useState(bookdata?.title || '');
-  const [author, setAuthor] = useState(bookdata?.author || '');
-  const [ISBN, setISBN] = useState(bookdata?.ISBN || '');
-  const [category, setCategory] = useState(bookdata?.category || '');
-  const [price, setPrice] = useState(bookdata?.price || '');
-  const [description, setDescription] = useState(bookdata?.description || '');
+  // ✅ Properly typed state variables
+  const [title, setTitle] = useState<string>(bookdata?.title || '');
+  const [author, setAuthor] = useState<string>(bookdata?.author || '');
+  const [ISBN, setISBN] = useState<string>(bookdata?.ISBN || '');
+  const [category, setCategory] = useState<string>(bookdata?.category || '');
+  const [price, setPrice] = useState<string | number>(bookdata?.price || '');
+  const [description, setDescription] = useState<string>(bookdata?.description || '');
+  const [Location, setLocation] = useState<string>(bookdata?.Location || 'Dhaka');
+  const [Condition, setCondition] = useState<string>(bookdata?.Condition || 'Good');
+  const [Exchange, setExchange] = useState<string>(bookdata?.Exchange || 'Swap');
+  const [Language, setLanguage] = useState<string>(bookdata?.Language || 'English');
+  const [tags, setTags] = useState<string[]>(bookdata?.tags || []);
 
-  const [Location, setLocation] = useState(bookdata?.Location || 'Dhaka');
-  const [Condition, setCondition] = useState(bookdata?.Condition || 'Good');
-  const [Exchange, setExchange] = useState(bookdata?.Exchange || 'Swap');
-  const [Language, setLanguage] = useState(bookdata?.Language || 'English');
-  const [tags, setTags] = useState(bookdata?.tags || []);
-
+  // ✅ Handle tags
   const handleTagInput = (val: string) => {
     const parts = val
       .split(',')
@@ -48,13 +67,14 @@ const UpdateBookModal = ({
   };
 
   const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag : any) => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  // ✅ Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validate fields before submission
+    // Validation
     if (!title || !author || !category || !description) {
       toast.error('Please fill all required fields.');
       return;
@@ -67,7 +87,7 @@ const UpdateBookModal = ({
     }
 
     try {
-      const updatedBook = {
+      const updatedBook: Partial<Book> = {
         _id: bookdata._id,
         title,
         author,
@@ -82,10 +102,7 @@ const UpdateBookModal = ({
         description,
       };
 
-      const response = await axiosSecure.put(
-        `/api/books/${bookdata._id}`,
-        updatedBook
-      );
+      const response = await axiosSecure.put(`/api/books/${bookdata._id}`, updatedBook);
       console.log(response);
       toast.success('Book updated successfully!');
       GetBooks();
@@ -109,29 +126,23 @@ const UpdateBookModal = ({
         {/* Title and Author */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="title" className="text-sm font-medium">
-              Title <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="title">Title *</Label>
             <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter book title"
-              className="h-10"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="author" className="text-sm font-medium">
-              Author <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="author">Author *</Label>
             <Input
               id="author"
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
               placeholder="Enter author name"
-              className="h-10"
               required
             />
           </div>
@@ -140,22 +151,17 @@ const UpdateBookModal = ({
         {/* ISBN and Category */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="isbn" className="text-sm font-medium">
-              ISBN
-            </Label>
+            <Label htmlFor="isbn">ISBN</Label>
             <Input
               id="isbn"
               value={ISBN}
               onChange={(e) => setISBN(e.target.value)}
               placeholder="9780061122415"
-              className="h-10"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="category" className="text-sm font-medium">
-              Category <span className="text-red-500">*</span>
-            </Label>
+            <Label htmlFor="category">Category *</Label>
             <select
               id="category"
               value={category}
@@ -175,9 +181,7 @@ const UpdateBookModal = ({
 
         {/* Price */}
         <div className="space-y-2">
-          <Label htmlFor="price" className="text-sm font-medium">
-            Price (BDT) <span className="text-red-500">*</span>
-          </Label>
+          <Label htmlFor="price">Price (BDT) *</Label>
           <Input
             id="price"
             value={price}
@@ -186,16 +190,13 @@ const UpdateBookModal = ({
             type="number"
             min="0"
             step="0.01"
-            className="h-10"
             required
           />
         </div>
 
         {/* Description */}
         <div className="space-y-2">
-          <Label htmlFor="description" className="text-sm font-medium">
-            Description <span className="text-red-500">*</span>
-          </Label>
+          <Label htmlFor="description">Description *</Label>
           <textarea
             id="description"
             value={description}
@@ -209,29 +210,23 @@ const UpdateBookModal = ({
         {/* Location and Condition */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="location" className="text-sm font-medium">
-              Location
-            </Label>
+            <Label htmlFor="location">Location</Label>
             <select
               id="location"
               value={Location}
               onChange={(e) => setLocation(e.target.value)}
               className="w-full h-10 border border-input bg-background rounded-md px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              {['Dhaka', 'Chattogram', 'Khulna', 'Rajshahi', 'Sylhet'].map(
-                (l) => (
-                  <option key={l} value={l}>
-                    {l}
-                  </option>
-                )
-              )}
+              {['Dhaka', 'Chattogram', 'Khulna', 'Rajshahi', 'Sylhet'].map((l) => (
+                <option key={l} value={l}>
+                  {l}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="condition" className="text-sm font-medium">
-              Condition
-            </Label>
+            <Label htmlFor="condition">Condition</Label>
             <select
               id="condition"
               value={Condition}
@@ -250,9 +245,7 @@ const UpdateBookModal = ({
         {/* Exchange and Language */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="exchange" className="text-sm font-medium">
-              Exchange Type
-            </Label>
+            <Label htmlFor="exchange">Exchange Type</Label>
             <select
               id="exchange"
               value={Exchange}
@@ -268,9 +261,7 @@ const UpdateBookModal = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="language" className="text-sm font-medium">
-              Language
-            </Label>
+            <Label htmlFor="language">Language</Label>
             <select
               id="language"
               value={Language}
@@ -288,20 +279,17 @@ const UpdateBookModal = ({
 
         {/* Tags */}
         <div className="space-y-2">
-          <Label htmlFor="tags" className="text-sm font-medium">
-            Tags
-          </Label>
+          <Label htmlFor="tags">Tags</Label>
           <Input
             id="tags"
             type="text"
             value={tags.join(', ')}
             onChange={(e) => handleTagInput(e.target.value)}
             placeholder="inspirational, journey, adventure"
-            className="h-10"
           />
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
-              {tags.map((t : any) => (
+              {tags.map((t) => (
                 <span
                   key={t}
                   className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
@@ -322,11 +310,7 @@ const UpdateBookModal = ({
 
         <DialogFooter className="gap-2 sm:gap-0">
           <DialogClose asChild>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full sm:w-auto"
-            >
+            <Button type="button" variant="outline" className="w-full sm:w-auto">
               Cancel
             </Button>
           </DialogClose>

@@ -32,20 +32,20 @@ export default function InspirationalQuotes() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#e8fee8] via-[#fff] to-[#f0f9ff] py-24 text-center">
+    <section className="relative overflow-hidden bg-gradient-to-br  py-24 text-center">
       {/* Decorative Background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_80%,_rgba(255,235,160,0.2),_transparent_60%)]"></div>
+      <div className="absolute inset-0 bg-white dark:bg-gray-600"></div>
 
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-4xl md:text-5xl font-extrabold mb-12 text-gray-800 relative z-10"
+        className="text-4xl md:text-5xl font-extrabold mb-12 text-black dark:text-white relative z-10"
       >
         ✨ Inspirational Book Quotes
       </motion.h2>
 
-      <div className="relative max-w-3xl mx-auto h-32">
+      <div className="relative max-w-3xl mx-auto h-32 ">
         <AnimatePresence mode="wait">
           <motion.div
             key={index}
@@ -55,7 +55,7 @@ export default function InspirationalQuotes() {
             transition={{ duration: 0.6 }}
             className="absolute inset-0 flex flex-col justify-center px-4"
           >
-            <p className="text-2xl font-medium text-gray-800 mb-4 leading-relaxed">
+            <p className="text-2xl font-medium text-black dark:text-white mb-4 leading-relaxed">
               “{quotes[index].text}”
             </p>
             <p className="text-gray-600 text-lg font-semibold">

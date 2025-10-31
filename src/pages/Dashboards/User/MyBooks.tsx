@@ -25,33 +25,45 @@ import {
   Trash2,
 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/firebase/AuthProvider';
-
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog } from '@/components/ui/dialog';
 import { useState } from 'react';
 import UpdateBookModal from './UpdateBookModal';
 
+// ✅ Define type for each book
+export interface Book {
+  _id: string;
+  title: string;
+  author: string;
+  category: string;
+  price: number;
+  imageUrl: string;
+  description: string;
+}
+
 const MyBooks = () => {
   const axiosSecure = UseAxiosSecure();
-  const [open, setOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // ✅ Fetch user books
   const {
     data: books = [],
     isPending,
     refetch: GetBooks,
-  } = useQuery({
-    queryKey: ['books'],
+  } = useQuery<Book[]>({
+    queryKey: ['books', user?.uid],
+    enabled: !!user?.uid,
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/api/books/get-user-books/${user?.uid}`
-      );
+      const res = await axiosSecure.get(`/api/books/get-user-books/${user?.uid}`);
       return res.data;
     },
   });
 
-  const handleDelete = async (book: any) => {
+  // ✅ Delete handler
+  const handleDelete = async (book: Book) => {
     const response = await axiosSecure.delete(`/api/books/${book._id}`);
     console.log(response);
     toast.success('Book Deleted Successfully');
@@ -62,10 +74,9 @@ const MyBooks = () => {
     return <div>Loading...</div>;
   }
 
-  console.log(user);
   return (
     <div>
-      <h1 className="mb-5">This is the My Books Page</h1>
+      <h1 className="mb-5 text-xl font-semibold">This is the My Books Page</h1>
 
       {/* Table */}
       <div className="overflow-hidden rounded-md border mb-20">
@@ -87,8 +98,8 @@ const MyBooks = () => {
                     src={book.imageUrl}
                     width={90}
                     height={90}
-                    className="object-cover"
-                    alt=""
+                    className="object-cover rounded-md"
+                    alt={book.title}
                   />
                   {book.title}
                 </TableCell>
@@ -99,10 +110,7 @@ const MyBooks = () => {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="my-2 border-none outline-none"
-                      >
+                      <Button variant="outline" className="my-2 border-none outline-none">
                         <MoreHorizontal />
                       </Button>
                     </DropdownMenuTrigger>
@@ -111,10 +119,7 @@ const MyBooks = () => {
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuSeparator />
 
-                      <DropdownMenuItem
-                        asChild
-                        onSelect={(e) => e.preventDefault()}
-                      >
+                      <DropdownMenuItem asChild>
                         <Button
                           variant="ghost"
                           className="h-8 px-2 gap-2"
@@ -125,31 +130,18 @@ const MyBooks = () => {
                         </Button>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        asChild
-                        onSelect={(e) => e.preventDefault()}
-                      >
-                        <Dialog open={open} onOpenChange={setOpen}>
-                          <DialogTrigger asChild>
-                            <Button variant="ghost" className="h-8 px-2 gap-2">
-                              <Pen className="w-4 h-4" />
-                              Update Book
-                            </Button>
-                          </DialogTrigger>
-
-                          {/* Your modal. Spaces will now type fine inside inputs. */}
-                          <UpdateBookModal
-                            bookdata={book}
-                            GetBooks={GetBooks}
-                            setOpen={setOpen}
-                          />
-                        </Dialog>
+                      <DropdownMenuItem asChild>
+                        <Button
+                          variant="ghost"
+                          className="h-8 px-2 gap-2"
+                          onClick={() => setSelectedBook(book)}
+                        >
+                          <Pen className="w-4 h-4" />
+                          Update Book
+                        </Button>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        asChild
-                        onSelect={(e) => e.preventDefault()}
-                      >
+                      <DropdownMenuItem asChild>
                         <Button
                           variant="ghost"
                           className="h-8 px-2 gap-2"
@@ -167,6 +159,17 @@ const MyBooks = () => {
           </TableBody>
         </Table>
       </div>
+
+      {/* ✅ Dialog outside the table for Update Modal */}
+      {selectedBook && (
+        <Dialog open={!!selectedBook} onOpenChange={() => setSelectedBook(null)}>
+          <UpdateBookModal
+            bookdata={selectedBook}
+            GetBooks={GetBooks}
+            setOpen={() => setSelectedBook(null)}
+          />
+        </Dialog>
+      )}
     </div>
   );
 };
