@@ -28,6 +28,7 @@ import {
   Handshake,
   GitPullRequest,
   X,
+  MessageCircle,
 } from 'lucide-react';
 
 import { Link } from 'react-router';
@@ -49,7 +50,7 @@ const items = [
   {
     title: 'Chats',
     url: '/dashboard/chat',
-    icon: Inbox,
+    icon: MessageCircle,
   },
 ];
 
