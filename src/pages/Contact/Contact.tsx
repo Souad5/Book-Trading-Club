@@ -2,18 +2,18 @@ import { motion } from 'framer-motion';
 
 const Contact = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-gray-100 px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="max-w-2xl w-full bg-white shadow-2xl rounded-3xl p-10"
+        className="max-w-2xl w-full bg-gray-500 dark:bg-white shadow-2xl rounded-3xl p-10"
       >
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-3xl font-bold text-center mb-8 text-gray-800"
+          className="text-3xl font-bold text-center mb-8 text-white dark:text-black"
         >
           Get in Touch
         </motion.h2>
@@ -25,40 +25,40 @@ const Contact = () => {
           className="space-y-6"
         >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white dark:text-black mb-2">
               Full Name
             </label>
             <motion.input
               whileFocus={{ scale: 1.02 }}
               type="text"
               placeholder="Enter your name"
-              className="w-full border border-gray-300 rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="w-full border border-gray-300 rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-white dark:placeholder-gray-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white dark:text-black mb-2">
               Email
             </label>
             <motion.input
               whileFocus={{ scale: 1.02 }}
               type="email"
               placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="w-full border border-gray-300 rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-white dark:placeholder-gray-500 transition-all"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-white dark:text-black mb-2">
               Message
             </label>
             <motion.textarea
               whileFocus={{ scale: 1.02 }}
               rows={4}
               placeholder="Write your message..."
-              className="w-full border border-gray-300 rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+              className="w-full border border-gray-300 rounded-xl p-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-white dark:placeholder-gray-500 transition-all"
               required
             ></motion.textarea>
           </div>
@@ -67,7 +67,7 @@ const Contact = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
+            className="w-full  bg-gray-300  text-black py-3 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all"
           >
             Send Message
           </motion.button>
