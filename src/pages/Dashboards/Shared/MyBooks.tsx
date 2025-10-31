@@ -38,6 +38,7 @@ export interface Book {
   category: string;
   price: number;
   imageUrl: string;
+  description: string;
 }
 
 const MyBooks = () => {

@@ -1,4 +1,6 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
+
 import { toast } from "react-toastify";
 
 interface SellerFormData {
@@ -38,7 +40,7 @@ const BecomeSellerForm: React.FC = () => {
     e.preventDefault();
 
     toast("Congrats! You become a seller now.");
-e.reset();
+
     // TODO: Handle backend submission (Firebase / API)
   };
 
