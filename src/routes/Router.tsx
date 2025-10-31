@@ -31,6 +31,7 @@ import RejectedTrades from '@/pages/Dashboards/Shared/RejectedTrades';
 import ChatUsersSidebar from '@/pages/Dashboards/Shared/ChatUsersSidebar';
 import path from 'path';
 import Chat from '@/pages/Dashboards/Shared/Chat';
+import NoChatSelected from '@/pages/Dashboards/Shared/NoChatSelected';
 
 const router = createBrowserRouter([
   {
@@ -104,7 +105,10 @@ const router = createBrowserRouter([
       {
         path: 'chat',
         Component: ChatUsersSidebar,
-        children: [{ path: 'user-chats/:id', Component: Chat }],
+        children: [
+          { index: true, Component: NoChatSelected },
+          { path: 'user-chats/:id', Component: Chat },
+        ],
       },
       {
         path: 'myprofile',
