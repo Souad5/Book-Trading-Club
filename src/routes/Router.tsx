@@ -11,20 +11,14 @@ import Login from '@/pages/Login/Login';
 import Register from '@/pages/Register/Register';
 
 import FavouriteBooks from '@/pages/Wishlist/Wishlist';
-import AroundMe from '@/pages/Map/AroundMe';
 import { createBrowserRouter } from 'react-router';
 import ErrorPage from '@/pages/ErrorPage/ErrorPage';
 import DashboardLayout from '@/components/layout/DashboardLayout';
-
-import Users from '@/pages/Dashboards/Admin/Users';
-import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
-<<<<<<< HEAD
 import DashboardHomePage from '@/pages/Dashboards/User/DashboardHomePage';
-import MyBooks from '@/pages/Dashboards/User/MyBooks';
-=======
-import Payment from '@/pages/Dashboards/Shared/MyBooks';
+import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
+import Payment from '@/pages/Dashboards/User/MyBooks';
 import BecomeSellerForm from '@/components/BecomeSeller/BecomeSellerForm';
->>>>>>> 9e4673b09119e1200dae6bd4c3c7054585718ba0
+import Users from '@/pages/Dashboards/Admin/Users';
 
 const router = createBrowserRouter([
   {
@@ -78,15 +72,9 @@ const router = createBrowserRouter([
         Component: Contact,
       },
       {
-<<<<<<< HEAD
-        path: '/around-me',
-        Component: AroundMe,
-      },
-=======
         path:'/become-seller',
         Component: BecomeSellerForm,
       }
->>>>>>> 9e4673b09119e1200dae6bd4c3c7054585718ba0
     ],
   },
   {
@@ -107,7 +95,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'mybooks',
-        Component: MyBooks,
+        Component: Payment,
       },
     ],
   },
