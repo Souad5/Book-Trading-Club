@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import UseAxiosSecure from '@/axios/UseAxiosSecure';
-
+import UpdateBookModal from './UpdateBookModal';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -29,7 +29,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/firebase/AuthProvider';
 import { Dialog } from '@/components/ui/dialog';
 import { useState } from 'react';
-import UpdateBookModal from './UpdateBookModal';
 
 // ✅ Define type for each book
 export interface Book {
@@ -39,7 +38,7 @@ export interface Book {
   category: string;
   price: number;
   imageUrl: string;
-  description: string;
+  description:string;
 }
 
 const MyBooks = () => {
@@ -91,7 +90,7 @@ const MyBooks = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {books.map((book : any) => (
+            {books.map((book) => (
               <TableRow className="text-center" key={book._id}>
                 <TableCell className="flex flex-col items-center justify-center gap-3 mt-4">
                   <img
