@@ -5,7 +5,7 @@ export function WantToBeSellerSection() {
   return (
     <section
       className="rounded-3xl p-10 shadow-2xl my-16 relative overflow-hidden 
-      dark:bg-gray-600 bg-white dark:text-white transition-colors duration-300"
+      bg-gray-500 dark:bg-white dark:text-white transition-colors duration-300"
     >
       {/* Decorative shapes */}
       <div className="absolute -top-20 -right-20 w-72 h-72 bg-gray-200 dark:bg-bg-card/30 opacity-20 rounded-full animate-pulse"></div>
@@ -15,17 +15,17 @@ export function WantToBeSellerSection() {
         {/* Left text section */}
         <div className="flex-1">
           <h2 className="text-4xl font-extrabold mb-4 flex items-center gap-3 
-            text-gray-800 dark:text-white transition">
-            <FiUserPlus size={32} className="text-gray-500 dark:text-gray-300" /> 
+            dark:text-black text-white transition">
+            <FiUserPlus size={32} className="text-white dark:text-black" /> 
             Become a Seller
           </h2>
-          <p className="mb-6 text-lg text-gray-700 dark:text-gray-300 transition">
+          <p className="mb-6 text-lg dark:text-black text-white transition">
             Join our thriving community of book lovers. Sell your books, manage your listings, 
             track orders, and grow your business — all in one place.
           </p>
         <Link
             to="/seller/signup"
-            className="inline-block px-8 py-3 bg-gray-500 dark:bg-gray-100 dark:text-black dark:border-gray-300 dark:border-1 text-white font-bold rounded-full shadow-lg hover:bg-gray-600 transition"
+            className="inline-block px-8 py-3 bg-gray-700 dark:bg-gray-100 dark:text-black dark:border-gray-300 dark:border-1 text-white font-bold rounded-full shadow-lg hover:bg-gray-600 transition"
           >
             Get Started
           </Link>

@@ -163,7 +163,7 @@ export default function Home() {
   );
 
   return (
-    <section>
+    <section className='dark:bg-gray-600'>
       {/* Hero */}
       <HeroSection />
 
@@ -171,32 +171,32 @@ export default function Home() {
       <div className="relative py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 space-y-12">
           <div className="text-center space-y-4">
-            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-800 ">
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-800 dark:text-white">
               Fresh on the Shelf
             </h2>
-            <p className="text-lg text-gray-600  max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600  max-w-2xl mx-auto dark:text-white">
               Discover the latest books shared by our community. Swap, donate,
               or buy — your next read is just a click away.
             </p>
           </div>
 
           {/* Search Filters */}
-          <div className="rounded-2xl bg-white dark:bg-gray-600 p-6 md:p-8 shadow-xl border border-gray-100">
-            <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-900 dark:text-white mb-5">
-              <Search className="w-5 h-5 text-gray-600 dark:text-white" />
+          <div className="rounded-2xl dark:bg-white bg-gray-500 p-6 md:p-8 shadow-xl border border-gray-100">
+            <h3 className="text-lg font-semibold flex items-center gap-2 dark:text-gray-900 text-white mb-5">
+              <Search className="w-5 h-5 dark:text-gray-600 text-white" />
               Search Books
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
               <input
-                className="w-full rounded-lg border border-gray-300 bg-gray-300 dark:bg-white px-3 py-2.5 text-sm  focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder:text-black"
+                className="w-full rounded-lg border border-gray-300 dark:bg-gray-300 bg-white px-3 py-2.5 text-sm  focus:outline-none focus:ring-2 focus:ring-purple-300 placeholder:text-black"
                 placeholder="Search title, author, ISBN, or tag"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
 
               <select
-                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 dark:bg-gray-300 bg-white  px-3 py-2.5 text-sm"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               >
@@ -209,7 +209,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 dark:bg-gray-300 bg-white  px-3 py-2.5 text-sm"
                 value={condition}
                 onChange={(e) => setCondition(e.target.value)}
               >
@@ -220,7 +220,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 dark:bg-gray-300 bg-white  px-3 py-2.5 text-sm"
                 value={exchangeType}
                 onChange={(e) => setExchangeType(e.target.value)}
               >
@@ -231,7 +231,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white  px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 dark:bg-gray-300 bg-white  px-3 py-2.5 text-sm"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
               >
@@ -244,7 +244,7 @@ export default function Home() {
               </select>
 
               <select
-                className="rounded-lg border border-gray-300 bg-gray-300 dark:bg-white px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 dark:bg-gray-300 bg-white px-3 py-2.5 text-sm"
                 value={genre}
                 onChange={(e) => setGenre(e.target.value)}
               >
@@ -256,7 +256,7 @@ export default function Home() {
                 ))}
               </select>
               <select
-                className="rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm"
+                className="rounded-lg border border-gray-300 dark:bg-gray-300 bg-white px-3 py-2.5 text-sm"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc' | '')}
               >
@@ -286,7 +286,7 @@ export default function Home() {
               {results.slice(0, 6).map((b) => (
                 <article
                   key={b.id}
-                  className="group rounded-xl border border-gray-200 bg-white dark:bg-gray-600  p-6 shadow-md hover:shadow-lg transition-shadow relative"
+                  className="group rounded-xl border border-gray-200 bg-gray-500 dark:bg-white  p-6 shadow-md hover:shadow-lg transition-shadow relative"
                 >
                   {/* Favorite Heart Icon */}
                   <button
@@ -365,7 +365,7 @@ export default function Home() {
           <div className="text-center">
             <Link
               to="/browse"
-             className="inline-block px-8 py-3 bg-gray-500 dark:bg-gray-100 dark:text-black dark:border-gray-300 dark:border-1 text-white font-bold rounded-full shadow-lg hover:bg-gray-600 transition"
+             className="inline-block px-8 py-3 bg-gray-500 dark:bg-white dark:text-black dark:border-gray-300 dark:border-1 text-white font-bold rounded-full shadow-lg hover:bg-gray-600 transition"
             >
               View All Books
             </Link>
