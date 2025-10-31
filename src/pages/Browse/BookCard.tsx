@@ -64,7 +64,7 @@ const BookCard = ({ book }: BookCardProps) => {
   return (
     <article
       onClick={handleCardClick}
-      className="cursor-pointer rounded-xl border border-sand-200 bg-white p-5 shadow-subtle hover:shadow-md transition-shadow relative"
+      className="cursor-pointer rounded-xl border border-sand-200 bg-gray-500 dark:bg-white p-5 shadow-subtle hover:shadow-md transition-shadow relative"
     >
       {/* Favorite Heart Icon */}
       {bookId && (
@@ -93,7 +93,7 @@ const BookCard = ({ book }: BookCardProps) => {
 
       {/* Title + Author */}
       <h3 className="mt-3 font-semibold dark:text-black text-white">{book.title}</h3>
-      <p className="text-sm text-sand-700">
+      <p className="text-sm text-white dark:text-black">
         {book.author} · {language}
       </p>
 
@@ -115,7 +115,7 @@ const BookCard = ({ book }: BookCardProps) => {
         <Link
           to={`/book/${bookId}`}
           onClick={(e) => e.stopPropagation()}
-          className="mt-4 inline-block text-sm text-blue-600 px-3 py-1 hover:text-white hover:bg-blue-600 border rounded-xl"
+          className="mt-4 inline-block text-sm text-white dark:text-black px-3 py-1 hover:text-white  border border-white dark:border-black rounded-xl"
         >
           View Details →
         </Link>

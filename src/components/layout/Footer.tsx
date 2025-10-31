@@ -3,7 +3,7 @@ import SocialIcons from './SocialIcons';
 
 export default function Footer() {
   return (
-    <footer className="mt-12 border-t border-gray-300 bg-bg-light dark:bg-gray-600 transition-colors duration-300">
+    <footer className="border-t border-gray-300 bg-bg-light dark:bg-gray-600 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Logo & Description */}
         <div>
