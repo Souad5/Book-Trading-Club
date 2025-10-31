@@ -47,8 +47,8 @@ const items = [
     icon: Home,
   },
   {
-    title: 'Inbox',
-    url: '#',
+    title: 'Chats',
+    url: '/dashboard/chat',
     icon: Inbox,
   },
 ];
