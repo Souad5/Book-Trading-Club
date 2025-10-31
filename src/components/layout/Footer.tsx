@@ -8,12 +8,10 @@ export default function Footer() {
         {/* Logo & Description */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <img
-              src="https://i.ibb.co/N2jf7kL4/550265142-1124024862503275-6787426305608102088-n.png"
-              alt="ShelfShare logo"
-              className="h-9 w-9 rounded"
-            />
-            <span className="text-xl font-semibold text-text-main dark:text-white">ShelfShare</span>
+            <p className=" font-bold  text-gray-900 dark:text-gray-100">
+        <span className="text-gray-500 text-4xl dark:text-gray-400">S</span>helf
+        <span className="text-gray-500 text-3xl dark:text-gray-400">S</span>hare
+      </p>
           </div>
           <p className="text-sm text-gray-700 dark:text-gray-300 transition-colors">
             Community, Exchange, and Sustainability for book lovers.

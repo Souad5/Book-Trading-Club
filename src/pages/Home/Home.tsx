@@ -319,12 +319,11 @@ export default function Home() {
                         className="h-full w-full object-cover"
                       />
                     </div>
-                    <h3 className="font-semibold text-lg text-gray-900 dark:text-white 
-                    group-hover:text-gray-600">
+                    <h3 className="font-semibold text-lg dark:text-black text-white
+                    ">
                       {b.title}
                     </h3>
-                    <p className="text-sm text-gray-600
-                    dark:text-white 
+                    <p className="text-sm dark:text-black text-white
                     ">
                       {b.author} · {b.language}
                     </p>
@@ -343,7 +342,7 @@ export default function Home() {
                         {b.genre}
                       </span>
                     </div>
-                    <span className="mt-4 inline-block text-sm text-gray-600 dark:bg-gray-200 dark:text-black px-3 py-1  hover:bg-gray-600 hover:text-white border rounded-full">
+                    <span className="mt-4 inline-block text-sm dark:bg-gray-200 dark:text-black text-white px-3 py-1  hover:bg-gray-600 hover:text-white border rounded-full">
                       View Details →
                     </span>
                   </Link>

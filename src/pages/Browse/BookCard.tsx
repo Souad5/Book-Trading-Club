@@ -92,7 +92,7 @@ const BookCard = ({ book }: BookCardProps) => {
       </div>
 
       {/* Title + Author */}
-      <h3 className="mt-3 font-semibold text-soil-900">{book.title}</h3>
+      <h3 className="mt-3 font-semibold dark:text-black text-white">{book.title}</h3>
       <p className="text-sm text-sand-700">
         {book.author} · {language}
       </p>

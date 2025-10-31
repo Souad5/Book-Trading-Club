@@ -45,7 +45,7 @@ export default function HeroSection() {
           {/* CTA Button with AI Glow */}
           <Button
             size="lg"
-            className="bg-gray-100 dark:bg-gray-600 text-black border-white border-1  dark:text-white hover:bg-primary-dark shadow-[0_0_12px_var(--ai-soft)] hover:shadow-[0_0_18px_var(--ai-default)] transition-all duration-300"
+            className="dark:bg-white bg-gray-600 dark:text-black border-white border-1  text-white  transition-all duration-300"
           >
             <Link to={"/become-seller"}>Start Sharing</Link>
           </Button>
@@ -53,7 +53,7 @@ export default function HeroSection() {
           <Button
             size="lg"
             variant="outline"
-            className=" bg-gray-100 dark:bg-gray-600 text-black border-white border-1  dark:text-white hover:bg-primary-dark shadow-[0_0_12px_var(--ai-soft)] hover:shadow-[0_0_18px_var(--ai-default)] transition-all duration-300
+            className=" dark:bg-white bg-gray-600 dark:text-black border-white border-1  text-white  
   "
           >
             <Link to="/browse">Browse Books</Link>
