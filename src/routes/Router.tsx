@@ -18,6 +18,7 @@ import DashboardHomePage from '@/pages/Dashboards/Shared/DashboardHomePage';
 import Users from '@/pages/Dashboards/Shared/Users';
 import UserProfile from '@/pages/Dashboards/Shared/UserProfile';
 import Payment from '@/pages/Dashboards/Shared/MyBooks';
+import BecomeSellerForm from '@/components/BecomeSeller/BecomeSellerForm';
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
         path: '/contact',
         Component: Contact,
       },
+      {
+        path:'/become-seller',
+        Component: BecomeSellerForm,
+      }
     ],
   },
   {

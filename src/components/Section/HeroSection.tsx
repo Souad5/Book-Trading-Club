@@ -1,19 +1,10 @@
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router';
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
 
 export default function HeroSection() {
-
-
-  
-
-  
-
   return (
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden overla">
-
-   
-
       {/* Background Video */}
       <video
         autoPlay
@@ -28,8 +19,7 @@ export default function HeroSection() {
 
       {/* Overlay (dark mode aware) */}
       {/* Overlay (gray) */}
-<div className="absolute inset-0 bg-gray-700/20 dark:bg-gray-900/60 backdrop-blur-[2px]" />
-
+      <div className="absolute inset-0 bg-gray-700/20 dark:bg-gray-900/60 backdrop-blur-[2px]" />
 
       {/* Content */}
       <motion.div
@@ -40,7 +30,9 @@ export default function HeroSection() {
       >
         <h1 className="text-4xl sm:text-6xl font-extrabold text-white dark:text-bg-light leading-tight drop-shadow-lg">
           Trade. Discover. Share. <br />
-          <span className="text-ai-default drop-shadow-lg">Smarter with AI.</span>
+          <span className="text-ai-default drop-shadow-lg">
+            Smarter with AI.
+          </span>
         </h1>
 
         <p className="mt-6 text-lg sm:text-xl text-gray-100 dark:text-gray-300 max-w-2xl mx-auto">
@@ -51,23 +43,21 @@ export default function HeroSection() {
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           {/* CTA Button with AI Glow */}
-        <Button
-  size="lg"
-  className="bg-gray-100 dark:bg-gray-600 text-black border-white border-1  dark:text-white hover:bg-primary-dark shadow-[0_0_12px_var(--ai-soft)] hover:shadow-[0_0_18px_var(--ai-default)] transition-all duration-300"
->
-  Start Sharing
-</Button>
+          <Button
+            size="lg"
+            className="bg-gray-100 dark:bg-gray-600 text-black border-white border-1  dark:text-white hover:bg-primary-dark shadow-[0_0_12px_var(--ai-soft)] hover:shadow-[0_0_18px_var(--ai-default)] transition-all duration-300"
+          >
+            <Link to={"/become-seller"}>Start Sharing</Link>
+          </Button>
 
-<Button
-  size="lg"
-  variant="outline"
-  className=" bg-gray-100 dark:bg-gray-600 text-black border-white border-1  dark:text-white hover:bg-primary-dark shadow-[0_0_12px_var(--ai-soft)] hover:shadow-[0_0_18px_var(--ai-default)] transition-all duration-300
+          <Button
+            size="lg"
+            variant="outline"
+            className=" bg-gray-100 dark:bg-gray-600 text-black border-white border-1  dark:text-white hover:bg-primary-dark shadow-[0_0_12px_var(--ai-soft)] hover:shadow-[0_0_18px_var(--ai-default)] transition-all duration-300
   "
->
-  <Link to="/browse"
-  >Browse Books</Link>
-</Button>
-
+          >
+            <Link to="/browse">Browse Books</Link>
+          </Button>
         </div>
       </motion.div>
     </section>
