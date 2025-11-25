@@ -11,6 +11,7 @@ export interface Book {
   exchangeType: string;
   language: string;
   genre: string;
+  age?: AgeGroup; // Target reader age group
   image: string;
   description?: string;
   coordinates?: {
@@ -31,6 +32,7 @@ export interface ApiBook {
   Exchange?: string;
   Language?: string;
   category: string;
+  age?: AgeGroup;
   tags?: string[];
   price: number;
   description: string;
@@ -57,6 +59,7 @@ export const normalizeBook = (apiBook: ApiBook): Book => ({
   exchangeType: apiBook.Exchange || 'Swap',
   language: apiBook.Language || 'English',
   genre: apiBook.category || 'Fiction',
+  age: apiBook.age || (Math.random() < 0.5 ? 'Children' : 'Adult'),
   image: apiBook.imageUrl,
   description: apiBook.description,
   coordinates: apiBook.coordinates?.latitude && apiBook.coordinates?.longitude ? {
@@ -76,3 +79,6 @@ export type BookLanguage = 'English' | 'Bangla' | 'Hindi' | 'Arabic' | 'Chinese'
 
 // Category options
 export type BookCategory = 'fiction' | 'non-fiction' | 'education' | 'comics';
+
+// Reader age groups
+export type AgeGroup = 'Children' | 'Teen' | 'Young Adult' | 'Adult' | 'All Ages';

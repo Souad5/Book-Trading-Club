@@ -18,6 +18,7 @@ const LANGUAGES = [
   'Other',
 ] as const;
 const CATEGORIES = ['fiction', 'non-fiction', 'education', 'comics'] as const;
+const AGE_GROUPS = ['Children', 'Teen', 'Young Adult', 'Adult', 'All Ages'] as const;
 const LOCATIONS = [
   'Dhaka',
   'Chattogram',
@@ -46,6 +47,7 @@ const AddBookForm = () => {
   const [Exchange, setExchange] = useState('Swap');
   const [Language, setLanguage] = useState('English');
   const [tags, setTags] = useState<string[]>([]);
+  const [Age, setAge] = useState<string>('All Ages');
 
   // file state
   const [cover, setCover] = useState<File | null>(null);
@@ -107,6 +109,7 @@ const AddBookForm = () => {
         Condition,
         Exchange,
         Language,
+        age: Age,
         category,
         tags,
         price: numericPrice,
@@ -131,6 +134,7 @@ const AddBookForm = () => {
       setCondition('Good');
       setExchange('Swap');
       setLanguage('English');
+      setAge('All Ages');
       setTags([]);
       setCover(null);
     } catch (err) {
@@ -303,6 +307,22 @@ const AddBookForm = () => {
               {LANGUAGES.map((l) => (
                 <option key={l} value={l}>
                   {l}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-gray-700 font-medium mb-1">
+              Age Group
+            </label>
+            <select
+              value={Age}
+              onChange={(e) => setAge(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-leaf-400 outline-none"
+            >
+              {AGE_GROUPS.map((g) => (
+                <option key={g} value={g}>
+                  {g}
                 </option>
               ))}
             </select>
